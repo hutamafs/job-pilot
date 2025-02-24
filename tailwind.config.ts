@@ -13,6 +13,7 @@ export default {
         gray400: '#F6F7F7',
         gray600: "#5E6670",
         gray900: "#18191C",
+        lightBlue50: '#E8F0FB',
         primary500: "#0A65CC",
         background: "var(--background)",
         foreground: "var(--foreground)",

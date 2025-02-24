@@ -5,7 +5,7 @@ interface ContainerProps {
 }
 
 const Container: React.FC<ContainerProps> = ({ className, backgroundColor = "bg-white", children }) => (
-  <div className={`w-full flex items-center justify-center ${backgroundColor} mx-auto p-4 ${className}`}>
+  <div className={`w-full flex items-center justify-center ${backgroundColor} mx-auto p-6 lg:p-8 ${className}`}>
     <div className="w-full max-w-[1320px]">
       {children}
     </div>

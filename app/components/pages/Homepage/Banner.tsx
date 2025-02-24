@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Container from "../Container";
+import Container from "../../Container";
 import * as Icon from '@/asset/banner';
 
 const data = [
