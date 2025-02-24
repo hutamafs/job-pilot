@@ -13,7 +13,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Find Job", path: "/jobs" },
-    { name: "Employers", path: "/employers" },
+    { name: "Employers", path: "/companies" },
     { name: "Candidates", path: "/candidates" },
   ];
 

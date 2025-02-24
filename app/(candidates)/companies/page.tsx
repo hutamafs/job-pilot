@@ -1,4 +1,5 @@
 import { Container, EmployerCard } from '@/app/components';
+import { SearchJob } from '@/app/components/pages/Jobs';
 import { CompanyIcon } from '@/asset/banner';
 
 const data = [
@@ -22,21 +23,20 @@ const data = [
   },
 ]
 
-const TopCompanies = () => {
+const Jobs = () => {
   return (
-    <Container className="pt-10">
-      <div className="flex flex-col">
-        <h1 className="text-2xl text-gray-900 font-bold">Top Companies</h1>
+    <>
+      <SearchJob />
+      <Container className="py-8">
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
           {
-            data.map((d) => (
-              <EmployerCard key={d.id} {...d} />
-            ))
+            data.map((d) => <EmployerCard key={d.id} {...d} /> )
           }
         </div>
-      </div>
-    </Container>
+        {/* <Pagination /> */}
+      </Container>
+    </>
   )
 };
 
-export default TopCompanies;
+export default Jobs;

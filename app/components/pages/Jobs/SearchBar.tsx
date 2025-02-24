@@ -8,7 +8,7 @@ const SearchBar = () => {
   const [search, setSearch] = useState("");
 
   return (
-    <Container>
+    <Container className="lg:py-4">
       <div className="flex flex-col md:flex-row w-full md:justify-between md:items-center">
         <form className="w-full md:w-[350px]" action="">
           <input

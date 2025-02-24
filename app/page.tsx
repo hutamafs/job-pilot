@@ -3,7 +3,7 @@ import {
   SearchBar,
   FeaturedJob,
   TopCompanies,
-  QuickRegister
+  QuickRegister,
 } from '@/app/components/pages/Homepage';
 
 export default function Home() {
