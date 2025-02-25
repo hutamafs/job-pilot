@@ -5,6 +5,7 @@ import CandidateCard from './CandidateCard';
 import Pagination from "./Pagination";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+import Modal from "./Modal";
 
 export {
   Container,
@@ -14,4 +15,5 @@ export {
   Footer,
   EmployerCard,
   CandidateCard,
+  Modal,
 }

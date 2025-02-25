@@ -1,54 +1,100 @@
-'use client'
+"use client";
 
-import { usePagination } from "@/app/hooks/usePagination";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { useRouter, useSearchParams } from "next/navigation";
+import { HiChevronDoubleLeft, HiChevronLeft, HiChevronRight, HiChevronDoubleRight } from "react-icons/hi2";
 
-const items = Array.from({ length: 50 }, (_, i) => `Item ${i + 1}`);
+interface PaginationProps {
+  totalPages: number;
+}
 
-export default function PaginationComponent() {
-  const { currentPage, totalPages, currentData, nextPage, prevPage, goToPage } = 
-    usePagination({ data: items, itemsPerPage: 5 });
+const Pagination: React.FC<PaginationProps> = ({ totalPages }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const currentPage = Number(searchParams.get("page")) || 1;
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", String(page));
+    router.push(`?${params.toString()}`, { scroll: false });
+  };
+
+  const getPageNumbers = () => {
+    const pages = new Set<number>();
+  
+
+    pages.add(currentPage);
+  
+    if (currentPage + 1 >= totalPages) {
+      for (let i = 1; i <= 3; i++) {
+        if (currentPage - i > 0) {
+          pages.add(currentPage - i);
+        }
+      }
+    }
+    for (let i = 1; i <= 3; i++) {
+      if (currentPage + i <= totalPages) {
+        pages.add(currentPage + i);
+      }
+    }
+  
+    return Array.from(pages).sort((a, b) => a - b);
+  };
 
   return (
-    <div className="p-4 flex flex-col items-center">
-      {/* <ul className="mb-4 space-y-2">
-        {currentData.map((item, index) => (
-          <li key={index} className="border p-2">{item}</li>
-        ))}
-      </ul> */}
-
-      <div className="flex items-center gap-2">
-        {/* Previous Button */}
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-all"
-        >
-          <FaChevronLeft className="text-gray-500" />
-        </button>
-
-        {/* Page Numbers */}
-        {Array.from({ length: totalPages }, (_, i) => (
+    <div className="flex flex-wrap items-center justify-center text-primary500 font-semibold gap-2 mt-4">
+      {
+        currentPage - 3 > 1 && (
           <button
-            key={i}
-            onClick={() => goToPage(i + 1)}
-            className={`w-8 h-8 flex items-center justify-center text-sm rounded-full 
-              ${currentPage === i + 1 ? "bg-blue-600 text-white font-bold" : "bg-gray-100 text-gray-600"}
-              hover:bg-gray-200 transition-all`}
+            onClick={() => handlePageChange(1)}
+            disabled={currentPage === 1}
+            className="hidden sm:flex px-3 py-2 w-[40px] h-[40px] rounded-full bg-gray-200 disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed items-center justify-center"
           >
-            {String(i + 1).padStart(2, "0")}
+            <HiChevronDoubleLeft />
           </button>
-        ))}
+            )
+      }
 
-        {/* Next Button */}
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="px-3 py-2 w-[40px] h-[40px] rounded-full bg-gray-200 disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center"
+      >
+        <HiChevronLeft />
+      </button>
+
+      {getPageNumbers().map((page) => (
         <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 transition-all"
+          key={page}
+          onClick={() => handlePageChange(page)}
+          className={`px-3 py-2 w-[40px] h-[40px] rounded-full ${
+            page === currentPage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+          }`}
         >
-          <FaChevronRight className="text-gray-500" />
+          {page}
         </button>
-      </div>
+      ))}
+
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="px-3 py-2 w-[40px] h-[40px] rounded-3xl bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-700 flex items-center justify-center"
+      >
+        <HiChevronRight />
+      </button>
+
+      {
+        currentPage + 3 < totalPages && (
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={currentPage === totalPages}
+            className="hidden sm:flex px-3 py-2 w-[40px] h-[40px] rounded-full bg-gray-200 disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed items-center justify-center"
+          >
+            <HiChevronDoubleRight />
+          </button>
+        )
+      }
     </div>
   );
-}
+};
+
+export default Pagination;

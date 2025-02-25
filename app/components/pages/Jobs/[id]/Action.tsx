@@ -7,7 +7,6 @@ import { FiBookmark } from "react-icons/fi";
 
 const ActionComponent = () => {
   const pathname = usePathname();
-  console.log(pathname, 10);
   const handleSaveJob = () => {
     console.log('save job')
   }

@@ -1,64 +1,90 @@
 'use client';
 
 import Image from 'next/image';
-
+import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaWallet } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { HiArrowRight } from "react-icons/hi2";
-import { useState } from "react";
 
-interface ProfileCardProps {
-  name: string;
-  role: string;
-  location: string;
-  experience: string;
-  image: string;
-  selected?: boolean;
-}
+import ProfileModal from './ProfileModal';
+import { Candidate as CandidateType } from '@/app/types';
 
-export default function ProfileCard({ name, role, location, experience, image, selected = false }: ProfileCardProps) {
+// const sampleProfile = {
+//   name: "Esther Howard",
+//   role: "Website Designer (UI/UX)",
+//   bio: "I'm passionate about graphic design and digital art...",
+//   coverLetter: "Dear Sir, I am writing to express my interest...",
+//   dob: "14 June, 2021",
+//   nationality: "Bangladesh",
+//   maritalStatus: "Single",
+//   gender: "Male",
+//   experience: "7 Years",
+//   education: "Master Degree",
+//   resume: "resume.pdf",
+//   website: "www.estherhoward.com",
+//   location: "Beverly Hills, California 90202",
+//   phone: "+1-202-555-0141",
+//   secondaryPhone: "+1-202-555-0189",
+//   email: "esther.howard@gmail.com",
+// };
+
+const ProfileCard:React.FC<CandidateType> = (d) => {
   const [bookmarked, setBookmarked] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else {
+      document.body.classList.remove("overflow-hidden");
+    }
+  }, [isOpen]);
 
   return (
-    <div
-      className={`flex flex-col md:flex-row md:items-center justify-between p-4 border rounded-lg transition-all relative ${
-        selected ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:shadow-md"
-      }`}
-    >
-      <div className="flex md:items-center gap-4">
-        <Image
-          width={60} 
-          height={60}
-          src={image}
-          alt={name}
-          className="rounded-sm object-cover" />
-        <div>
-          <h2 className={`text-sm font-semibold ${selected ? "text-blue-600" : "text-gray-900"}`}>{name}</h2>
-          <p className="text-xs text-gray-500">{role}</p>
-          <div className="flex flex-col md:flex-row md:items-center mt-1 md:mt-0 gap-1 text-xs text-gray-500">
-            <div className="flex items-center gap-1">
-              <FaMapMarkerAlt className="text-gray-400" />
-              <span>{location}</span>
-            </div>
-            <div className="flex items-center gap-x-1">
-              <FaWallet className="text-gray-400" />
-              <span>{experience}</span>
+    <>
+      <div
+        className={`flex flex-col md:flex-row md:items-center justify-between p-4 mb-3 border rounded-lg transition-all w-full relative
+        }`}
+      >
+        <div className="flex md:items-center gap-4">
+          <Image
+            width={60} 
+            height={60}
+            src={d.profilePicture || ''}
+            alt={d.name}
+            className="rounded-sm object-cover" />
+          <div>
+            <h2 className={`text-sm text-black font-semibold`}>{d.name}</h2>
+            <p className="text-xs text-black">{d.role}</p>
+            <div className="flex flex-col md:flex-row md:items-center mt-1 md:mt-0 gap-1 text-xs text-gray-500">
+              <div className="flex items-center gap-1">
+                <FaMapMarkerAlt className="text-gray-400" />
+                <span>{d.location}</span>
+              </div>
+              <div className="flex items-center gap-x-1">
+                <FaWallet className="text-gray-400" />
+                <span>{d.experience} years</span>
+              </div>
             </div>
           </div>
         </div>
+        <button onClick={() => setBookmarked(!bookmarked)} className="text-gray-400 hover:text-gray-600 absolute top-5 right-5 md:top-2 transition">
+          {bookmarked ? <BsBookmarkFill className="text-blue-600" /> : <BsBookmark />}
+        </button>
+        <button
+          onClick={() => setIsOpen(true)}
+          className={`flex items-center text-primary500 bg-blue-50 justify-center gap-2 px-3 py-1.5 mt-2 md:mt-4 rounded-md text-sm font-semibold transition-all`}
+        >
+          View Profile <HiArrowRight />
+        </button>
       </div>
-      <button onClick={() => setBookmarked(!bookmarked)} className="text-gray-400 hover:text-gray-600 absolute top-5 right-5 md:top-2 transition">
-        {bookmarked ? <BsBookmarkFill className="text-blue-600" /> : <BsBookmark />}
-      </button>
-      <button
-        className={`flex items-center justify-center gap-2 px-3 py-1.5 mt-2 md:mt-4 rounded-md text-sm font-semibold transition-all ${
-          selected
-            ? "bg-blue-600 text-white"
-            : "bg-blue-100 text-blue-600 hover:bg-blue-200"
-        }`}
-      >
-        View Profile <HiArrowRight />
-      </button>
-    </div>
+    <ProfileModal
+      profile={d}
+      isOpen={isOpen}
+      onClose={() => setIsOpen(false)}
+    />
+    </>
   );
 }
+
+export default ProfileCard;

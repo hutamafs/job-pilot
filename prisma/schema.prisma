@@ -1,0 +1,133 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  CANDIDATE
+  EMPLOYER
+  ADMIN
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  role      UserRole
+  createdAt DateTime   @default(now())
+  // Relations
+  candidate Candidate?
+  company   Company?
+}
+
+model Candidate {
+  id             String           @id @default(uuid())
+  name           String
+  role           String
+  bio            String
+  coverLetter    String
+  dob            DateTime
+  nationality    String
+  maritalStatus  String
+  gender         String
+  experience     Int
+  education      String
+  linkedin       String?
+  facebook       String?
+  location       String
+  website        String?
+  email          String           @unique
+  password       String
+  phone          String?
+  resumeUrl      String?
+  createdAt      DateTime         @default(now())
+  profilePicture String?
+  favoriteJobs   FavoriteJob[]
+  appliedJobs    JobApplication[]
+  savedJobs      SavedJob[]
+  skills         Json
+  user           User?            @relation(fields: [userId], references: [id])
+  userId         String?          @unique
+}
+
+model Company {
+  id             String   @id @default(uuid())
+  name           String
+  profilePicture String?
+  founded        DateTime
+  description    String
+  benefits       Json
+  industry       String
+  phone          String
+  teamSize       Int
+  vision         String?
+  email          String   @unique
+  website        String?
+  createdAt      DateTime @default(now())
+  jobs           Job[]
+  location       String
+  user           User?    @relation(fields: [userId], references: [id])
+  userId         String?  @unique
+}
+
+model Job {
+  id           String           @id @default(uuid())
+  title        String
+  description  String
+  requirements Json
+  desirable    Json
+  benefits     Json
+  jobType      String?
+  jobLevel     String?
+  experience   Int
+  education    String
+  jobTags      Json
+  salary       String
+  location     String
+  companyId    String
+  createdAt    DateTime         @default(now())
+  favoriteJobs FavoriteJob[]
+  company      Company          @relation(fields: [companyId], references: [id])
+  applications JobApplication[]
+  savedJobs    SavedJob[]
+}
+
+model JobApplication {
+  id          String    @id @default(uuid())
+  candidateId String
+  jobId       String
+  status      String    @default("pending")
+  appliedAt   DateTime  @default(now())
+  job         Job       @relation(fields: [jobId], references: [id])
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model SavedJob {
+  id          String    @id @default(uuid())
+  candidateId String
+  jobId       String
+  createdAt   DateTime  @default(now())
+  job         Job       @relation(fields: [jobId], references: [id])
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model FavoriteJob {
+  id          String    @id @default(uuid())
+  candidateId String
+  jobId       String
+  createdAt   DateTime  @default(now())
+  job         Job       @relation(fields: [jobId], references: [id])
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERN
+  FREELANCE
+}
