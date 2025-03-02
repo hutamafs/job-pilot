@@ -9,12 +9,15 @@
     "lint": "next lint",
     "postinstall": "npx prisma generate"
   },
+  "type": "module",
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "next": "15.1.7",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-icons": "^5.5.0"
+    "react-icons": "^5.5.0",
+    "zustand": "^5.0.3"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -28,6 +31,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
     "postcss": "^8",
+    "prettier": "3.5.3",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3"

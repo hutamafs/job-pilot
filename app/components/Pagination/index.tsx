@@ -54,13 +54,17 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages }) => {
             )
       }
 
-      <button
-        onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-2 w-[40px] h-[40px] rounded-full bg-gray-200 disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center"
-      >
-        <HiChevronLeft />
-      </button>
+      {
+        currentPage !== 1 && (
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-3 py-2 w-[40px] h-[40px] rounded-full bg-gray-200 disabled:opacity-50 disabled:bg-gray-700 disabled:cursor-not-allowed flex items-center justify-center"
+          >
+            <HiChevronLeft />
+          </button>
+        )
+      }
 
       {getPageNumbers().map((page) => (
         <button
@@ -74,13 +78,17 @@ const Pagination: React.FC<PaginationProps> = ({ totalPages }) => {
         </button>
       ))}
 
-      <button
-        onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-2 w-[40px] h-[40px] rounded-3xl bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-700 flex items-center justify-center"
-      >
-        <HiChevronRight />
-      </button>
+      {
+        currentPage !== totalPages && (
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-3 py-2 w-[40px] h-[40px] rounded-3xl bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-gray-700 flex items-center justify-center"
+          >
+            <HiChevronRight />
+          </button>
+        )
+      }
 
       {
         currentPage + 3 < totalPages && (

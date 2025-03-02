@@ -62,3 +62,12 @@ export interface Candidate {
   savedJobs:      Job[]
   skills?:         string[]
 }
+
+export interface JobApplication {
+  id: string;
+  candidateId: string;
+  jobId: string;
+  status: string;
+  appliedAt: string;
+  job: Job;
+}

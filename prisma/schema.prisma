@@ -34,7 +34,7 @@ model Candidate {
   nationality    String
   maritalStatus  String
   gender         String
-  experience     Int
+  experience     String
   education      String
   linkedin       String?
   facebook       String?

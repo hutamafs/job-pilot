@@ -1,7 +1,11 @@
-import { headers } from "next/headers";
+"use client";
+
+import { usePathname } from "next/navigation";
+
 import Link from "next/link";
 import { ReactNode } from "react";
 import { FaUser, FaBriefcase, FaHeart } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
 
 const employerSidebar = [
   { name: "Overview", path: "overview", icon: <FaUser /> },
@@ -9,33 +13,33 @@ const employerSidebar = [
   { name: "Post a Job", path: "post-job", icon: <FaBriefcase /> },
   { name: "My Jobs", path: "my-jobs", icon: <FaBriefcase /> },
   { name: "Saved Candidate", path: "saved-candidates", icon: <FaHeart /> },
+  { name: "Settings", path: "settings", icon: <FiSettings /> },
 ];
 
 const candidateSidebar = [
   { name: "Overview", path: "overview", icon: <FaUser /> },
   { name: "Applied Jobs", path: "applied-jobs", icon: <FaBriefcase /> },
   { name: "Favorite Jobs", path: "favorite-jobs", icon: <FaHeart /> },
+  { name: "Settings", path: "settings", icon: <FiSettings /> },
 ];
 
-const Sidebar = async ({ isCandidate }: { isCandidate: boolean }) => {
+const Sidebar = ({ isCandidate }: { isCandidate: boolean }) => {
   const sidebarItems = isCandidate ? candidateSidebar : employerSidebar;
-
-  const headersList = await headers();
-  const url = headersList.get("referer") || "";
-  const { pathname } = new URL(url);
-  const subpath = pathname.split("/")[3];
+  const pathname = usePathname();
+  const subpath = pathname.split("/")[3]; 
+  console.log(subpath);
 
   return (
     <>
-      <aside className="hidden md:block w-64 text-black p-4">
+      <aside className="hidden lg:block w-64 text-black p-4">
         <nav className="space-y-4">
           {sidebarItems.map((item) => (
             <NavItem key={item.path} href={`/dashboard/${isCandidate ? "candidate" : "employer"}/${item.path}`} label={item.name} icon={item.icon} active={subpath === item.path} />
           ))}
         </nav>
       </aside>
-      <nav className="block md:hidden text-black pl-0 md:px-4 py-2 sticky top-0 z-10 overflow-x-auto whitespace-nowrap">
-        <div className="flex space-x-6">
+      <nav className="block lg:hidden text-black pl-0 md:px-4 py-2 sticky top-0 z-10 overflow-x-auto whitespace-nowrap">
+        <div className="flex px-4 pl-0 space-x-6">
           {sidebarItems.map((item) => (
             <NavItem key={item.path} href={`/dashboard/${isCandidate ? "candidate" : "employer"}/${item.path}`} label={item.name} active={subpath === item.path} />
           ))}
