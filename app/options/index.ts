@@ -1,0 +1,90 @@
+export const experienceOptions = [
+  {
+    label: "Less than 1 year",
+    value: "0",
+  },
+  {
+    label: "1-3 years",
+    value: "1-3",
+  },
+  {
+    label: "3-5 years",
+    value: "3-5",
+  },
+  {
+    label: "More than 5 years",
+    value: ">3",
+  },
+];
+
+export const educationOptions = [
+  {
+    label: "Doctoral degree",
+    value: "doctoral",
+  },
+  {
+    label: "Master degree",
+    value: "master",
+  },
+  {
+    label: "Bachelor degree",
+    value: "bachelor",
+  },
+  {
+    label: "Diploma / bootcamp",
+    value: "diploma",
+  },
+];
+
+export const countryOptions = [
+  { label: "United States", value: "United States" },
+  { label: "United Kingdom", value: "United Kingdom" },
+  { label: "Canada", value: "Canada" },
+  { label: "Australia", value: "Australia" },
+  { label: "Germany", value: "Germany" },
+  { label: "France", value: "France" },
+  { label: "Japan", value: "Japan" },
+  { label: "China", value: "China" },
+  { label: "India", value: "India" },
+  { label: "Brazil", value: "Brazil" },
+  { label: "Russia", value: "Russia" },
+  { label: "Italy", value: "Italy" },
+  { label: "Spain", value: "Spain" },
+  { label: "Mexico", value: "Mexico" },
+  { label: "South Korea", value: "South Korea" },
+  { label: "Netherlands", value: "Netherlands" },
+  { label: "Sweden", value: "Sweden" },
+  { label: "Switzerland", value: "Switzerland" },
+  { label: "Singapore", value: "Singapore" },
+  { label: "Norway", value: "Norway" },
+  { label: "Denmark", value: "Denmark" },
+  { label: "Finland", value: "Finland" },
+  { label: "Ireland", value: "Ireland" },
+  { label: "New Zealand", value: "New Zealand" },
+  { label: "Belgium", value: "Belgium" },
+  { label: "Austria", value: "Austria" },
+  { label: "Portugal", value: "Portugal" },
+  { label: "Greece", value: "Greece" },
+  { label: "Poland", value: "Poland" },
+  { label: "Czech Republic", value: "Czech Republic" },
+  { label: "Hungary", value: "Hungary" },
+  { label: "South Africa", value: "South Africa" },
+  { label: "Argentina", value: "Argentina" },
+  { label: "Chile", value: "Chile" },
+  { label: "Colombia", value: "Colombia" },
+  { label: "Malaysia", value: "Malaysia" },
+  { label: "Thailand", value: "Thailand" },
+  { label: "Vietnam", value: "Vietnam" },
+  { label: "Philippines", value: "Philippines" },
+  { label: "Indonesia", value: "Indonesia" },
+  { label: "Turkey", value: "Turkey" },
+  { label: "Israel", value: "Israel" },
+  { label: "United Arab Emirates", value: "United Arab Emirates" },
+  { label: "Saudi Arabia", value: "Saudi Arabia" },
+  { label: "Egypt", value: "Egypt" },
+  { label: "Morocco", value: "Morocco" },
+  { label: "Kenya", value: "Kenya" },
+  { label: "Nigeria", value: "Nigeria" },
+  { label: "Iceland", value: "Iceland" },
+  { label: "Luxembourg", value: "Luxembourg" }
+];

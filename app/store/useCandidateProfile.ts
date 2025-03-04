@@ -34,7 +34,7 @@ interface CandidateStore {
   setResumeUrl: (urls: string[]) => void;
 }
 
-export const useCandidateStore = create<CandidateStore>((set) => ({
+export const candidateStore = create<CandidateStore>((set) => ({
   profilePicture: "",
   name: "",
   role: "",

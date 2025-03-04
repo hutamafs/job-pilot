@@ -15,7 +15,7 @@ export interface Job {
   location: string;
   companyId: string;
   createdAt: Date;
-  company: Company
+  company: Company;
 }
 
 export interface Company {
@@ -57,10 +57,10 @@ export interface Candidate {
   resumeUrl?: string;
   createdAt: Date;
   profilePicture?: string;
-  favoriteJobs: Job[]
-  appliedJobs:    Job[]
-  savedJobs:      Job[]
-  skills?:         string[]
+  favoriteJobs: Job[];
+  appliedJobs: Job[];
+  savedJobs: Job[];
+  skills?: string[];
 }
 
 export interface JobApplication {
@@ -70,4 +70,24 @@ export interface JobApplication {
   status: string;
   appliedAt: string;
   job: Job;
+}
+
+export interface SettingsProps {
+  profilePicture: string;
+  name: string;
+  role: string;
+  experience: string;
+  education: string;
+  website: string;
+  resumeUrl: string;
+  nationality: string;
+  dob: string;
+  gender: string;
+  maritalStatus: string;
+  bio: string;
+  facebook: string;
+  linkedin: string;
+  phone: string;
+  email: string;
+  instagram: string;
 }

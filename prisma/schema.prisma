@@ -38,6 +38,7 @@ model Candidate {
   education      String
   linkedin       String?
   facebook       String?
+  instagram      String?
   location       String
   website        String?
   email          String           @unique
@@ -52,6 +53,7 @@ model Candidate {
   skills         Json
   user           User?            @relation(fields: [userId], references: [id])
   userId         String?          @unique
+  certificates   String[]
 }
 
 model Company {
@@ -83,7 +85,7 @@ model Job {
   benefits     Json
   jobType      String?
   jobLevel     String?
-  experience   Int
+  experience   String
   education    String
   jobTags      Json
   salary       String

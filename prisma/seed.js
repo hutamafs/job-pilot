@@ -33,11 +33,11 @@ async function main() {
     );
 
     console.log("🌱 Seeding database...");
-    await prisma.job.deleteMany();
+    await prisma.jobApplication.deleteMany();
     await prisma.candidate.deleteMany();
+    await prisma.job.deleteMany();
     await prisma.company.deleteMany();
     await prisma.user.deleteMany();
-    await prisma.jobApplication.deleteMany();
 
     // ✅ Insert Companies First (since Jobs depend on them)
     await prisma.company.createMany({ data: convertToString(companiesData) });
