@@ -44,11 +44,11 @@ const SettingsContent = () => {
   });
   const { data } = useSuspenseQuery({
     queryKey: ["candidateDetails"],
-    queryFn: getCandidateDetails,
+    queryFn: () => getCandidateDetails("2"),
   });
 
   const { isIdle, isPending, isError, isSuccess, mutate } = useMutation({
-    mutationFn: updateCandidateDetails,
+    mutationFn: (updatedData: Partial<SettingsProps>) => updateCandidateDetails("2", updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["candidateDetails"] });
     },

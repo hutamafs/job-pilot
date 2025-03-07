@@ -73,7 +73,7 @@ export interface JobApplication {
 }
 
 export interface SettingsProps {
-  profilePicture: string;
+  profilePicture?: string;
   name: string;
   role: string;
   experience: string;
