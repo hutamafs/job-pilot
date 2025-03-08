@@ -62,7 +62,7 @@ export default async function middleware(
 // Match API routes & all other dynamic routes while ignoring Next.js internals
 export const config = {
   matcher: [
-    "/dashboard/:path*",
+    "/:path*",
     "/(api|trpc)(.*)",
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
   ],

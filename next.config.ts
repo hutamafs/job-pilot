@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
+        protocol: "https", 
+        hostname: "img.clerk.com",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "randomuser.me", 
         pathname: "/**",
