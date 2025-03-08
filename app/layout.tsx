@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "./components";
@@ -26,19 +27,21 @@ export default function RootLayout({
 }>) {
   const role = "CANDIDATE";
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex justify-center`}
-      >
-        <UserProvider initialRole={role}>
-          <div id="modal"></div>
-          <main className="w-full flex flex-col">
-            <Navbar />
-            {children}
-            <Footer />
-          </main>
-        </UserProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased flex justify-center`}
+        >
+          <UserProvider initialRole={role}>
+            <div id="modal"></div>
+            <main className="w-full flex flex-col">
+              <Navbar />
+              {children}
+              <Footer />
+            </main>
+          </UserProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

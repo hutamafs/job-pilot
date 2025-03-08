@@ -13,11 +13,15 @@ const Navbar = () => {
   const role = useUserRole();
 
   const navLinks = [
-    { name: "Home", path: "/", role: "ALL"},
+    { name: "Home", path: "/", role: "ALL" },
     { name: "Find Job", path: "/jobs", role: "CANDIDATE" },
     { name: "Employers", path: "/companies", role: "CANDIDATE" },
     { name: "Candidates", path: "/candidates", role: "EMPLOYER" },
-    { name: "Dashboard", path: `/dashboard/${(role as string)?.toLowerCase()}`, role: "ALL" },
+    {
+      name: "Dashboard",
+      path: `/dashboard/${(role as string)?.toLowerCase()}/overview`,
+      role: "ALL",
+    },
   ];
 
   return (
@@ -30,14 +34,17 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center">
           {navLinks
-          .filter((d) => d.role === "ALL" || d.role === role)
-          .map(({ name, path }, index) => (
-            <li key={index} className="mr-6">
-              <Link href={path} className={`font-medium text-base ${pathname === path ? 'text-primary500' : 'text-gray600'} hover:text-gray900 transition-colors"`}>
-                {name}
-              </Link>
-            </li>
-          ))}
+            .filter((d) => d.role === "ALL" || d.role === role)
+            .map(({ name, path }, index) => (
+              <li key={index} className="mr-6">
+                <Link
+                  href={path}
+                  className={`font-medium text-base ${pathname === path ? "text-primary500" : "text-gray600"} hover:text-gray900 transition-colors"`}
+                >
+                  {name}
+                </Link>
+              </li>
+            ))}
         </ul>
 
         {/* Mobile Menu Button */}
@@ -54,18 +61,18 @@ const Navbar = () => {
         <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg p-4 z-50">
           <ul className="flex flex-col items-start space-y-4">
             {navLinks
-            .filter((d) => d.role === "ALL" || d.role === role)
-            .map(({ name, path }, index) => (
-              <li key={index}>
-                <Link
-                  className={`font-medium text-base ${pathname === path ? 'text-primary500' : 'text-gray600'} hover:text-gray900 transition-colors"`}
-                  href={path}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {name}
-                </Link>
-              </li>
-            ))}
+              .filter((d) => d.role === "ALL" || d.role === role)
+              .map(({ name, path }, index) => (
+                <li key={index}>
+                  <Link
+                    className={`font-medium text-base ${pathname === path ? "text-primary500" : "text-gray600"} hover:text-gray900 transition-colors"`}
+                    href={path}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    {name}
+                  </Link>
+                </li>
+              ))}
           </ul>
         </div>
       )}
