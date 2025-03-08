@@ -48,7 +48,8 @@ const SettingsContent = () => {
   });
 
   const { isIdle, isPending, isError, isSuccess, mutate } = useMutation({
-    mutationFn: (updatedData: Partial<SettingsProps>) => updateCandidateDetails("2", updatedData),
+    mutationFn: (updatedData: Partial<SettingsProps>) =>
+      updateCandidateDetails("2", updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["candidateDetails"] });
     },
@@ -69,6 +70,7 @@ const SettingsContent = () => {
 
   useEffect(() => {
     if (data) {
+      console.log(data, 722);
       setFormData((prev) => ({ ...prev, ...data }));
     }
   }, [data]);

@@ -1,34 +1,15 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaWallet } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { HiArrowRight } from "react-icons/hi2";
 
-import ProfileModal from './ProfileModal';
-import { Candidate as CandidateType } from '@/app/types';
+import ProfileModal from "./ProfileModal";
+import { Candidate as CandidateType } from "@/app/types";
 
-// const sampleProfile = {
-//   name: "Esther Howard",
-//   role: "Website Designer (UI/UX)",
-//   bio: "I'm passionate about graphic design and digital art...",
-//   coverLetter: "Dear Sir, I am writing to express my interest...",
-//   dob: "14 June, 2021",
-//   nationality: "Bangladesh",
-//   maritalStatus: "Single",
-//   gender: "Male",
-//   experience: "7 Years",
-//   education: "Master Degree",
-//   resume: "resume.pdf",
-//   website: "www.estherhoward.com",
-//   location: "Beverly Hills, California 90202",
-//   phone: "+1-202-555-0141",
-//   secondaryPhone: "+1-202-555-0189",
-//   email: "esther.howard@gmail.com",
-// };
-
-const ProfileCard:React.FC<CandidateType> = (d) => {
+const ProfileCard: React.FC<CandidateType> = (d) => {
   const [bookmarked, setBookmarked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -48,11 +29,12 @@ const ProfileCard:React.FC<CandidateType> = (d) => {
       >
         <div className="flex md:items-center gap-4">
           <Image
-            width={60} 
+            width={60}
             height={60}
-            src={d.profilePicture || ''}
+            src={d.profilePicture || ""}
             alt={d.name}
-            className="rounded-sm object-cover" />
+            className="rounded-sm object-cover"
+          />
           <div>
             <h2 className={`text-sm text-black font-semibold`}>{d.name}</h2>
             <p className="text-xs text-black">{d.role}</p>
@@ -68,8 +50,15 @@ const ProfileCard:React.FC<CandidateType> = (d) => {
             </div>
           </div>
         </div>
-        <button onClick={() => setBookmarked(!bookmarked)} className="text-gray-400 hover:text-gray-600 absolute top-5 right-5 md:top-2 transition">
-          {bookmarked ? <BsBookmarkFill className="text-blue-600" /> : <BsBookmark />}
+        <button
+          onClick={() => setBookmarked(!bookmarked)}
+          className="text-gray-400 hover:text-gray-600 absolute top-5 right-5 md:top-2 transition"
+        >
+          {bookmarked ? (
+            <BsBookmarkFill className="text-blue-600" />
+          ) : (
+            <BsBookmark />
+          )}
         </button>
         <button
           onClick={() => setIsOpen(true)}
@@ -78,13 +67,13 @@ const ProfileCard:React.FC<CandidateType> = (d) => {
           View Profile <HiArrowRight />
         </button>
       </div>
-    <ProfileModal
-      profile={d}
-      isOpen={isOpen}
-      onClose={() => setIsOpen(false)}
-    />
+      <ProfileModal
+        profile={d}
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+      />
     </>
   );
-}
+};
 
 export default ProfileCard;

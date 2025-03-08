@@ -1,16 +1,33 @@
-import { FaTimes, FaEnvelope, FaDownload, FaGlobe, FaMapMarkerAlt, FaPhone } from "react-icons/fa";
-import { HiOutlineCalendar, HiOutlineUser, HiOutlineAcademicCap, HiOutlineGlobeAlt, HiOutlineBriefcase } from "react-icons/hi";
+import {
+  FaTimes,
+  FaEnvelope,
+  FaDownload,
+  FaGlobe,
+  FaMapMarkerAlt,
+  FaPhone,
+} from "react-icons/fa";
+import {
+  HiOutlineCalendar,
+  HiOutlineUser,
+  HiOutlineAcademicCap,
+  HiOutlineGlobeAlt,
+  HiOutlineBriefcase,
+} from "react-icons/hi";
 
 import Modal from "../Modal";
-import { Candidate as CandidateType } from '@/app/types';
+import { Candidate as CandidateType } from "@/app/types";
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  profile: CandidateType
+  profile: CandidateType;
 }
 
-const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) => {
+const ProfileModal: React.FC<ProfileModalProps> = ({
+  isOpen,
+  onClose,
+  profile,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -20,10 +37,15 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
           {/* Header */}
           <div className="flex justify-between items-center border-b pb-4">
             <div>
-              <h2 className="text-xl font-semibold text-black">{profile.name}</h2>
+              <h2 className="text-xl font-semibold text-black">
+                {profile.name}
+              </h2>
               <p className="text-gray-500 text-sm">{profile.role}</p>
             </div>
-            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
+            >
               <FaTimes size={20} />
             </button>
           </div>
@@ -40,15 +62,26 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
 
               {/* Social Media */}
               <div className="mt-4">
-                <h3 className="text-lg font-semibold mb-2 text-black">Follow me Social Media</h3>
+                <h3 className="text-lg font-semibold mb-2 text-black">
+                  Follow me Social Media
+                </h3>
                 <div className="flex gap-3">
-                  <a href="#" className="p-2 bg-blue-100 rounded-full hover:bg-blue-200">
+                  <a
+                    href="#"
+                    className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
+                  >
                     <FaGlobe className="text-blue-500 text-lg" />
                   </a>
-                  <a href="#" className="p-2 bg-blue-100 rounded-full hover:bg-blue-200">
+                  <a
+                    href="#"
+                    className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
+                  >
                     <FaEnvelope className="text-blue-600 text-lg" />
                   </a>
-                  <a href="#" className="p-2 bg-blue-100 rounded-full hover:bg-blue-200">
+                  <a
+                    href="#"
+                    className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
+                  >
                     <FaDownload className="text-gray-600 text-lg" />
                   </a>
                 </div>
@@ -61,23 +94,31 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
               <div className="p-4 bg-white shadow-md rounded-lg space-y-3">
                 <div className="flex items-center gap-2 text-gray-600">
                   <HiOutlineCalendar className="text-xl text-blue-500" />
-                  <div>
-                    <p className="text-xs text-gray-500">DATE OF BIRTH</p>
-                    <p className="text-sm font-semibold">{new Date(profile.dob).toLocaleDateString()}</p>
-                  </div>
+                  {profile.dob && (
+                    <div>
+                      <p className="text-xs text-gray-500">DATE OF BIRTH</p>
+                      <p className="text-sm font-semibold">
+                        {new Date(profile.dob).toLocaleDateString()}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <HiOutlineGlobeAlt className="text-xl text-blue-500" />
                   <div>
                     <p className="text-xs text-gray-500">NATIONALITY</p>
-                    <p className="text-sm font-semibold">{profile.nationality}</p>
+                    <p className="text-sm font-semibold">
+                      {profile.nationality}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
                   <HiOutlineUser className="text-xl text-blue-500" />
                   <div>
                     <p className="text-xs text-gray-500">MARITAL STATUS</p>
-                    <p className="text-sm font-semibold">{profile.maritalStatus}</p>
+                    <p className="text-sm font-semibold">
+                      {profile.maritalStatus}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
@@ -91,7 +132,9 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
                   <HiOutlineBriefcase className="text-xl text-blue-500" />
                   <div>
                     <p className="text-xs text-gray-500">EXPERIENCE</p>
-                    <p className="text-sm font-semibold">{profile.experience}</p>
+                    <p className="text-sm font-semibold">
+                      {profile.experience}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
@@ -106,7 +149,9 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
               {/* Resume Download */}
               <div className="p-4 bg-white shadow-md rounded-lg flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-semibold text-black">Download My Resume</p>
+                  <p className="text-xs font-semibold text-black">
+                    Download My Resume
+                  </p>
                   <p className="text-sm text-gray-700">{profile.name} PDF</p>
                 </div>
                 <button className="text-blue-500 hover:text-blue-700">
@@ -116,10 +161,15 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
 
               {/* Contact Info */}
               <div className="p-4 bg-white shadow-md rounded-lg space-y-3">
-                <h3 className="text-lg font-semibold text-black">Contact Information</h3>
+                <h3 className="text-lg font-semibold text-black">
+                  Contact Information
+                </h3>
                 <div className="flex items-center gap-2 text-gray-600">
                   <FaGlobe className="text-blue-500 text-lg" />
-                  <a href={profile.website} className="text-sm font-semibold hover:underline">
+                  <a
+                    href={profile.website}
+                    className="text-sm font-semibold hover:underline"
+                  >
                     {profile.website}
                   </a>
                 </div>
@@ -142,6 +192,6 @@ const ProfileModal:React.FC<ProfileModalProps> = ({ isOpen, onClose, profile }) 
       </div>
     </Modal>
   );
-}
+};
 
 export default ProfileModal;

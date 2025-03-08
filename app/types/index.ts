@@ -39,28 +39,29 @@ export interface Company {
 export interface Candidate {
   id: string;
   name: string;
+  password: string;
   role: string;
   bio: string;
-  coverLetter: string;
-  dob: Date;
+  coverLetter?: string;
+  dob: Date | string | null;
   nationality: string;
-  maritalStatus: string;
-  gender: string;
-  experience: number;
+  maritalStatus?: string;
+  gender?: string;
+  experience: string;
   education: string;
   linkedin?: string;
   facebook?: string;
-  location: string;
+  location?: string;
   website?: string;
   email: string;
-  phone?: string;
-  resumeUrl?: string;
+  phone: string;
+  resumeUrl: string;
   createdAt: Date;
-  profilePicture?: string;
+  profilePicture: string;
   favoriteJobs: Job[];
   appliedJobs: Job[];
   savedJobs: Job[];
-  skills?: string[];
+  skills: string[];
 }
 
 export interface JobApplication {

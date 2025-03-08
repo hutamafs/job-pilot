@@ -14,11 +14,20 @@ export function middleware(req: NextRequest) {
   if (allowedOrigins.includes(req.nextUrl.origin)) {
     req.headers.set("Access-Control-Allow-Origin", req.nextUrl.origin);
   } else {
-    req.headers.set("Access-Control-Allow-Origin", "https://job-pilot.vercel.app");
+    req.headers.set(
+      "Access-Control-Allow-Origin",
+      "https://job-pilot.vercel.app"
+    );
   }
 
-  req.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  req.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  req.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  req.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
 
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204 });
@@ -38,5 +47,11 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/companies/:path*",
+    "/jobs/:path*",
+    // "/api/:path*",
+  ],
 };

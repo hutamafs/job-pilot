@@ -16,7 +16,7 @@ enum UserRole {
 model User {
   id        String     @id @default(uuid())
   email     String     @unique
-  password  String
+  password String     
   role      UserRole
   createdAt DateTime   @default(now())
   // Relations
@@ -27,24 +27,23 @@ model User {
 model Candidate {
   id             String           @id @default(uuid())
   name           String
-  role           String
-  bio            String
-  coverLetter    String
   dob            DateTime
+  role           String
+  bio            String?
+  coverLetter    String
   nationality    String
-  maritalStatus  String
-  gender         String
-  experience     String
+  location       String?
+  gender         String?
   education      String
+  experience     String
+  maritalStatus  String?
+  phone          String?
+  resumeUrl      String?
   linkedin       String?
   facebook       String?
   instagram      String?
-  location       String
   website        String?
   email          String           @unique
-  password       String
-  phone          String?
-  resumeUrl      String?
   createdAt      DateTime         @default(now())
   profilePicture String?
   favoriteJobs   FavoriteJob[]
