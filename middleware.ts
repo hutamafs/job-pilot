@@ -15,21 +15,21 @@ export default async function middleware(
   const url = req.nextUrl.clone();
 
   // CORS Handling
-  // const allowedOrigins = [
-  //   "https://job-pilot.vercel.app",
-  //   "https://job-pilot-git-develop-hutamafs-projects.vercel.app",
-  //   "http://localhost:3000",
-  // ];
+  const allowedOrigins = [
+    "https://job-pilot.vercel.app",
+    "https://job-pilot-git-develop-hutamafs-projects.vercel.app",
+    "http://localhost:3000",
+  ];
 
-  // const origin = req.headers.get("origin") || "";
-  // if (allowedOrigins.includes(origin)) {
-  //   req.headers.set("Access-Control-Allow-Origin", origin);
-  // } else {
-  //   req.headers.set(
-  //     "Access-Control-Allow-Origin",
-  //     "https://job-pilot.vercel.app"
-  //   );
-  // }
+  const origin = req.headers.get("origin") || "";
+  if (allowedOrigins.includes(origin)) {
+    req.headers.set("Access-Control-Allow-Origin", origin);
+  } else {
+    req.headers.set(
+      "Access-Control-Allow-Origin",
+      "https://job-pilot.vercel.app"
+    );
+  }
 
   req.headers.set(
     "Access-Control-Allow-Methods",
