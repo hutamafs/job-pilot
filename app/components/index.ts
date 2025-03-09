@@ -9,6 +9,8 @@ import Footer from "./Footer";
 import Modal from "./Modal";
 import Loading from "./LoadingSpinner";
 import MutationStatus from "./MutationStatus";
+import ProfileUpload from "./ProfilePictureUploadComponent";
+import ResumeUpload from "./ResumeUpload";
 
 export {
   Container,
@@ -22,4 +24,6 @@ export {
   DashboardJobCard,
   Loading,
   MutationStatus,
+  ProfileUpload,
+  ResumeUpload,
 };
