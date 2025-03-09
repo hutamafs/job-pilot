@@ -31,19 +31,19 @@ export default async function middleware(
   //   );
   // }
 
-  // req.headers.set(
-  //   "Access-Control-Allow-Methods",
-  //   "GET, POST, PUT, DELETE, OPTIONS"
-  // );
-  // req.headers.set(
-  //   "Access-Control-Allow-Headers",
-  //   "Content-Type, Authorization"
-  // );
+  req.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, OPTIONS"
+  );
+  req.headers.set(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization"
+  );
 
   // Handle Preflight (OPTIONS request)
-  // if (req.method === "OPTIONS") {
-  //   return new Response(null, { status: 204 });
-  // }
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204 });
+  }
 
   // Role-based redirection
   if (role === "EMPLOYER" && url.pathname.startsWith("/dashboard/candidate")) {
