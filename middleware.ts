@@ -18,6 +18,8 @@ export default async function middleware(
   const allowedOrigins = [
     "https://job-pilot.vercel.app",
     "https://job-pilot-git-develop-hutamafs-projects.vercel.app",
+
+    "https://job-pilot-git-auth-hutamafs-projects.vercel.app",
     "http://localhost:3000",
   ];
 
