@@ -10,6 +10,8 @@ const s3Client = new S3Client({
 });
 
 export async function POST(req: Request) {
+  console.log("Upload API hit:", req.method);
+  console.log("Request Origin:", req.headers.get("origin"));
   try {
     const { fileName, fileType, folder } = await req.json();
 

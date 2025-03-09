@@ -42,7 +42,14 @@ export default async function middleware(
 
   // Handle Preflight (OPTIONS request)
   if (req.method === "OPTIONS") {
-    return new Response(null, { status: 204 });
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+      status: 204,
+    });
   }
 
   // Role-based redirection
@@ -63,7 +70,8 @@ export default async function middleware(
 export const config = {
   matcher: [
     "/:path*",
-    "/(api|trpc)(.*)",
+    "/api/:path*",
+    "/trpc/:path*",
     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
   ],
 };
