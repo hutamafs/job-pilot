@@ -66,7 +66,6 @@ export async function POST(req: Request) {
         profilePicture,
         skills,
         email,
-        coverLetter: "",
       },
     });
 

@@ -1,28 +1,30 @@
-import { ReactNode } from "react";
-// import { headers } from "next/headers";
+import { UserProvider } from "./DashboardProvider";
 import Sidebar from "./sidebar";
 import { Container } from "../components";
+import React, { ReactElement } from "react";
+import apiRequest from "@/app/utils/apiRequest.server";
 
-const DashboardLayout = async ({ children }: { children: ReactNode }) => {
-  // const headersList = await headers();
-  // const fullUrl = headersList.get("referer") || "";
+interface DashboardLayoutProps {
+  children: ReactElement<{ userId: string }>;
+}
+
+export default async function DashboardLayout({
+  children,
+}: DashboardLayoutProps) {
+  const { data } = await apiRequest<{ id: string; name: string }>("/get-user");
 
   return (
-    <Container className="">
-      <div className="flex flex-col lg:flex-row">
-        {/* Sidebar (Fixed for Mobile) */}
-        <div className="w-full lg:w-64">
-          <Sidebar isCandidate={true} />
+    <UserProvider user={data}>
+      <Container className="">
+        <div className="flex flex-col lg:flex-row">
+          <div className="w-full lg:w-64">
+            <Sidebar isCandidate={true} />
+          </div>
+          <div className="w-[1px] bg-gray-300" />
+
+          <main className="flex-1 p-6 mt-3">{children}</main>
         </div>
-
-        {/* Vertical Divider */}
-        <div className="w-[1px] bg-gray-300"></div>
-
-        {/* Right Side Content */}
-        <main className="flex-1 p-0 lg:p-6 mt-3">{children}</main>
-      </div>
-    </Container>
+      </Container>
+    </UserProvider>
   );
-};
-
-export default DashboardLayout;
+}

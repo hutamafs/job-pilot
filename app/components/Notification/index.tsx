@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaCheckCircle, FaExclamationCircle } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaInfoCircle,
+} from "react-icons/fa";
 
 interface NotifyProps {
   type: string;
@@ -22,8 +26,24 @@ const Notification: React.FC<NotifyProps> = ({ type, message, onClose }) => {
     return () => clearTimeout(timer);
   }, [onClose]);
 
-  const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
-  const Icon = type === "success" ? FaCheckCircle : FaExclamationCircle;
+  let bgColor, Icon;
+
+  switch (type) {
+    case "success":
+      bgColor = "bg-green-500";
+      Icon = FaCheckCircle;
+      break;
+    case "error":
+      bgColor = "bg-red-500";
+      Icon = FaExclamationCircle;
+      break;
+    default:
+      bgColor = "bg-transparent";
+      Icon = FaInfoCircle;
+  }
+
+  // const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
+  // const Icon = type === "success" ? FaCheckCircle : FaExclamationCircle;
 
   return (
     <AnimatePresence>

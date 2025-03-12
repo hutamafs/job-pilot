@@ -135,7 +135,7 @@ const CandidateSignUp = () => {
         type: "success",
         message: "Sign up successful. Please sign in to continue.",
       });
-      router.push("/candidate/sign-in");
+      router.push("/sign-in");
     } catch (error) {
       setNotification({
         type: "error",

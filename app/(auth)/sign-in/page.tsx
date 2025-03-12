@@ -35,7 +35,9 @@ const CandidateSignIn = () => {
         body: JSON.stringify({ ...formData, callbackUrl }),
         headers: { "Content-Type": "application/json" },
       });
+      console.log(res, 38);
       const data = await res.json();
+      console.log(data, 39);
 
       if (res.ok) {
         setNotification({
@@ -47,15 +49,12 @@ const CandidateSignIn = () => {
       }
       throw new Error(data.message || "Sign in failed");
     } catch (error) {
+      const message = (error as Error).message;
       setNotification({
         type: "error",
-        message: (error as Error).message,
+        message,
       });
     } finally {
-      setNotification({
-        type: "",
-        message: "",
-      });
       setIsLoading(false);
     }
   };
@@ -67,7 +66,7 @@ const CandidateSignIn = () => {
           Candidate Sign In
         </h2>
 
-        {notification.message && (
+        {notification.type && (
           <Notification
             type={notification.type}
             message={notification.message}

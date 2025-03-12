@@ -92,3 +92,10 @@ export interface SettingsProps {
   email: string;
   instagram: string;
 }
+
+export interface UserResponse {
+  id: string;
+  name: string;
+  email: string;
+  appliedJobs?: string[];
+}

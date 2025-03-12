@@ -30,7 +30,6 @@ model Candidate {
   dob            DateTime
   role           String
   bio            String?
-  coverLetter    String
   nationality    String
   location       String?
   gender         String?
@@ -49,7 +48,7 @@ model Candidate {
   favoriteJobs   FavoriteJob[]
   appliedJobs    JobApplication[]
   savedJobs      SavedJob[]
-  skills         Json
+  skills         Json?
   user           User?            @relation(fields: [userId], references: [id])
   userId         String?          @unique
   certificates   String[]
@@ -103,6 +102,7 @@ model JobApplication {
   jobId       String
   status      String    @default("pending")
   appliedAt   DateTime  @default(now())
+  coverLetter    String? @default("")
   job         Job       @relation(fields: [jobId], references: [id])
   candidate   Candidate @relation(fields: [candidateId], references: [id])
 }

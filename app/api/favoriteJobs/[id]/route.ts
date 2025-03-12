@@ -15,7 +15,7 @@ export async function GET(
 
     const skip = (page - 1) * PAGE_SIZE;
 
-    const jobs = await prisma.jobApplication.findMany({
+    const jobs = await prisma.favoriteJob.findMany({
       skip,
       take: limit,
       where: {
@@ -30,7 +30,7 @@ export async function GET(
       },
     });
 
-    const totalJobs = await prisma.jobApplication.count({
+    const totalJobs = await prisma.favoriteJob.count({
       where: {
         candidateId: id,
       },
@@ -44,9 +44,9 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Error fetching jobs for candidate:", error);
+    console.error("Error fetch favorite jobs for candidate:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs for candidate" },
+      { error: "Failed to fetch favorite jobs for candidate" },
       { status: 500 }
     );
   }

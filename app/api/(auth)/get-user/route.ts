@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 export async function GET() {
   let token = (await cookies()).get("sb-access-token")?.value;
   const refreshToken = (await cookies()).get("sb-refresh-token")?.value;
-
   if (!token) {
     return NextResponse.json({ message: "Unauthorizedd" }, { status: 401 });
   }
@@ -64,6 +63,11 @@ export async function GET() {
       where: {
         userId: user.id,
       },
+      include: {
+        appliedJobs: true,
+        favoriteJobs: true,
+        savedJobs: true,
+      },
     });
   }
 
@@ -71,5 +75,5 @@ export async function GET() {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  return NextResponse.json({ user: candidate, role: user.role });
+  return NextResponse.json({ data: candidate, role: user.role });
 }

@@ -13,6 +13,7 @@ import ProfilePage from "./Profile";
 import { SettingsProps } from "@/app/types";
 import { MutationStatus } from "@/app/components";
 import SocialLinks from "./SocialLink";
+import { useUser } from "../../DashboardProvider";
 
 const tabs = [
   { id: "personal", label: "Personal", icon: <FaUser /> },
@@ -22,6 +23,7 @@ const tabs = [
 ];
 
 const SettingsContent = () => {
+  const user = useUser();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("personal");
   const [formData, setFormData] = useState<Partial<SettingsProps>>({
@@ -44,12 +46,12 @@ const SettingsContent = () => {
   });
   const { data } = useSuspenseQuery({
     queryKey: ["candidateDetails"],
-    queryFn: () => getCandidateDetails("2"),
+    queryFn: () => getCandidateDetails(user.id),
   });
 
   const { isIdle, isPending, isError, isSuccess, mutate } = useMutation({
     mutationFn: (updatedData: Partial<SettingsProps>) =>
-      updateCandidateDetails("2", updatedData),
+      updateCandidateDetails(user.id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["candidateDetails"] });
     },
@@ -70,7 +72,6 @@ const SettingsContent = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data, 722);
       setFormData((prev) => ({ ...prev, ...data }));
     }
   }, [data]);

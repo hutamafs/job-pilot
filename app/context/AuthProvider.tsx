@@ -30,12 +30,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         credentials: "include",
       });
 
-      const data = await res.json();
-      console.log(data, 34);
+      const { data, role } = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      setUser(data.user);
-      setRole(data.role);
+      setUser(data);
+      setRole(role);
     } catch (error) {
       console.log("Error fetching user:", error);
       setUser(null);
