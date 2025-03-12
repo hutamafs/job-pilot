@@ -15,7 +15,10 @@ export interface Job {
   location: string;
   companyId: string;
   createdAt: Date;
+  expiredAt: Date;
   company: Company;
+  savedJobs?: SavedJob[];
+  applications?: JobApplication[];
 }
 
 export interface Company {
@@ -34,6 +37,12 @@ export interface Company {
   location: string;
   createdAt: Date;
   jobs: Job[];
+}
+
+export interface SavedJob {
+  id: string;
+  candidateId: string;
+  jobId: string;
 }
 
 export interface Candidate {
@@ -98,4 +107,20 @@ export interface UserResponse {
   name: string;
   email: string;
   appliedJobs?: string[];
+}
+
+export interface JobSearchQuery {
+  search: string;
+  location: string;
+  industry: string[];
+  jobType: string[];
+  salary: number;
+  page?: number;
+  company?: string;
+}
+
+export interface CompanySearchQuery {
+  search: string;
+  location: string;
+  page?: number;
 }

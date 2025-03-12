@@ -1,9 +1,5 @@
 import Breadcrumb from "./BreadCrumb";
 import SearchBar from "./SearchBar";
-import SearchJob from "./SearchJob";
+import SearchFilterWrapper from "./SearchFilterWrapper";
 
-export {
-  Breadcrumb,
-  SearchBar,
-  SearchJob,
-}
+export { Breadcrumb, SearchBar, SearchFilterWrapper };

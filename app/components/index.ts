@@ -1,5 +1,5 @@
 import Container from "./Container";
-import JobCard from "./JobCard";
+import JobCard from "./pages/Jobs/JobCard";
 import EmployerCard from "./EmployerCard";
 import CandidateCard from "./CandidateCard";
 import DashboardJobCard from "./DashboardJobCard";

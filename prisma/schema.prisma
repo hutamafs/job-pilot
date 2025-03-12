@@ -71,7 +71,7 @@ model Company {
   jobs           Job[]
   location       String
   user           User?    @relation(fields: [userId], references: [id])
-  userId         String?  @unique
+userId         String?  @unique
 }
 
 model Job {
@@ -86,10 +86,11 @@ model Job {
   experience   String
   education    String
   jobTags      Json
-  salary       String
+  salary       Int              @default(1000)
   location     String
   companyId    String
   createdAt    DateTime         @default(now())
+  expiredAt    DateTime?        @default(dbgenerated("now() + interval '7 days'"))
   favoriteJobs FavoriteJob[]
   company      Company          @relation(fields: [companyId], references: [id])
   applications JobApplication[]

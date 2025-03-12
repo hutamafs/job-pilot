@@ -1,10 +1,33 @@
 import { NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 import type { NextRequest } from "next/server";
-import { supabase } from "@/app/utils/supabase";
 
-export default async function middleware(req: NextRequest) {
-  const response = NextResponse.next();
-  const { pathname, origin: urlOrigin } = req.nextUrl;
+export default async function middleware(request: NextRequest) {
+  let response = NextResponse.next({ request });
+  const { pathname, origin: urlOrigin } = request.nextUrl;
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+          response = NextResponse.next({
+            request,
+          });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
 
   // ✅ CORS Allowed Origins
   const allowedOrigins = [
@@ -14,7 +37,7 @@ export default async function middleware(req: NextRequest) {
     "https://job-pilot-git-main-hutamafs-projects.vercel.app",
     "http://localhost:3000",
   ];
-  const origin = req.headers.get("origin") || "";
+  const origin = request.headers.get("origin") || "";
   response.headers.set(
     "Access-Control-Allow-Origin",
     allowedOrigins.includes(origin) ? origin : "https://job-pilot.vercel.app"
@@ -29,12 +52,12 @@ export default async function middleware(req: NextRequest) {
   );
 
   // ✅ Handle Preflight Requests (CORS)
-  if (req.method === "OPTIONS") {
+  if (request.method === "OPTIONS") {
     return new Response(null, { status: 204 });
   }
 
   // ✅ Extract Token from Cookies
-  const token = req.cookies.get("sb-access-token")?.value;
+  const token = request.cookies.get("sb-access-token")?.value;
 
   // ✅ Define Protected & Auth Routes
   const protectedRoutes = [
@@ -51,35 +74,27 @@ export default async function middleware(req: NextRequest) {
   );
   const isAuthRoute = authRoutes.some((path) => pathname.startsWith(path));
 
-  // ❌ User is not signed in and trying to access a protected route
+  // User is not signed in and trying to access a protected route
   if (!token && isProtectedRoute) {
     const signInUrl = new URL("/sign-in", urlOrigin);
-    signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+    signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     return NextResponse.redirect(signInUrl);
   }
 
-  // ✅ User is signed in and trying to access sign-in or sign-up
+  // User is signed in and trying to access sign-in or sign-up
   if (token && isAuthRoute) {
     return NextResponse.redirect(new URL("/", urlOrigin));
   }
 
-  // ✅ Verify Token with Supabase
+  // Verify Token with Supabase
   if (token) {
     const { data, error } = await supabase.auth.getUser(token);
     if (error || !data.user) {
       const signInUrl = new URL("/sign-in", urlOrigin);
-      signInUrl.searchParams.set("callbackUrl", req.nextUrl.href);
+      signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
       return NextResponse.redirect(signInUrl);
     }
-
-    // // ✅ Prevent Signed-in Users from Visiting `/sign-in` and `/sign-up`
-    // if (isAuthRoute) {
-    //   return NextResponse.redirect(
-    //     new URL("/dashboard/candidate/overview", req.url)
-    //   );
-    // }
   }
-
   return response;
 }
 

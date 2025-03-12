@@ -28,7 +28,13 @@ export async function POST(req: Request) {
       password,
     } = await req.json();
 
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}?email_confirmed=true`,
+      },
+    });
     const hashedPassword = await hashPassword(password);
 
     if (error) throw new Error(error.message);

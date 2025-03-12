@@ -1,7 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/app/utils/supabase";
 import { Candidate, Company } from "../types";
 
 // Define User Context Type
@@ -20,6 +20,7 @@ const AuthContext = createContext<UserContextType | null>(null);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Candidate | Company | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const [role, setRole] = useState<string>("CANDIDATE");
   // Fetch User on Load
   const fetchUser = async () => {
@@ -31,12 +32,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       });
 
       const { data, role } = await res.json();
-      if (!res.ok) throw new Error(data.message);
-
-      setUser(data);
-      setRole(role);
+      if (res.ok) {
+        setUser(data);
+        setRole(role);
+      } else {
+        throw new Error(data.message);
+      }
     } catch (error) {
-      console.log("Error fetching user:", error);
+      console.log("Error fetching user:", (error as Error).message);
       setUser(null);
     } finally {
       setLoading(false);
@@ -45,8 +48,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Sign Out Function
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await fetch("/api/sign-out", {
+      method: "GET",
+      credentials: "include",
+    });
     setUser(null);
+    router.push("/sign-in");
   };
 
   useEffect(() => {

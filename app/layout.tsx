@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "./components";
-import { AuthProvider } from "./context/AuthProvider";
+import { AuthProvider, NotifProvider } from "./context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,15 +50,17 @@ export default function RootLayout({
       >
         {/* Global Auth Context */}
         <AuthProvider>
-          {/* Modals (Ensuring they are outside the main content for accessibility) */}
-          <div id="modal"></div>
+          <NotifProvider>
+            {/* Modals (Ensuring they are outside the main content for accessibility) */}
+            <div id="modal"></div>
 
-          {/* Main Content */}
-          <main className="w-full flex flex-col flex-grow">
-            <Navbar />
-            {children}
-            <Footer />
-          </main>
+            {/* Main Content */}
+            <main className="w-full flex flex-col flex-grow">
+              <Navbar />
+              {children}
+              <Footer />
+            </main>
+          </NotifProvider>
         </AuthProvider>
       </body>
     </html>

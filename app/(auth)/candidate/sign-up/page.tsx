@@ -8,18 +8,16 @@ import {
   educationOptions,
   countryOptions,
 } from "@/app/options";
-import { LoadingSpinner, Notification } from "@/app/components";
+import { LoadingSpinner } from "@/app/components";
 import ResumeUpload from "@/app/components/ResumeUpload";
 import ProfileUpload from "@/app/components/ProfilePictureUploadComponent";
 import SelectSkill from "./SelectSkill";
 import { Candidate } from "@/app/types";
+import { useNotif } from "@/app/context/NotificationProvider";
 
 const CandidateSignUp = () => {
   const formRef = useRef<HTMLFormElement>(null);
-  const [notification, setNotification] = useState<Record<string, string>>({
-    type: "success",
-    message: "",
-  });
+  const { setNotif } = useNotif();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
@@ -37,7 +35,6 @@ const CandidateSignUp = () => {
     education: "",
     linkedin: "",
     facebook: "",
-    location: "",
     website: "",
     phone: "",
     resumeUrl: "",
@@ -62,10 +59,7 @@ const CandidateSignUp = () => {
       if (res?.status) {
         setFormData((prev) => ({ ...prev, [name]: res.url }));
       } else {
-        setNotification({
-          type: "error",
-          message: "File upload failed.",
-        });
+        setNotif("error", "File upload failed.");
         throw new Error("File upload failed.");
       }
     } catch (error) {
@@ -107,10 +101,7 @@ const CandidateSignUp = () => {
           const errorElement = formRef.current?.querySelector(
             `[name="${firstErrorField}"]`
           );
-          setNotification({
-            type: "error",
-            message: formattedErrors[firstErrorField],
-          });
+          setNotif("error", formattedErrors[firstErrorField]);
           errorElement?.scrollIntoView({ behavior: "smooth", block: "center" });
           (errorElement as HTMLElement)?.focus();
         }
@@ -131,16 +122,10 @@ const CandidateSignUp = () => {
       if (!res.ok) {
         throw new Error(data.error);
       }
-      setNotification({
-        type: "success",
-        message: "Sign up successful. Please sign in to continue.",
-      });
+      setNotif("success", "Sign up successful. Please sign in to continue.");
       router.push("/sign-in");
     } catch (error) {
-      setNotification({
-        type: "error",
-        message: (error as Error).message,
-      });
+      setNotif("error", (error as Error).message);
       console.error(error);
     } finally {
       setIsPageLoading(false);
@@ -151,9 +136,6 @@ const CandidateSignUp = () => {
     <LoadingSpinner />
   ) : (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4">
-      {notification.message && (
-        <Notification type={notification.type} message={notification.message} />
-      )}
       <div className="w-full max-w-2xl bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700 mb-4">
           Sign up as a candidate
@@ -179,7 +161,7 @@ const CandidateSignUp = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="border p-2 rounded-md w-full"
+            className="border h-10 p-2 rounded-md w-full"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -351,16 +333,6 @@ const CandidateSignUp = () => {
           {errors.nationality && (
             <p className="text-red-500 text-sm mt-1">{errors.nationality}</p>
           )}
-
-          {/* Location */}
-          <input
-            type="text"
-            name="location"
-            placeholder="Current Location"
-            value={formData.location}
-            onChange={handleChange}
-            className="border p-2 rounded-md w-full"
-          />
 
           {/* Website */}
           <input

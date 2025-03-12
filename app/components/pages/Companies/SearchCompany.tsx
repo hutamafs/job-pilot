@@ -1,23 +1,38 @@
 "use client";
 
-import { SetStateAction, Dispatch } from "react";
-import { FiSearch, FiMapPin, FiSliders } from "react-icons/fi";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FiSearch, FiMapPin } from "react-icons/fi";
 import Container from "../../Container";
-import { JobSearchQuery } from "@/app/types";
+import { CompanySearchQuery } from "@/app/types";
 import { countryOptions } from "@/app/options";
-interface JobSearchBarProps {
-  query: JobSearchQuery;
-  setQuery: React.Dispatch<SetStateAction<JobSearchQuery>>;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  handleSubmitFilter: (e: React.FormEvent<HTMLFormElement>) => void;
+import { stringifyQuery } from "@/app/utils";
+
+interface CompanySearchProps {
+  query: CompanySearchQuery;
 }
 
-const JobSearchBar = ({
-  query,
-  setQuery,
-  handleSubmitFilter,
-  setIsOpen,
-}: JobSearchBarProps) => {
+const CompanySearchBar = ({ query }: CompanySearchProps) => {
+  const router = useRouter();
+  const [q, setQuery] = useState<CompanySearchQuery>({
+    search: "",
+    location: "",
+    page: 1,
+  });
+
+  const handleSubmitFilter = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    router.push(`/companies?${stringifyQuery(q)}`);
+  };
+
+  useEffect(() => {
+    setQuery((prev) => ({
+      ...prev,
+      search: query.search,
+      location: query.location,
+    }));
+  }, [query]);
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -38,8 +53,8 @@ const JobSearchBar = ({
           <input
             type="text"
             className="w-full outline-none px-2 text-sm text-gray-700"
-            placeholder="Search by: Job title, Position, Keyword..."
-            value={query.search}
+            placeholder="Search by: Company name, Position, Keyword..."
+            value={q.search}
             name="search"
             onChange={handleInputChange}
           />
@@ -48,13 +63,11 @@ const JobSearchBar = ({
           <FiMapPin className="w-5 h-5 text-blue-500" size={20} />
           <select
             className="w-full outline-none px-2 text-sm text-gray-700 bg-white"
-            value={query?.location}
+            value={q.location}
             name="location"
             onChange={handleInputChange}
           >
-            <option value="" disabled>
-              Select a location
-            </option>
+            <option value="">Select a location</option>
             {countryOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -62,15 +75,6 @@ const JobSearchBar = ({
             ))}
           </select>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsOpen(true)}
-          onKeyDown={(e) => e.key === "Enter" && e.preventDefault()}
-          className="sm:col-span-2 flex items-center justify-center border border-gray-300 rounded-md px-4 py-3 sm:py-4 text-sm text-gray-600 hover:bg-gray-100 transition"
-        >
-          <FiSliders className="w-5 h-5 mr-2" size={20} />
-          Filters
-        </button>
         <button
           type="submit"
           className="sm:col-span-2 bg-blue-600 text-white font-medium px-4 py-3 sm:py-4 rounded-md text-sm hover:bg-blue-700 transition"
@@ -82,4 +86,4 @@ const JobSearchBar = ({
   );
 };
 
-export default JobSearchBar;
+export default CompanySearchBar;

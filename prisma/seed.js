@@ -14,6 +14,7 @@ const convertToString = (arr) => {
     ...(item.candidateId ? { candidateId: String(item.candidateId) } : {}),
     ...(item.jobId ? { jobId: String(item.jobId) } : {}),
     ...(item.experience ? { experience: String(item.experience) } : {}),
+    ...(item.salary ? { salary: Number(item.salary) } : {}),
   }));
 };
 

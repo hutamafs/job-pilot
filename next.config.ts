@@ -10,18 +10,18 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        protocol: "https", 
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
       {
-        protocol: "https", 
+        protocol: "https",
         hostname: "img.clerk.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "randomuser.me", 
+        hostname: "randomuser.me",
         pathname: "/**",
       },
       {
@@ -30,13 +30,13 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
       {
-        protocol: "https", 
+        protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "randomuser.me", 
+        hostname: "randomuser.me",
         pathname: "/**",
       },
       {
@@ -45,9 +45,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    domains: [
-      "dummyimage.com",
-    ],
+    domains: ["dummyimage.com"],
   },
 };
 

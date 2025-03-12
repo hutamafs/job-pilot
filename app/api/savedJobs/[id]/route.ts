@@ -15,7 +15,7 @@ export async function GET(
 
     const skip = (page - 1) * PAGE_SIZE;
 
-    const jobs = await prisma.favoriteJob.findMany({
+    const jobs = await prisma.savedJob.findMany({
       skip,
       take: limit,
       where: {
@@ -25,12 +25,13 @@ export async function GET(
         job: {
           include: {
             company: true,
+            applications: true,
           },
         },
       },
     });
 
-    const totalJobs = await prisma.favoriteJob.count({
+    const totalJobs = await prisma.savedJob.count({
       where: {
         candidateId: id,
       },

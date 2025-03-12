@@ -1,19 +1,23 @@
 import {
   Banner,
-  SearchBar,
   FeaturedJob,
   TopCompanies,
   QuickRegister,
-} from '@/app/components/pages/Homepage';
+} from "@/app/components/pages/Homepage";
+import HomeWrapper from "./HomeWrapper";
 
-export default function Home() {
+const Home = async () => {
   return (
-    <div className="w-full h-full">
-      <SearchBar />
-      <Banner />
-      <FeaturedJob />
-      <TopCompanies />
-      <QuickRegister />
-    </div>
+    <>
+      <HomeWrapper />
+      <div className="w-full h-full">
+        <Banner />
+        <FeaturedJob />
+        <TopCompanies />
+        <QuickRegister />
+      </div>
+    </>
   );
-}
+};
+
+export default Home;

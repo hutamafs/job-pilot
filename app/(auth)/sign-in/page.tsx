@@ -2,8 +2,9 @@
 import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Notification, LoadingSpinner } from "@/app/components";
+import { LoadingSpinner } from "@/app/components";
 import { useAuth } from "@/app/context/AuthProvider";
+import { useNotif } from "@/app/context/NotificationProvider";
 
 const CandidateSignIn = () => {
   const router = useRouter();
@@ -16,10 +17,7 @@ const CandidateSignIn = () => {
     role: "candidate",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [notification, setNotification] = useState({
-    type: "",
-    message: "",
-  });
+  const { setNotif } = useNotif();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -35,25 +33,19 @@ const CandidateSignIn = () => {
         body: JSON.stringify({ ...formData, callbackUrl }),
         headers: { "Content-Type": "application/json" },
       });
-      console.log(res, 38);
       const data = await res.json();
-      console.log(data, 39);
 
       if (res.ok) {
-        setNotification({
-          type: "success",
-          message: "Sign in successful",
-        });
+        setNotif("success", "Sign in successful");
         await fetchUser();
         router.push(redirectUrl);
+        return;
+      } else {
+        throw new Error(data.message || "Sign in failed");
       }
-      throw new Error(data.message || "Sign in failed");
     } catch (error) {
       const message = (error as Error).message;
-      setNotification({
-        type: "error",
-        message,
-      });
+      setNotif("error", message);
     } finally {
       setIsLoading(false);
     }
@@ -65,15 +57,6 @@ const CandidateSignIn = () => {
         <h2 className="text-2xl font-semibold text-center text-gray-700">
           Candidate Sign In
         </h2>
-
-        {notification.type && (
-          <Notification
-            type={notification.type}
-            message={notification.message}
-            onClose={() => setNotification({ type: "", message: "" })}
-          />
-        )}
-
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
           {/* Email Input */}
           <input
@@ -83,7 +66,7 @@ const CandidateSignIn = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            className="border p-2 rounded-md w-full"
+            className="border h-10 p-2 rounded-md w-full"
           />
 
           {/* Password Input */}
@@ -94,7 +77,7 @@ const CandidateSignIn = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="border p-2 rounded-md w-full"
+            className="border h-10 p-2 rounded-md w-full"
           />
 
           {/* Sign In Button */}

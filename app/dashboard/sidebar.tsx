@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 import Link from "next/link";
 import { ReactNode } from "react";
-import { FaUser, FaBriefcase, FaHeart } from "react-icons/fa";
+import { FaUser, FaBriefcase, FaHeart, FaBookmark } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 
 const employerSidebar = [
@@ -23,7 +23,7 @@ const employerSidebar = [
 const candidateSidebar = [
   { name: "Overview", path: "overview", icon: <FaUser /> },
   { name: "Applied Jobs", path: "applied-jobs", icon: <FaBriefcase /> },
-  { name: "Favorite Jobs", path: "favorite-jobs", icon: <FaHeart /> },
+  { name: "Saved Jobs", path: "saved-jobs", icon: <FaBookmark /> },
   { name: "Settings", path: "settings", icon: <FiSettings /> },
 ];
 

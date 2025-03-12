@@ -13,9 +13,11 @@ interface CandidatePageProps {
 }
 
 const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
-  const { data: user } = await apiRequest<{ id: string; name: string }>(
-    "/get-user"
-  );
+  const { data: user } = await apiRequest<{
+    id: string;
+    name: string;
+    savedJobs: string[];
+  }>("/get-user");
   const { page } = await params;
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams?.page) || 1;
@@ -41,7 +43,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
         jobs: JobAppType[];
         totalJobs: number;
         totalPages: number;
-      }>(`/favoriteJobs/${user.id}?page=${currentPage}`);
+      }>(`/savedJobs/${user.id}?page=${currentPage}`);
       break;
   }
   const { jobs, totalJobs, totalPages } = data.data;
@@ -71,8 +73,8 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
             />
             <StatCard
               icon={<FaStar />}
-              label="Favorite Jobs"
-              count={totalJobs}
+              label="Saved Jobs"
+              count={user.savedJobs.length}
               color="yellow"
             />
           </div>
@@ -98,7 +100,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
               ? "Recently Applied"
               : page === "applied-jobs"
                 ? "Applied jobs"
-                : "Favorite Jobs"}
+                : "Saved Jobs"}
           </h3>
           {page === "overview" && (
             <Link
@@ -111,36 +113,54 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse min-w-[600px] md:min-w-full">
-            {/* Table Header */}
-            <thead>
-              <tr className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm leading-normal">
-                <th className="py-2 px-3 md:py-3 md:px-6 text-left">Job</th>
-                <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                  Location
-                </th>
-                <th className="py-2 px-3 md:py-3 md:px-6 text-left">Salary</th>
-                <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                  Date Applied
-                </th>
-                <th className="py-2 px-3 md:py-3 md:px-6 text-left">Status</th>
-                <th className="py-2 px-3 md:py-3 md:px-6 text-right">Action</th>
-              </tr>
-            </thead>
+          {page === "saved-jobs" ? (
+            <div className="w-full border-collapse min-w-[600px] md:min-w-full">
+              {/* Table Body */}
+              <div className="text-gray-700 text-xs md:text-sm">
+                {jobs.map((d: JobAppType) => (
+                  <FavoriteJobCard key={d.id} {...d} />
+                ))}
+              </div>
+            </div>
+          ) : (
+            <table className="w-full border-collapse min-w-[600px] md:min-w-full">
+              {/* Table Header */}
+              <thead>
+                <tr className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm leading-normal">
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">Job</th>
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                    Location
+                  </th>
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                    Salary
+                  </th>
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                    Date Applied
+                  </th>
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                    Status
+                  </th>
+                  <th className="py-2 px-3 md:py-3 md:px-6 text-right">
+                    Action
+                  </th>
+                </tr>
+              </thead>
 
-            {/* Table Body */}
-            <tbody className="text-gray-700 text-xs md:text-sm">
-              {jobs.map((d: JobAppType) => {
-                if (page === "overview") {
-                  return <OverviewCard key={d.id} d={d} />;
-                } else if (page === "favorite-jobs") {
-                  return <FavoriteJobCard key={d.id} {...d} />;
-                }
-                return <DashboardJobCard key={d.id} {...d} />;
-              })}
-            </tbody>
-          </table>
-          {page !== "overview" && <Pagination totalPages={totalPages} />}
+              {/* Table Body */}
+              <tbody className="text-gray-700 text-xs md:text-sm">
+                {jobs.map((d: JobAppType) => {
+                  if (page === "overview") {
+                    return <OverviewCard key={d.id} d={d} />;
+                  } else if (page === "applied-jobs") {
+                    return <DashboardJobCard key={d.id} {...d} />;
+                  }
+                })}
+              </tbody>
+            </table>
+          )}
+
+          {page !== "overview" &&
+            (jobs.length > 0 ? <Pagination totalPages={totalPages} /> : <></>)}
         </div>
       </div>
     </div>
