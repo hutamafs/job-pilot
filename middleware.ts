@@ -1,33 +1,14 @@
 import { NextResponse } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@/app/utils/supabase/server";
 import type { NextRequest } from "next/server";
+// import { cookies } from "next/headers";
 
 export default async function middleware(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const supabase = await createClient();
+  const response = NextResponse.next({ request });
   const { pathname, origin: urlOrigin } = request.nextUrl;
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          response = NextResponse.next({
-            request,
-          });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
+  // const cookieStore = (await cookies()).getAll();
+  // console.log(cookieStore, 9999);
 
   // ✅ CORS Allowed Origins
   const allowedOrigins = [
@@ -56,9 +37,6 @@ export default async function middleware(request: NextRequest) {
     return new Response(null, { status: 204 });
   }
 
-  // ✅ Extract Token from Cookies
-  const token = request.cookies.get("sb-access-token")?.value;
-
   // ✅ Define Protected & Auth Routes
   const protectedRoutes = [
     "/dashboard",
@@ -75,25 +53,29 @@ export default async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((path) => pathname.startsWith(path));
 
   // User is not signed in and trying to access a protected route
-  if (!token && isProtectedRoute) {
+  const { data: user, error } = await supabase.auth.getUser();
+  if (!user.user && isProtectedRoute) {
     const signInUrl = new URL("/sign-in", urlOrigin);
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     return NextResponse.redirect(signInUrl);
   }
+  console.log(user.user, 626262);
 
   // User is signed in and trying to access sign-in or sign-up
-  if (token && isAuthRoute) {
+  if (user.user && isAuthRoute) {
     return NextResponse.redirect(new URL("/", urlOrigin));
   }
 
   // Verify Token with Supabase
-  if (token) {
-    const { data, error } = await supabase.auth.getUser(token);
-    if (error || !data.user) {
-      const signInUrl = new URL("/sign-in", urlOrigin);
-      signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
-      return NextResponse.redirect(signInUrl);
-    }
+
+  if (error || !user.user) {
+    // const signInUrl = new URL("/sign-in", urlOrigin);
+    // signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
+    const url = request.nextUrl.clone();
+    url.pathname = "/sign-in";
+    return NextResponse.rewrite(url);
+    // return NextResponse.redirect(signInUrl);
+    // return NextResponse.redirect("/sign-in");
   }
   return response;
 }
@@ -110,3 +92,28 @@ export const config = {
     "/candidate/sign-up",
   ],
 };
+
+// import { createServerClient } from "@supabase/ssr";
+
+// const supabase = createServerClient(
+//   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//   {
+//     cookies: {
+//       getAll() {
+//         return request.cookies.getAll();
+//       },
+//       setAll(cookiesToSet) {
+//         cookiesToSet.forEach(({ name, value }) =>
+//           request.cookies.set(name, value)
+//         );
+//         response = NextResponse.next({
+//           request,
+//         });
+//         cookiesToSet.forEach(({ name, value, options }) =>
+//           response.cookies.set(name, value, options)
+//         );
+//       },
+//     },
+//   }
+// );

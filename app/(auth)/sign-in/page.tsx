@@ -1,70 +1,21 @@
-"use client";
-import { useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
-import { useAuth } from "@/app/context/AuthProvider";
-import { useNotif } from "@/app/context/NotificationProvider";
+import { signInAction } from "@/app/api/(auth)/sign-in/route";
 
 const CandidateSignIn = () => {
-  const router = useRouter();
-  const callbackUrl = useSearchParams().get("callbackUrl");
-  const redirectUrl = callbackUrl ? decodeURIComponent(callbackUrl) : "/";
-  const { fetchUser } = useAuth();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    role: "candidate",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const { setNotif } = useNotif();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const res = await fetch("/api/sign-in", {
-        method: "POST",
-        body: JSON.stringify({ ...formData, callbackUrl }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-
-      if (res.ok) {
-        setNotif("success", "Sign in successful");
-        await fetchUser();
-        router.push(redirectUrl);
-        return;
-      } else {
-        throw new Error(data.message || "Sign in failed");
-      }
-    } catch (error) {
-      const message = (error as Error).message;
-      setNotif("error", message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
     <div className="flex items-center justify-center bg-gray-100 p-6 min-h-screen">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-semibold text-center text-gray-700">
           Candidate Sign In
         </h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-4">
+        <form className="flex flex-col gap-4 mt-4">
           {/* Email Input */}
           <input
             type="email"
             name="email"
             placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
             required
             className="border h-10 p-2 rounded-md w-full"
           />
@@ -74,21 +25,18 @@ const CandidateSignIn = () => {
             type="password"
             name="password"
             placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
             required
             className="border h-10 p-2 rounded-md w-full"
           />
 
           {/* Sign In Button */}
           <button
-            type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md ${
-              isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+            // type="submit"
+            className={`w-full bg-blue-600 text-white py-2 rounded-md "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
             }`}
-            disabled={isLoading}
+            formAction={signInAction}
           >
-            {isLoading ? <LoadingSpinner /> : "Sign In"}
+            sign in
           </button>
         </form>
 

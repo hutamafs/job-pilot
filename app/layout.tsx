@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "./components";
-import { AuthProvider, NotifProvider } from "./context";
+import { NotifProvider } from "./context";
+import { getUser } from "./utils/supabase/getUser";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,11 +38,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await getUser();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
+    headers: {
+      Authorization: `${user?.id}`,
+    },
+  });
+  const { data, role } = await res.json();
   return (
     <html lang="en">
       <body
@@ -49,19 +57,17 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
         {/* Global Auth Context */}
-        <AuthProvider>
-          <NotifProvider>
-            {/* Modals (Ensuring they are outside the main content for accessibility) */}
-            <div id="modal"></div>
+        <NotifProvider>
+          {/* Modals (Ensuring they are outside the main content for accessibility) */}
+          <div id="modal"></div>
 
-            {/* Main Content */}
-            <main className="w-full flex flex-col flex-grow">
-              <Navbar />
-              {children}
-              <Footer />
-            </main>
-          </NotifProvider>
-        </AuthProvider>
+          {/* Main Content */}
+          <main className="w-full flex flex-col flex-grow">
+            <Navbar user={data} role={role} />
+            {children}
+          </main>
+        </NotifProvider>
+        <Footer />
       </body>
     </html>
   );

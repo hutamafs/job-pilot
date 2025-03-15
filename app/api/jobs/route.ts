@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { supabase } from "@/app/utils/supabase";
-
 const PAGE_SIZE = 21;
 
 export async function GET(req: Request) {
   try {
-    const token = req.headers.get("authorization");
+    const id = req.headers.get("authorization")!;
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
@@ -15,9 +13,9 @@ export async function GET(req: Request) {
     const salary = Number(searchParams.get("salary")) || 0;
     const industry = searchParams.getAll("industry") || null;
     const jobType = searchParams.getAll("jobType") || null;
-    const { data: supabaseUser } = await supabase.auth.getUser(token!);
+
     const user = await prisma.user.findUnique({
-      where: { id: supabaseUser.user?.id },
+      where: { id },
     });
 
     const candidate = await prisma.candidate.findUnique({

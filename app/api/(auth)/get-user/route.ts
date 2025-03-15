@@ -88,11 +88,12 @@
 // }
 
 import { NextResponse } from "next/server";
-import { supabase } from "@/app/utils/supabase";
+// import { supabase } from "@/app/utils/supabase";
 import { prisma } from "@/app/utils/prisma";
-import { cookies } from "next/headers";
+// import { cookies } from "next/headers";
 
-export async function GET() {
+export async function GET(req: Request) {
+  /*
   let token = (await cookies()).get("sb-access-token")?.value;
   const refreshToken = (await cookies()).get("sb-refresh-token")?.value;
   if (!token) {
@@ -140,10 +141,11 @@ export async function GET() {
 
     return NextResponse.json({ message: "Unauthorizeddd" }, { status: 401 });
   }
+  */
 
   // Fetch full user details
   const user = await prisma.user.findUnique({
-    where: { id: data.user.id },
+    where: { id: req.headers.get("authorization")! },
   });
   let candidate = null;
 

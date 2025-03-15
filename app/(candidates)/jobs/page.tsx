@@ -1,18 +1,19 @@
-export const dynamic = "force-dynamic";
+"use server";
+// export const dynamic = "force-dynamic";
 import { Container, JobCard } from "@/app/components";
 import { Job as JobType, JobSearchQuery } from "@/app/types";
 import { Pagination } from "@/app/components";
-import { cookies } from "next/headers";
 import { SearchFilterWrapper } from "@/app/components/pages/Jobs";
 import { stringifyQuery } from "@/app/utils";
+import { getUser } from "@/app/utils/supabase/getUser";
+
 interface JobsProps {
   searchParams?: Promise<JobSearchQuery>;
 }
 
 const Jobs = async ({ searchParams }: JobsProps) => {
   try {
-    const cookie = await cookies();
-    const token = cookie.get("sb-access-token")?.value;
+    const user = await getUser();
     const resolvedParams = await searchParams;
     const industryParam = resolvedParams?.industry as string | undefined;
     const jobTypeParam = resolvedParams?.jobType as string | undefined;
@@ -31,8 +32,7 @@ const Jobs = async ({ searchParams }: JobsProps) => {
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/jobs?${params.toString()}`,
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${user?.id}`,
         },
       }
     );

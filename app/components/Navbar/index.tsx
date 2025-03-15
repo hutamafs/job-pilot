@@ -1,19 +1,38 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import Container from "../Container";
-import { useAuth } from "@/app/context/AuthProvider";
 import { useNotif } from "@/app/context/NotificationProvider";
+import { createBrowserClient } from "@supabase/ssr";
 
-const Navbar = () => {
+const Navbar = ({
+  user,
+  role,
+}: {
+  user: {
+    id: string;
+  };
+  role: string;
+}) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { user, role, loading, signOut } = useAuth();
+  const router = useRouter();
   const { setNotif } = useNotif();
+  const [data, setData] = useState({
+    id: "",
+  });
+
+  useEffect(() => {
+    if (user) {
+      setData({
+        id: user?.id,
+      });
+    }
+  }, [user]);
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
@@ -22,22 +41,26 @@ const Navbar = () => {
     { name: "Candidates", path: "/candidates", role: "EMPLOYER" },
     {
       name: "Dashboard",
-      path: `/dashboard/${(role as string)?.toLowerCase()}/overview`,
+      path: `/dashboard/${(role as unknown as string)?.toLowerCase()}/overview`,
       role: "ALL",
     },
   ];
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
+  const logout = async () => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    await supabase.auth.signOut();
+    setData({
+      id: "",
+    });
+    router.push("/sign-in");
+    setNotif("success", "Signed out successfully");
+  };
 
   return (
     <Container backgroundColor="bg-gray50">
-      <div className="w-full flex justify-between items-center md:fixed md:top-0 md:left-0 md:w-full md:bg-gray50 md:shadow-md md:z-50 md:px-6 md:py-4">
+      <div className="w-full flex justify-between items-center md:fixed md:top-0 md:left-0 md:w-full md:bg-gray50 md:shadow-md md:z-50 md:px-6 md:pl-8 xl:pl-24 md:py-4">
         <Link href="/" className="text-primary500 font-bold text-xl">
           JobPilot
         </Link>
@@ -56,19 +79,11 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
-          {loading ? (
-            <button
-              className="px-4 py-2 bg-gray-300 text-white font-medium rounded-md cursor-wait"
-              disabled
-            >
-              Loading...
-            </button>
-          ) : user ? (
+          {data.id ? (
             <button
               className="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
               onClick={() => {
-                signOut();
-                setNotif("success", "Signed out successfully");
+                logout();
               }}
             >
               Sign Out
@@ -114,8 +129,7 @@ const Navbar = () => {
                 className="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
                 onClick={() => {
                   setMenuOpen(false);
-                  signOut();
-                  setNotif("success", "Signed out successfully");
+                  logout();
                 }}
               >
                 Sign Out
