@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "./components";
-import { AuthProvider, NotifProvider } from "./context";
+import { NotifProvider, AuthProvider } from "./context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Job Pilot | Find Your Dream Job",
-  description: "A modern job portal connecting candidates and employers.",
+  description: "A modern job portal connecting candidates and companies.",
   keywords: ["jobs", "career", "employment", "job portal"],
   openGraph: {
     title: "Job Pilot - Find Your Dream Job",
     description:
-      "A modern job portal that helps job seekers and employers connect easily.",
+      "A modern job portal that helps job seekers and companies connect easily.",
     type: "website",
     url: "https://job-pilot.vercel.app",
     images: [
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -58,10 +58,10 @@ export default function RootLayout({
             <main className="w-full flex flex-col flex-grow">
               <Navbar />
               {children}
-              <Footer />
             </main>
           </NotifProvider>
         </AuthProvider>
+        <Footer />
       </body>
     </html>
   );

@@ -9,7 +9,7 @@ datasource db {
 
 enum UserRole {
   CANDIDATE
-  EMPLOYER
+  COMPANY
   ADMIN
 }
 
@@ -52,26 +52,34 @@ model Candidate {
   user           User?            @relation(fields: [userId], references: [id])
   userId         String?          @unique
   certificates   String[]
+  savedByCompanies SavedCandidate[]
 }
 
 model Company {
   id             String   @id @default(uuid())
   name           String
-  profilePicture String?
+  logo String?
+  banner String?
   founded        DateTime
   description    String
   benefits       Json
   industry       String
   phone          String
-  teamSize       Int
+  teamSize       String
   vision         String?
   email          String   @unique
   website        String?
   createdAt      DateTime @default(now())
   jobs           Job[]
   location       String
+  facebook String?
+  twitter String?
+  instagram String?
+  youtube String?
+  organizationType String?
   user           User?    @relation(fields: [userId], references: [id])
 userId         String?  @unique
+savedCandidates SavedCandidate[]
 }
 
 model Job {
@@ -87,7 +95,8 @@ model Job {
   education    String
   jobTags      Json
   salary       Int              @default(1000)
-  location     String
+  country     String
+  city     String
   companyId    String
   createdAt    DateTime         @default(now())
   expiredAt    DateTime?        @default(dbgenerated("now() + interval '7 days'"))
@@ -101,7 +110,7 @@ model JobApplication {
   id          String    @id @default(uuid())
   candidateId String
   jobId       String
-  status      String    @default("pending")
+  status      String    @default("applied")
   appliedAt   DateTime  @default(now())
   coverLetter    String? @default("")
   job         Job       @relation(fields: [jobId], references: [id])
@@ -124,6 +133,18 @@ model FavoriteJob {
   createdAt   DateTime  @default(now())
   job         Job       @relation(fields: [jobId], references: [id])
   candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+model SavedCandidate {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  company     Company   @relation(fields: [companyId], references: [id])
+  companyId   String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  candidateId String
+  note String?
+
+  @@unique([companyId, candidateId])
 }
 
 enum JobType {

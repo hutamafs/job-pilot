@@ -2,18 +2,21 @@
 import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 import { fileUpload, candidateSchema } from "@/app/utils";
 import {
   experienceOptions,
   educationOptions,
   countryOptions,
+  skillOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
-import ResumeUpload from "@/app/components/ResumeUpload";
-import ProfileUpload from "@/app/components/ProfilePictureUploadComponent";
-import SelectSkill from "./SelectSkill";
+import ResumeUpload from "@/app/components/common/ResumeUpload";
+import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
+import Select from "react-select";
 
 const CandidateSignUp = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -21,10 +24,13 @@ const CandidateSignUp = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isPageLoading, setIsPageLoading] = useState(false);
-  const [formData, setFormData] = useState<Partial<Candidate>>({
+  const [formData, setFormData] = useState<
+    Partial<Candidate> & { confirmedPassword?: string }
+  >({
     email: "",
     name: "",
     password: "",
+    confirmedPassword: "",
     role: "",
     bio: "",
     dob: null,
@@ -40,8 +46,13 @@ const CandidateSignUp = () => {
     resumeUrl: "",
     profilePicture: "",
     skills: [],
+    location: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState({
+    password: false,
+    confirmedPassword: false,
+  });
 
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -60,7 +71,6 @@ const CandidateSignUp = () => {
         setFormData((prev) => ({ ...prev, [name]: res.url }));
       } else {
         setNotif("error", "File upload failed.");
-        throw new Error("File upload failed.");
       }
     } catch (error) {
       console.error(error, "File upload failed.");
@@ -85,6 +95,10 @@ const CandidateSignUp = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      if (formData.password !== formData.confirmedPassword) {
+        setNotif("error", "Passwords do not match");
+        return;
+      }
       const result = candidateSchema.safeParse(formData);
 
       if (!result.success) {
@@ -120,9 +134,12 @@ const CandidateSignUp = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error);
+        setNotif("error", data.error);
       }
-      setNotif("success", "Sign up successful. Please sign in to continue.");
+      setNotif(
+        "success",
+        "Sign up successful. Please check and verify your email first"
+      );
       router.push("/sign-in");
     } catch (error) {
       setNotif("error", (error as Error).message);
@@ -168,17 +185,53 @@ const CandidateSignUp = () => {
           )}
 
           {/* Password */}
-          <input
-            type="text"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className="border p-2 rounded-md w-full"
-          />
+          <div className="relative">
+            <input
+              type={showPassword.password ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              className="border p-2 rounded-md w-full pr-10"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => ({
+                  ...prev,
+                  password: !showPassword.password,
+                }))
+              }
+              className="absolute right-3 top-3 text-gray-600"
+            >
+              {showPassword.password ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-red-500 text-sm mt-1">{errors.password}</p>
           )}
+          <div className="relative">
+            <input
+              type={showPassword.confirmedPassword ? "text" : "password"}
+              name="confirmedPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmedPassword}
+              onChange={handleChange}
+              className="border p-2 rounded-md w-full pr-10"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setShowPassword((prev) => ({
+                  ...prev,
+                  confirmedPassword: !showPassword.confirmedPassword,
+                }))
+              }
+              className="absolute right-3 top-3 text-gray-600"
+            >
+              {showPassword.confirmedPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
 
           {/* Name */}
           <input
@@ -210,7 +263,7 @@ const CandidateSignUp = () => {
 
           {/* Phone */}
           <input
-            type="text"
+            type="number"
             name="phone"
             placeholder="Phone Number"
             value={formData.phone}
@@ -334,6 +387,25 @@ const CandidateSignUp = () => {
             <p className="text-red-500 text-sm mt-1">{errors.nationality}</p>
           )}
 
+          <select
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
+          >
+            <option value="" disabled>
+              Choose your location
+            </option>
+            {countryOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+          {errors.location && (
+            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+          )}
+
           {/* Website */}
           <input
             type="text"
@@ -374,13 +446,16 @@ const CandidateSignUp = () => {
             <p className="text-red-500 text-sm mt-1">{errors.resumeUrl}</p>
           )}
 
-          <SelectSkill
-            formData={formData as Partial<Candidate> & { skills: string[] }}
-            setFormData={
-              setFormData as React.Dispatch<
-                React.SetStateAction<Partial<Candidate> & { skills: string[] }>
-              >
-            }
+          <Select
+            options={skillOptions}
+            isMulti
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                skills: e.map((option) => option.value),
+              }));
+            }}
+            placeholder="Select your skills"
           />
 
           {/* Submit Button */}

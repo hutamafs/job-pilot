@@ -37,57 +37,115 @@ export const educationOptions = [
 ];
 
 export const countryOptions = [
-  { label: "United States", value: "United States" },
-  { label: "United Kingdom", value: "United Kingdom" },
-  { label: "Canada", value: "Canada" },
-  { label: "Australia", value: "Australia" },
-  { label: "Germany", value: "Germany" },
-  { label: "France", value: "France" },
-  { label: "Japan", value: "Japan" },
-  { label: "China", value: "China" },
-  { label: "India", value: "India" },
-  { label: "Brazil", value: "Brazil" },
-  { label: "Russia", value: "Russia" },
-  { label: "Italy", value: "Italy" },
-  { label: "Spain", value: "Spain" },
-  { label: "Mexico", value: "Mexico" },
-  { label: "South Korea", value: "South Korea" },
-  { label: "Netherlands", value: "Netherlands" },
-  { label: "Sweden", value: "Sweden" },
-  { label: "Switzerland", value: "Switzerland" },
-  { label: "Singapore", value: "Singapore" },
-  { label: "Norway", value: "Norway" },
-  { label: "Denmark", value: "Denmark" },
-  { label: "Finland", value: "Finland" },
-  { label: "Ireland", value: "Ireland" },
-  { label: "New Zealand", value: "New Zealand" },
-  { label: "Belgium", value: "Belgium" },
-  { label: "Austria", value: "Austria" },
-  { label: "Portugal", value: "Portugal" },
-  { label: "Greece", value: "Greece" },
-  { label: "Poland", value: "Poland" },
-  { label: "Czech Republic", value: "Czech Republic" },
-  { label: "Hungary", value: "Hungary" },
-  { label: "South Africa", value: "South Africa" },
-  { label: "Argentina", value: "Argentina" },
-  { label: "Chile", value: "Chile" },
-  { label: "Colombia", value: "Colombia" },
-  { label: "Malaysia", value: "Malaysia" },
-  { label: "Thailand", value: "Thailand" },
-  { label: "Vietnam", value: "Vietnam" },
-  { label: "Philippines", value: "Philippines" },
-  { label: "Indonesia", value: "Indonesia" },
-  { label: "Turkey", value: "Turkey" },
-  { label: "Israel", value: "Israel" },
-  { label: "United Arab Emirates", value: "United Arab Emirates" },
-  { label: "Saudi Arabia", value: "Saudi Arabia" },
-  { label: "Egypt", value: "Egypt" },
-  { label: "Morocco", value: "Morocco" },
-  { label: "Kenya", value: "Kenya" },
-  { label: "Nigeria", value: "Nigeria" },
-  { label: "Iceland", value: "Iceland" },
-  { label: "Luxembourg", value: "Luxembourg" },
+  {
+    label: "United States",
+    value: "United States",
+  },
+  {
+    label: "United Kingdom",
+    value: "United Kingdom",
+  },
+  {
+    label: "Japan",
+    value: "Japan",
+  },
+  {
+    label: "Germany",
+    value: "Germany",
+  },
+  {
+    label: "Canada",
+    value: "Canada",
+  },
+  {
+    label: "Australia",
+    value: "Australia",
+  },
+  {
+    label: "Singapore",
+    value: "Singapore",
+  },
+  {
+    label: "Netherlands",
+    value: "Netherlands",
+  },
+  {
+    label: "Sweden",
+    value: "Sweden",
+  },
+  {
+    label: "Israel",
+    value: "Israel",
+  },
 ];
+
+export const cityOptions = {
+  "United States": [
+    { label: "New York", value: "New York" },
+    { label: "San Francisco", value: "San Francisco" },
+    { label: "Seattle", value: "Seattle" },
+  ],
+  "United Kingdom": [
+    { label: "London", value: "London" },
+    { label: "Manchester", value: "Manchester" },
+    { label: "Edinburgh", value: "Edinburgh" },
+  ],
+  Japan: [
+    { label: "Tokyo", value: "Tokyo" },
+    { label: "Osaka", value: "Osaka" },
+    { label: "Fukuoka", value: "Fukuoka" },
+  ],
+  Germany: [
+    { label: "Berlin", value: "Berlin" },
+    { label: "Munich", value: "Munich" },
+    { label: "Hamburg", value: "Hamburg" },
+  ],
+  Canada: [
+    { label: "Toronto", value: "Toronto" },
+    { label: "Vancouver", value: "Vancouver" },
+    { label: "Montreal", value: "Montreal" },
+  ],
+  Australia: [
+    { label: "Sydney", value: "Sydney" },
+    { label: "Melbourne", value: "Melbourne" },
+    { label: "Brisbane", value: "Brisbane" },
+    { label: "Perth", value: "Perth" },
+    { label: "Adelaide", value: "Adelaide" },
+    { label: "Gold Coast", value: "Gold Coast" },
+    { label: "Newcastle", value: "Newcastle" },
+    { label: "Canberra", value: "Canberra" },
+    { label: "Wollongong", value: "Wollongong" },
+    { label: "Hobart", value: "Hobart" },
+    { label: "Geelong", value: "Geelong" },
+    { label: "Townsville", value: "Townsville" },
+    { label: "Cairns", value: "Cairns" },
+    { label: "Darwin", value: "Darwin" },
+    { label: "Launceston", value: "Launceston" },
+    { label: "Albury", value: "Albury" },
+    { label: "Bendigo", value: "Bendigo" },
+    { label: "Ballarat", value: "Ballarat" },
+  ],
+  Singapore: [
+    { label: "Central Region", value: "Central Region" },
+    { label: "East Region", value: "East Region" },
+    { label: "North Region", value: "North Region" },
+  ],
+  Netherlands: [
+    { label: "Amsterdam", value: "Amsterdam" },
+    { label: "Rotterdam", value: "Rotterdam" },
+    { label: "The Hague", value: "The Hague" },
+  ],
+  Sweden: [
+    { label: "Stockholm", value: "Stockholm" },
+    { label: "Gothenburg", value: "Gothenburg" },
+    { label: "Malmö", value: "Malmö" },
+  ],
+  Israel: [
+    { label: "Tel Aviv", value: "Tel Aviv" },
+    { label: "Jerusalem", value: "Jerusalem" },
+    { label: "Haifa", value: "Haifa" },
+  ],
+};
 
 export const skillOptions = Array.from(
   new Set([
@@ -139,12 +197,23 @@ export const skillOptions = Array.from(
   ])
 );
 
-export const occupationType = [
-  "Full-Time",
-  "Part-Time",
-  "Internship",
-  "Temporary",
-  "Contract",
+export const jobTypeOptions = [
+  { label: "Full-Time", value: "full-time" },
+  { label: "Part-Time", value: "part-time" },
+  { label: "Internship", value: "internship" },
+  { label: "Temporary", value: "temporary" },
+  { label: "Contract", value: "contract" },
+];
+
+export const jobLevelOptions = [
+  { label: "Entry Level", value: "entry-level" },
+  { label: "Junior", value: "junior" },
+  { label: "Mid Level", value: "mid-level" },
+  { label: "Senior", value: "senior" },
+  { label: "Lead", value: "lead" },
+  { label: "Manager", value: "manager" },
+  { label: "Director", value: "director" },
+  { label: "Executive", value: "executive" },
 ];
 
 export const industries: string[] = [
@@ -277,4 +346,123 @@ export const skillsOptions: string[] = [
   "Customer Service",
   "Networking",
   "Conflict Resolution",
+];
+
+export const teamSizeOptions = [
+  {
+    label: "1-10 employees",
+    value: "1-10",
+  },
+  {
+    label: "11-50 employees",
+    value: "11-50",
+  },
+  {
+    label: "51-200 employees",
+    value: "51-200",
+  },
+  {
+    label: "201-500 employees",
+    value: "201-500",
+  },
+  {
+    label: "501-1000 employees",
+    value: "501-1000",
+  },
+  {
+    label: "1001-5000 employees",
+    value: "1001-5000",
+  },
+  {
+    label: "5001-10000 employees",
+    value: "5001-10000",
+  },
+  {
+    label: "10001+ employees",
+    value: "10001+",
+  },
+];
+
+export const organizationTypeOptions = [
+  {
+    label: "Startup",
+    value: "startup",
+  },
+  {
+    label: "Small Business",
+    value: "small_business",
+  },
+  {
+    label: "Medium Enterprise",
+    value: "medium_enterprise",
+  },
+  {
+    label: "Large Corporation",
+    value: "large_corporation",
+  },
+  {
+    label: "Non-Profit",
+    value: "non_profit",
+  },
+  {
+    label: "Government Agency",
+    value: "government_agency",
+  },
+  {
+    label: "Educational Institution",
+    value: "educational_institution",
+  },
+  {
+    label: "Freelancer",
+    value: "freelancer",
+  },
+];
+export const companyBenefitsOptions = [
+  { label: "Health Insurance", value: "health_insurance" },
+  { label: "Paid Time Off", value: "paid_time_off" },
+  { label: "Retirement Plan", value: "retirement_plan" },
+  { label: "Work From Home", value: "work_from_home" },
+  { label: "Gym Membership", value: "gym_membership" },
+  { label: "Stock Options", value: "stock_options" },
+  { label: "Tuition Reimbursement", value: "tuition_reimbursement" },
+  { label: "Childcare Assistance", value: "childcare_assistance" },
+  { label: "Commuter Benefits", value: "commuter_benefits" },
+  { label: "Employee Discounts", value: "employee_discounts" },
+  { label: "Wellness Programs", value: "wellness_programs" },
+  { label: "Professional Development", value: "professional_development" },
+  { label: "Flexible Schedule", value: "flexible_schedule" },
+  { label: "Parental Leave", value: "parental_leave" },
+  { label: "Life Insurance", value: "life_insurance" },
+];
+
+export const jobRequirementOptions = [
+  { label: "Bachelor's Degree", value: "bachelors_degree" },
+  { label: "Master's Degree", value: "masters_degree" },
+  { label: "PhD", value: "phd" },
+  { label: "Professional Certification", value: "professional_certification" },
+  { label: "1-3 Years Experience", value: "1-3_years_experience" },
+  { label: "3-5 Years Experience", value: "3-5_years_experience" },
+  { label: "5+ Years Experience", value: "5+_years_experience" },
+  { label: "Communication Skills", value: "communication_skills" },
+  { label: "Leadership Experience", value: "leadership_experience" },
+  { label: "Project Management", value: "project_management" },
+  { label: "Foreign Language", value: "foreign_language" },
+  { label: "Portfolio", value: "portfolio" },
+  { label: "Security Clearance", value: "security_clearance" },
+  { label: "Driver's License", value: "drivers_license" },
+  { label: "JavaScript Proficiency", value: "javascript_proficiency" },
+  { label: "Python Programming", value: "python_programming" },
+  { label: "React Development", value: "react_development" },
+  { label: "SQL Database Knowledge", value: "sql_database_knowledge" },
+  { label: "AWS Cloud Experience", value: "aws_cloud_experience" },
+  { label: "Docker Containerization", value: "docker_containerization" },
+  { label: "Machine Learning", value: "machine_learning" },
+  { label: "UI/UX Design Skills", value: "ui_ux_design_skills" },
+  { label: "DevOps Experience", value: "devops_experience" },
+  { label: "Cybersecurity Knowledge", value: "cybersecurity_knowledge" },
+  { label: "Data Analysis", value: "data_analysis" },
+  { label: "Mobile Development", value: "mobile_development" },
+  { label: "Agile Methodology", value: "agile_methodology" },
+  { label: "Git Version Control", value: "git_version_control" },
+  { label: "API Development", value: "api_development" },
 ];

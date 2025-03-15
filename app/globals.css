@@ -18,3 +18,31 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.editor-container > div {
+  height: 100%;
+}
+
+.editor-container > div > div {
+  height: 100% !important;
+}
+
+.ProseMirror {
+  outline: none !important;
+  border: none !important;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal !important; /* ✅ Forces numbers (1, 2, 3) */
+  padding-left: 1.5rem;
+}
+
+.ProseMirror ul {
+  list-style-type: disc !important; /* ✅ Ensures bullets appear */
+  padding-left: 1.5rem;
+}
+
+/* ✅ Fix issues where lists inside Tiptap don't render correctly */
+.ProseMirror li {
+  margin-left: 1rem; /* Adjusts spacing */
+}

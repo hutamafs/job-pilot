@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-import { Container, EmployerCard } from "@/app/components";
+import { Container, CompanyCard } from "@/app/components";
 import SearchCompany from "@/app/components/pages/Companies/SearchCompany";
 import { Pagination } from "@/app/components";
 import { Company as CompanyType } from "@/app/types";
@@ -37,7 +37,7 @@ const Companies = async ({ searchParams }: CompaniesProps) => {
         <Container className="py-8">
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
             {companies.map((d: CompanyType) => (
-              <EmployerCard key={d.id} {...d} />
+              <CompanyCard key={d.id} {...d} />
             ))}
           </div>
           <Pagination totalPages={totalPages} />

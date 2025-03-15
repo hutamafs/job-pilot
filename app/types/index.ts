@@ -1,6 +1,5 @@
 export interface Job {
   id: string;
-  name: string;
   title: string;
   description: string;
   requirement: string[];
@@ -12,7 +11,8 @@ export interface Job {
   education: string;
   jobTags: string[];
   salary: string;
-  location: string;
+  country: string;
+  city: string;
   companyId: string;
   createdAt: Date;
   expiredAt: Date;
@@ -24,19 +24,27 @@ export interface Job {
 export interface Company {
   id: string;
   name: string;
-  profilePicture: string;
+  logo?: string;
+  banner?: string;
   founded: Date;
   description: string;
   benefits: string[];
   industry: string;
   phone: string;
-  teamSize: number;
+  teamSize: string;
   vision?: string;
   email: string;
   website?: string;
   location: string;
   createdAt: Date;
   jobs: Job[];
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  youtube?: string;
+  userId?: string;
+  password: string;
+  organizationType?: string;
 }
 
 export interface SavedJob {
@@ -71,6 +79,7 @@ export interface Candidate {
   appliedJobs: Job[];
   savedJobs: Job[];
   skills: string[];
+  savedByCompanies: SavedCandidate[];
 }
 
 export interface JobApplication {
@@ -80,6 +89,7 @@ export interface JobApplication {
   status: string;
   appliedAt: string;
   job: Job;
+  candidate: Candidate;
 }
 
 export interface SettingsProps {
@@ -123,4 +133,19 @@ export interface CompanySearchQuery {
   search: string;
   location: string;
   page?: number;
+}
+
+export interface SavedCandidate {
+  id: string;
+  createdAt: Date;
+  company: Company;
+  companyId: string;
+  candidate: Candidate;
+  candidateId: string;
+  note?: string;
+}
+
+export interface StepProps {
+  data: Partial<Company & { confirmedPassword?: string }>;
+  setFormData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
 }

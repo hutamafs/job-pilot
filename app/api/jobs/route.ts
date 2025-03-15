@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { supabase } from "@/app/utils/supabase";
-
 const PAGE_SIZE = 21;
 
 export async function GET(req: Request) {
   try {
-    const token = req.headers.get("authorization");
+    const id = req.headers.get("authorization")!;
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
@@ -15,9 +13,9 @@ export async function GET(req: Request) {
     const salary = Number(searchParams.get("salary")) || 0;
     const industry = searchParams.getAll("industry") || null;
     const jobType = searchParams.getAll("jobType") || null;
-    const { data: supabaseUser } = await supabase.auth.getUser(token!);
+
     const user = await prisma.user.findUnique({
-      where: { id: supabaseUser.user?.id },
+      where: { id },
     });
 
     const candidate = await prisma.candidate.findUnique({
@@ -30,7 +28,11 @@ export async function GET(req: Request) {
       skip,
       take: PAGE_SIZE,
       where: {
-        ...(company && { companyId: company }),
+        ...(company && {
+          company: {
+            name: company,
+          },
+        }),
         ...(industry.length > 0 && {
           company: {
             industry: { in: industry },
@@ -38,13 +40,14 @@ export async function GET(req: Request) {
         }),
         ...(jobType.length > 0 && { jobType: { in: jobType } }),
         ...(location && {
-          location: { contains: location, mode: "insensitive" },
+          country: { contains: location, mode: "insensitive" },
         }),
         ...(salary > 0 && { salary: { gte: salary } }),
         ...(search && {
           OR: [
             { title: { contains: search, mode: "insensitive" } },
             { description: { contains: search, mode: "insensitive" } },
+            { company: { name: { contains: search, mode: "insensitive" } } },
           ],
         }),
       },
@@ -60,20 +63,25 @@ export async function GET(req: Request) {
 
     const totalJobs = await prisma.job.count({
       where: {
-        ...(company && { companyId: company }),
+        ...(company && {
+          company: {
+            name: company,
+          },
+        }),
         ...(industry.length > 0 && {
           company: {
             industry: { in: industry },
           },
         }),
-        location: location
-          ? { contains: location, mode: "insensitive" }
-          : undefined,
+        ...(location && {
+          country: { contains: location, mode: "insensitive" },
+        }),
         jobType: jobType.length > 0 ? { in: jobType } : undefined,
         salary: salary > 0 ? { gte: salary } : undefined,
         OR: [
           { title: { contains: search, mode: "insensitive" } },
           { description: { contains: search, mode: "insensitive" } },
+          { company: { name: { contains: search, mode: "insensitive" } } },
         ],
       },
     });

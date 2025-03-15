@@ -1,22 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { supabase } from "@/app/utils/supabase";
+import { getUserRole } from "@/app/utils";
 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const token = req.headers.get("authorization");
+    const { data: user } = await getUserRole();
     const id = (await params).id;
-    const { data: supabaseUser } = await supabase.auth.getUser(token!);
-    const user = await prisma.user.findUnique({
-      where: { id: supabaseUser.user?.id },
-    });
-
-    const candidate = await prisma.candidate.findUnique({
-      where: { userId: user?.id },
-    });
 
     if (!id) {
       return NextResponse.json(
@@ -31,12 +23,12 @@ export async function GET(
         company: true,
         applications: {
           where: {
-            candidateId: candidate?.id,
+            candidateId: user?.id,
           },
         },
         savedJobs: {
           where: {
-            candidateId: candidate?.id,
+            candidateId: user?.id,
           },
         },
       },

@@ -5,7 +5,7 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { FaUser, FaGlobe, FaCog, FaLink } from "react-icons/fa";
+import { FaUser, FaGlobe, FaLink } from "react-icons/fa";
 
 import { getCandidateDetails, updateCandidateDetails } from "./query";
 import PersonalPage from "./Personal";
@@ -19,7 +19,6 @@ const tabs = [
   { id: "personal", label: "Personal", icon: <FaUser /> },
   { id: "profile", label: "Profile", icon: <FaGlobe /> },
   { id: "social", label: "Social Links", icon: <FaLink /> },
-  { id: "account", label: "Account Setting", icon: <FaCog /> },
 ];
 
 const SettingsContent = () => {

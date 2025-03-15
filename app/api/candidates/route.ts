@@ -13,13 +13,23 @@ export async function GET(req: Request) {
     const candidates = await prisma.candidate.findMany({
       skip,
       take: PAGE_SIZE,
+      include: {
+        savedByCompanies: true,
+      },
     });
 
     const totalCandidates = await prisma.candidate.count();
 
-    return NextResponse.json({ data: candidates, totalCandidates, totalPages: Math.ceil(totalCandidates / PAGE_SIZE) });
+    return NextResponse.json({
+      data: candidates,
+      totalCandidates,
+      totalPages: Math.ceil(totalCandidates / PAGE_SIZE),
+    });
   } catch (error) {
     console.error("Error fetching candidates:", error);
-    return NextResponse.json({ error: "Failed to fetch candidates" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch candidates" },
+      { status: 500 }
+    );
   }
 }

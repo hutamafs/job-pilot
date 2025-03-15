@@ -1,20 +1,24 @@
 import { Container } from "@/app/components";
-import { cookies } from "next/headers";
-import ActionComponent from "@/app/components/pages/Jobs/[id]/Action";
+import Link from "next/link";
+import Image from "next/image";
+import ActionComponent from "@/app/components/pages/Jobs/[id]/ActionComponent";
 import {
   FaRegCalendarAlt,
   FaRegClock,
   FaBriefcase,
   FaGraduationCap,
   FaWallet,
+  FaUser,
 } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
-import { IoIosLink } from "react-icons/io";
-import { FaLinkedin, FaFacebook, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { createClient } from "@/app/utils/supabase/server";
+import { getUserRole } from "@/app/utils";
+import SocialMediaComponent from "@/app/components/pages/Jobs/[id]/SocialMediaComponent";
 
 const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const cookie = await cookies();
-  const token = cookie.get("sb-access-token")?.value;
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  const { role } = await getUserRole();
   try {
     const resolvedParams = await params;
     const response = await fetch(
@@ -22,7 +26,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${user?.user?.id}`,
         },
       }
     );
@@ -37,29 +41,47 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className="rounded-lg flex flex-col md:flex-row gap-6">
           <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center md:items-start">
-              <div className="w-16 h-16 bg-gray-200 rounded-full">
-                {data.company.profilePicture}
-              </div>
+              {data.company.logo ? (
+                <Image
+                  src={data.company.logo}
+                  alt={data.company.name}
+                  width={72}
+                  height={48}
+                />
+              ) : (
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
+                  <FaUser className="text-gray-400 text-2xl" />
+                </div>
+              )}
+
               <div className="flex flex-col ml-4 md:justify-center">
                 <h1 className="text-xl font-bold text-black">{data.title}</h1>
                 <div className="flex flex-col md:flex-row md:ml-3">
-                  `{" "}
                   <p className="text-gray-600 text-sm">
                     at {data.company.name}
                   </p>
                   <div className="flex items-center gap-2">
-                    <span className="bg-green-100 text-green-700 text-xs font-medium px-2 py-1 rounded">
+                    <span className="bg-green-100 capitalize text-green-700 text-xs font-medium px-2 py-1 rounded">
                       {data.jobType}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            <ActionComponent
-              name={data.title}
-              id={resolvedParams.id}
-              data={data}
-            />
+            {role === "COMPANY" ? (
+              <Link
+                className="flex items-center justify-center text-lightBlue50 bg-primary500 font-bold px-4 py-2 rounded-lg hover:text-orange-200"
+                href={`/dashboard/company/jobs/${data.id}`}
+              >
+                Edit
+              </Link>
+            ) : (
+              <ActionComponent
+                name={data.title}
+                id={resolvedParams.id}
+                data={data}
+              />
+            )}
           </div>
         </div>
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -74,7 +96,9 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             </h3>
             <ul className="list-disc text-sm text-gray-700 pl-6">
               {data.requirements.map((requirement: string) => (
-                <li key={requirement}>{requirement}</li>
+                <li className="capitalize" key={requirement}>
+                  {requirement.split("_").join(" ")}
+                </li>
               ))}
             </ul>
             <h3 className="text-lg font-semibold mt-4  text-black">
@@ -82,13 +106,17 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             </h3>
             <ul className="list-disc text-sm text-gray-700 pl-6">
               {data.desirable.map((desirable: string) => (
-                <li key={desirable}>{desirable}</li>
+                <li className="capitalize" key={desirable}>
+                  {desirable.split("_").join(" ")}
+                </li>
               ))}
             </ul>
             <h3 className="text-lg font-semibold mt-4  text-black">Benefits</h3>
             <ul className="list-disc text-sm text-gray-700 pl-6">
               {data.benefits.map((benefit: string) => (
-                <li key={benefit}>{benefit}</li>
+                <li className="capitalize" key={benefit}>
+                  {benefit.split("_").join(" ")}
+                </li>
               ))}
             </ul>
           </div>
@@ -98,13 +126,13 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               <div className="text-center md:text-left">
                 <p className="text-black font-semibold">Yearly Salary (AUD)</p>
                 <p className="text-green-600 text-lg font-semibold">
-                  ${data.salary}
+                  ${data.salary?.toLocaleString()}
                 </p>
               </div>
               <div className="text-center md:text-right mt-4 md:mt-0">
                 <p className="text-black font-semibold">Job Location</p>
                 <p className="text-lg flex items-center justify-center text-gray-500">
-                  <FiMapPin className="mr-1" /> {data.location}
+                  <FiMapPin className="mr-1" /> {data.city}, {data.country}
                 </p>
               </div>
             </div>
@@ -118,9 +146,9 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 {data.benefits.map((benefit: string, index: number) => (
                   <span
                     key={index}
-                    className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-lg"
+                    className="bg-green-100 text-green-700 text-sm px-3 py-1 rounded-lg capitalize"
                   >
-                    {benefit}
+                    {benefit.split("_").join(" ")}
                   </span>
                 ))}
               </div>
@@ -136,18 +164,22 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                   <FaRegCalendarAlt className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Job Posted:</p>
                   <p className="font-semibold text-black text-sm">
-                    {new Date(data.createdAt).toLocaleDateString()}
+                    {new Date(data.createdAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 <div className="flex flex-col">
                   <FaRegClock className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Job Expire:</p>
                   <p className="font-semibold text-black text-sm">
-                    {new Date(
-                      new Date(data.createdAt).setMonth(
-                        new Date(data.createdAt).getMonth() + 1
-                      )
-                    ).toLocaleDateString()}
+                    {new Date(data.expiredAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 <div className="flex flex-col">
@@ -161,7 +193,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                   <FaWallet className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Experience:</p>
                   <p className="font-semibold text-black text-sm">
-                    {data.experience} years
+                    {data.experience}
                   </p>
                 </div>
                 <div className="flex flex-col">
@@ -174,20 +206,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               </div>
             </div>
 
-            <div className="py-4 border-t">
-              <h3 className="text-lg font-semibold mb-2 text-black">
-                Share this job:
-              </h3>
-              <div className="flex space-x-4 items-center">
-                <button className="flex items-center font-semibold text-primary500 bg-gray-100 px-3 py-2 rounded-md">
-                  <IoIosLink className="mr-2 " /> Copy Links
-                </button>
-                <FaLinkedin className="text-blue-600 text-xl cursor-pointer" />
-                <FaFacebook className="text-blue-700 text-xl cursor-pointer" />
-                <FaTwitter className="text-blue-400 text-xl cursor-pointer" />
-                <FaEnvelope className="text-gray-500 text-xl cursor-pointer" />
-              </div>
-            </div>
+            <SocialMediaComponent />
 
             <div className="py-4 border-t">
               <h3 className="text-lg font-semibold mb-2 text-black">
@@ -197,7 +216,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 {data.jobTags.map((tag: string, index: number) => (
                   <span
                     key={index}
-                    className="bg-gray-200 text-gray-700 text-sm px-3 py-1 rounded-lg"
+                    className="bg-gray-200 capitalize text-gray-700 text-sm px-3 py-1 rounded-lg"
                   >
                     {tag}
                   </span>
