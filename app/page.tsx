@@ -5,16 +5,22 @@ import {
   QuickRegister,
 } from "@/app/components/pages/Homepage";
 import HomeWrapper from "./HomeWrapper";
+import { getUserRole } from "./utils";
 
 const Home = async () => {
+  const { data, role } = await getUserRole();
   return (
     <>
       <HomeWrapper />
       <div className="w-full h-full">
         <Banner />
-        <FeaturedJob />
-        <TopCompanies />
-        <QuickRegister />
+        {role === "CANDIDATE" && (
+          <>
+            <FeaturedJob />
+            <TopCompanies />
+          </>
+        )}
+        {!data && <QuickRegister />}
       </div>
     </>
   );

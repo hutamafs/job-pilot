@@ -32,7 +32,7 @@ export async function POST(req: Request) {
       email,
       password,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}?email_confirmed=true`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}?email_confirmed=true&role=CANDIDATE`,
       },
     });
     const hashedPassword = await hashPassword(password);

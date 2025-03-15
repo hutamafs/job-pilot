@@ -1,46 +1,40 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/app/utils/supabase";
 import { prisma } from "@/app/utils/prisma";
-import { cookies } from "next/headers";
+import { getUser } from "@/app/utils/supabase/getUser";
 
-async function getUserAndJob(token: string | undefined, jobId: string) {
-  if (!token) return { error: "Unauthorized", status: 401 };
-
-  const supabaseUser = await supabase.auth.getUser(token);
-  if (!supabaseUser.data.user?.id)
-    return { error: "User not found", status: 404 };
-
-  const user = await prisma.candidate.findUnique({
-    where: { userId: supabaseUser.data.user.id },
+async function getUserAndJob(jobId: string) {
+  const u = await getUser();
+  const user = await prisma.user.findUnique({
+    where: { id: u?.id },
   });
-  if (!user) return { error: "Candidate profile not found", status: 404 };
+  const candidate = await prisma.candidate.findUnique({
+    where: { userId: user?.id },
+  });
 
   const job = await prisma.job.findUnique({
     where: { id: jobId },
   });
-  if (!job) return { error: "Job not found", status: 404 };
 
-  return { user, job };
+  return { candidate, job };
 }
 
 export async function POST(
   _: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const token = (await cookies()).get("sb-access-token")?.value;
   const { id } = await params;
-  const { user, job } = await getUserAndJob(token, id);
+  const { candidate, job } = await getUserAndJob(id);
 
   const foundJob = await prisma.savedJob.findFirst({
     where: {
-      AND: [{ candidateId: user!.id }, { jobId: id }],
+      AND: [{ candidateId: candidate!.id }, { jobId: id }],
     },
   });
 
   if (!foundJob) {
     await prisma.savedJob.create({
       data: {
-        candidateId: user!.id,
+        candidateId: candidate!.id,
         jobId: id,
       },
     });
@@ -57,13 +51,12 @@ export async function DELETE(
   _: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const token = (await cookies()).get("sb-access-token")?.value;
   const { id } = await params;
-  const { user, job } = await getUserAndJob(token, id);
+  const { candidate, job } = await getUserAndJob(id);
 
   const foundJob = await prisma.savedJob.findFirst({
     where: {
-      AND: [{ candidateId: user!.id }, { jobId: id }],
+      AND: [{ candidateId: candidate!.id }, { jobId: id }],
     },
   });
 

@@ -2,7 +2,7 @@
 
 import { SetStateAction, Dispatch } from "react";
 import { FiSearch, FiMapPin, FiSliders } from "react-icons/fi";
-import Container from "../../Container";
+import Container from "../../common/Container";
 import { JobSearchQuery } from "@/app/types";
 import { countryOptions } from "@/app/options";
 interface JobSearchBarProps {
@@ -52,9 +52,7 @@ const JobSearchBar = ({
             name="location"
             onChange={handleInputChange}
           >
-            <option value="" disabled>
-              Select a location
-            </option>
+            <option value="">Select a location</option>
             {countryOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}

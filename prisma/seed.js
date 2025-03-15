@@ -1,82 +1,79 @@
 import { PrismaClient } from "@prisma/client";
-import fs from "fs";
-
 const prisma = new PrismaClient();
 
-const convertToString = (arr) => {
-  return arr.map((item) => ({
-    ...item,
-    id: String(item.id),
-    ...(item.createdAt
-      ? { createdAt: new Date(item.createdAt).toISOString() }
-      : {}),
-    ...(item.companyId ? { companyId: String(item.companyId) } : {}),
-    ...(item.candidateId ? { candidateId: String(item.candidateId) } : {}),
-    ...(item.jobId ? { jobId: String(item.jobId) } : {}),
-    ...(item.experience ? { experience: String(item.experience) } : {}),
-    ...(item.salary ? { salary: Number(item.salary) } : {}),
-  }));
-};
-
 async function main() {
-  try {
-    // ✅ Load JSON Data (Assuming JSON file is in `/prisma/mockData.json`)
-    const jobsData = JSON.parse(fs.readFileSync("prisma/jobs.json", "utf-8"));
-    const candidatesData = JSON.parse(
-      fs.readFileSync("prisma/candidates.json", "utf-8")
-    );
-    const companiesData = JSON.parse(
-      fs.readFileSync("prisma/companies.json", "utf-8")
-    );
-    const usersData = JSON.parse(fs.readFileSync("prisma/users.json", "utf-8"));
-    const appliedJobsData = JSON.parse(
-      fs.readFileSync("prisma/applied_jobs.json", "utf-8")
-    );
-
-    console.log("🌱 Seeding database...");
-    await prisma.jobApplication.deleteMany();
-    await prisma.candidate.deleteMany();
-    await prisma.job.deleteMany();
-    await prisma.company.deleteMany();
-    await prisma.user.deleteMany();
-
-    // ✅ Insert Companies First (since Jobs depend on them)
-    await prisma.company.createMany({ data: convertToString(companiesData) });
-
-    // ✅ Insert Candidates
-    await prisma.candidate.createMany({
-      data: convertToString(candidatesData),
-    });
-
-    for (const user of usersData) {
-      const isCandidate = user.id % 2 === 0; // Even = Candidate, Odd = Company
-
-      await prisma.user.create({
+  const jobs = [
+    {
+      title: "Machine learning Engineer",
+      description: "qwerwrqrqw",
+      requirements: [
+        "Cybersecurity Knowledge",
+        "Git Version Control",
+        "Python Programming",
+      ],
+      desirable: [],
+      benefits: [
+        "paid_time_off",
+        "retirement_plan",
+        "gym_membership",
+        "tuition_reimbursement",
+      ],
+      jobType: "full-time",
+      jobLevel: "Manager",
+      experience: ">5",
+      education: "PhD",
+      jobTags: ["ai", "remote", "ml"],
+      salary: 80000,
+      country: "Australia",
+      city: "Melbourne",
+      companyId: "34ccde90-38ed-420e-a910-8d0b7b482efb",
+    },
+    {
+      title: "Software Engineer",
+      description: "qwewqr",
+      requirements: [
+        "professional_certification",
+        "typescript",
+        "1_3_years_experience",
+      ],
+      desirable: [],
+      benefits: [
+        "health_insurance",
+        "flexible_schedule",
+        "parental_leave",
+        "life_insurance",
+      ],
+      jobType: "part-time",
+      jobLevel: "Manager",
+      experience: "3-5 years",
+      education: "Master Degree",
+      jobTags: ["typescript", "frontend", "remote"],
+      salary: 50000,
+      country: "Singapore",
+      city: "Central Region",
+      companyId: "34ccde90-38ed-420e-a910-8d0b7b482efb",
+    },
+  ];
+  // Seed 100 jobs by repeating the above with some variations
+  for (let i = 0; i < 50; i++) {
+    for (const job of jobs) {
+      await prisma.job.create({
         data: {
-          id: String(user.id),
-          email: user.email,
-          password: user.password,
-          role: isCandidate ? "CANDIDATE" : "EMPLOYER",
-          ...(isCandidate
-            ? { candidate: { connect: { id: String(user.id) } } } // Connect to Candidate
-            : { company: { connect: { id: String(user.id) } } }), // Connect to Company
+          ...job,
+          title: `${job.title} #${i + 1}`,
         },
       });
     }
-
-    // ✅ Insert Jobs
-    await prisma.job.createMany({ data: convertToString(jobsData) });
-    await prisma.jobApplication.createMany({
-      data: convertToString(appliedJobsData),
-    });
-
-    console.log("✅ Seeding completed successfully!");
-  } catch (error) {
-    console.error("❌ Error seeding data:", error);
-  } finally {
-    await prisma.$disconnect();
   }
+
+  console.log("Seeded 100 jobs!");
 }
 
-// Run seeding
-main();
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });

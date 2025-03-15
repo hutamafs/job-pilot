@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { FaFileUpload, FaLink, FaEdit, FaDownload } from "react-icons/fa";
 
 import { SettingsProps } from "@/app/types";
@@ -49,7 +49,7 @@ const PersonalPage: React.FC<PersonalPageProps> = ({
   ) => {
     if (!e.target.files || e.target.files.length === 0) return;
 
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     setSelectedFile((prev) => ({ ...prev, [name]: file }));
 
@@ -104,7 +104,7 @@ const PersonalPage: React.FC<PersonalPageProps> = ({
                   ? data.profilePicture
                   : URL.createObjectURL(data.profilePicture)
               }
-              fill
+              layout="fill"
               priority
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="w-full min-h-sceen md:min-h-0 h-full object-cover"
@@ -213,7 +213,6 @@ const PersonalPage: React.FC<PersonalPageProps> = ({
           </button>
         </div>
       </form>
-
       {/* Resume Upload Section */}
       <h2 className="text-lg font-semibold mt-6">Your CV/Resume</h2>
       <div className="flex justify-center mt-4">

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FiSearch, FiMapPin } from "react-icons/fi";
-import Container from "../../Container";
+import Container from "../../common/Container";
 import { CompanySearchQuery } from "@/app/types";
 import { countryOptions } from "@/app/options";
 import { stringifyQuery } from "@/app/utils";

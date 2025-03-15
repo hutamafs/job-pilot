@@ -1,18 +1,21 @@
-import Container from "./Container";
+import Container from "./common/Container";
 import JobCard from "./pages/Jobs/JobCard";
-import EmployerCard from "./EmployerCard";
-import CandidateCard from "./CandidateCard";
-import DashboardJobCard from "./DashboardJobCard";
-import Pagination from "./Pagination";
+import CompanyCard from "./pages/Candidates/CompanyCard";
+import CandidateCard from "./pages/Candidates/CandidateCard";
+import DashboardJobCard from "./pages/Candidates/DashboardJobCard";
+import Pagination from "./common/Pagination";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import Modal from "./Modal";
-import Loading from "./LoadingSpinner";
+import Modal from "./common/Modal";
+import Loading from "./common/LoadingSpinner";
 import MutationStatus from "./MutationStatus";
-import ProfileUpload from "./ProfilePictureUploadComponent";
-import ResumeUpload from "./ResumeUpload";
-import Notification from "./Notification";
-import LoadingSpinner from "./LoadingSpinner";
+import ProfileUpload from "./common/ProfilePictureUploadComponent";
+import ResumeUpload from "./common/ResumeUpload";
+import Notification from "./common/Notification";
+import LoadingSpinner from "./common/LoadingSpinner";
+import UploadContainer from "./UploadContainer";
+import PostedJobs from "./pages/Companies/PostedJobs";
+import EmptyState from "./common/EmptyState";
 
 export {
   Container,
@@ -20,7 +23,7 @@ export {
   Pagination,
   Navbar,
   Footer,
-  EmployerCard,
+  CompanyCard,
   CandidateCard,
   Modal,
   DashboardJobCard,
@@ -30,4 +33,7 @@ export {
   ResumeUpload,
   Notification,
   LoadingSpinner,
+  UploadContainer,
+  PostedJobs,
+  EmptyState,
 };

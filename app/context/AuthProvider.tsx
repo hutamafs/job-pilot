@@ -1,16 +1,17 @@
 "use client";
-
-import { useRouter } from "next/navigation";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { Candidate, Company } from "../types";
+import { fetchUser } from "../utils/supabase/getUserAfterSignIn";
+import { createBrowserClient } from "@supabase/ssr";
+import { type SupabaseClient } from "@supabase/supabase-js";
 
 // Define User Context Type
 interface UserContextType {
   user: Candidate | Company | null;
-  loading: boolean;
-  fetchUser: () => Promise<void>;
-  signOut: () => Promise<void>;
+  setUser: (user: Candidate | Company | null) => void;
   role: string;
+  setRole: (role: string) => void;
+  supabase: SupabaseClient;
 }
 
 // Create Context
@@ -19,50 +20,29 @@ const AuthContext = createContext<UserContextType | null>(null);
 // ✅ Provider Component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Candidate | Company | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
-  const [role, setRole] = useState<string>("CANDIDATE");
-  // Fetch User on Load
-  const fetchUser = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/get-user", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      const { data, role } = await res.json();
-      if (res.ok) {
-        setUser(data);
-        setRole(role);
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.log("Error fetching user:", (error as Error).message);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Sign Out Function
-  const signOut = async () => {
-    await fetch("/api/sign-out", {
-      method: "GET",
-      credentials: "include",
-    });
-    setUser(null);
-    router.push("/sign-in");
-  };
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [role, setRole] = useState<string>("");
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
-    fetchUser(); // Fetch user on load
-  }, []);
+    const restoreSession = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        const { data: user } = await fetchUser(data.user.id);
+        setUser(user);
+        setRole(user?.role);
+      }
+      setIsHydrated(true);
+    };
+    restoreSession();
+  }, [supabase.auth]);
 
   return (
-    <AuthContext.Provider value={{ user, loading, fetchUser, signOut, role }}>
-      {children}
+    <AuthContext.Provider value={{ user, setUser, role, setRole, supabase }}>
+      {isHydrated ? children : null}
     </AuthContext.Provider>
   );
 };

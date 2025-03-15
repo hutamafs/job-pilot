@@ -1,4 +1,4 @@
-import { AuthProvider } from "./AuthProvider";
 import { NotifProvider } from "./NotificationProvider";
+import { AuthProvider } from "./AuthProvider";
 
-export { AuthProvider, NotifProvider };
+export { NotifProvider, AuthProvider };

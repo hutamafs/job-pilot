@@ -3,13 +3,13 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import Container from "../../Container";
+import Container from "../../common/Container";
 
 const pathLabels: Record<string, string> = {
   jobs: "Find Jobs",
   "job-detail": "Job Details",
   "employer-detail": "Employer Details",
-  employers: "Find Employers"
+  employers: "Find Employers",
 };
 
 const Breadcrumb = () => {
@@ -42,14 +42,18 @@ const Breadcrumb = () => {
         </span>
 
         <nav className="text-sm text-gray-500">
-          <Link href="/" className="text-gray-600 hover:text-black">Home</Link>
+          <Link href="/" className="text-gray-600 hover:text-black">
+            Home
+          </Link>
           {breadcrumbs.map((crumb, index) => (
             <span key={crumb.href}>
               {" / "}
-              <Link 
-                href={crumb.href} 
+              <Link
+                href={crumb.href}
                 className={`hover:text-black ${
-                  index === breadcrumbs.length - 1 ? "text-black font-semibold" : "text-gray-600"
+                  index === breadcrumbs.length - 1
+                    ? "text-black font-semibold"
+                    : "text-gray-600"
                 }`}
               >
                 {crumb.label.charAt(0).toUpperCase() + crumb.label.slice(1)}

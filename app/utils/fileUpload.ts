@@ -1,6 +1,6 @@
 const uploadFile = async (file: File, folder: string) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}api/upload`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/upload`, {
       method: "POST",
       body: JSON.stringify({
         fileName: file.name,
