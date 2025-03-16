@@ -1,5 +1,4 @@
 import { Container } from "@/app/components";
-import { cookies } from "next/headers";
 import ActionComponent from "@/app/components/pages/Jobs/[id]/Action";
 import {
   FaRegCalendarAlt,
@@ -11,10 +10,11 @@ import {
 import { FiMapPin } from "react-icons/fi";
 import { IoIosLink } from "react-icons/io";
 import { FaLinkedin, FaFacebook, FaTwitter, FaEnvelope } from "react-icons/fa";
+import { createClient } from "@/app/utils/supabase/server";
 
 const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const cookie = await cookies();
-  const token = cookie.get("sb-access-token")?.value;
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
   try {
     const resolvedParams = await params;
     const response = await fetch(
@@ -22,7 +22,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${token}`,
+          Authorization: `${user?.user?.id}`,
         },
       }
     );

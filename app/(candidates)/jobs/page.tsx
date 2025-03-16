@@ -1,5 +1,4 @@
-"use server";
-// export const dynamic = "force-dynamic";
+export const dynamic = "force-dynamic";
 import { Container, JobCard } from "@/app/components";
 import { Job as JobType, JobSearchQuery } from "@/app/types";
 import { Pagination } from "@/app/components";

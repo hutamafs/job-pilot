@@ -59,7 +59,6 @@ export default async function middleware(request: NextRequest) {
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     return NextResponse.redirect(signInUrl);
   }
-  console.log(user.user, 626262);
 
   // User is signed in and trying to access sign-in or sign-up
   if (user.user && isAuthRoute) {

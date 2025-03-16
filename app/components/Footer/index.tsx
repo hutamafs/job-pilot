@@ -1,17 +1,17 @@
 "use server";
 import Link from "next/link";
-import { getUser } from "@/app/utils/supabase/getUser";
+// import { getUser } from "@/app/utils/supabase/getUser";
 
 import Container from "../Container";
 
 const Footer = async () => {
-  const user = await getUser();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
-    headers: {
-      Authorization: `${user?.id}`,
-    },
-  });
-  const { role } = await res.json();
+  // const user = await getUser();
+  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
+  //   headers: {
+  //     Authorization: `${user?.id}`,
+  //   },
+  // });
+
   return (
     <Container backgroundColor="bg-black-900">
       <footer className="text-gray-400 py-12 mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">

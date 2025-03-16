@@ -17,7 +17,6 @@ interface FavoriteJobCardType {
 }
 
 const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
-  console.log(job, 20);
   const isExpired = job.expiredAt && new Date(job.expiredAt) < new Date();
   const router = useRouter();
   const [, setIsLoading] = useState(false);

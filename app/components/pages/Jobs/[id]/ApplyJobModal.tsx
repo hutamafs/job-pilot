@@ -80,7 +80,7 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
 
             {/* Toolbar */}
             {editor && (
-              <div className="flex space-x-2 mb-2 bg-gray-100 p-2 rounded-md">
+              <div className="flex flex-col md:flex-row space-y-2 md:space-x-2 bg-gray-100 p-2 rounded-md">
                 <button
                   onClick={() => editor.chain().focus().toggleBold().run()}
                   className={`px-2 py-1 text-sm rounded-md ${
@@ -89,7 +89,7 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
                       : "bg-gray-200"
                   }`}
                 >
-                  Bold
+                  bold
                 </button>
                 <button
                   onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -146,7 +146,7 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
             )}
 
             {/* Editor Content */}
-            <div className="border rounded-md p-2 min-h-[150px]">
+            <div className="border editor-container rounded-md mt-4 p-2 min-h-[150px] h-[200px]">
               <EditorContent editor={editor} />
             </div>
 

@@ -3,7 +3,6 @@ import { FaStar, FaBriefcase } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi2";
 import { JobApplication as JobAppType } from "@/app/types";
-import apiRequest from "@/app/utils/apiRequest.server";
 import { Pagination, DashboardJobCard } from "@/app/components";
 import FavoriteJobCard from "@/app/components/FavoriteJobCard";
 import { createClient } from "@/app/utils/supabase/server";
@@ -22,7 +21,6 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
     },
   });
   const { data: userData } = await res.json();
-  console.log(userData, 2626);
   const { page } = await params;
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams?.page) || 1;
@@ -30,28 +28,38 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
 
   switch (page) {
     case "overview":
-      data = await apiRequest<{
-        jobs: JobAppType[];
-        totalJobs: number;
-        totalPages: number;
-      }>(`/appliedJobs/${userData?.id}?limit=3`);
+      const ovRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?limit=3`, {
+        headers: {
+          Authorization: `${user?.user?.id}`,
+        },
+      });
+      const { data: ovData } = await ovRes.json();
+      data = ovData;
       break;
     case "applied-jobs":
-      data = await apiRequest<{
-        jobs: JobAppType[];
-        totalJobs: number;
-        totalPages: number;
-      }>(`/appliedJobs/${userData?.id}?page=${currentPage}`);
+      const apRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?page=${currentPage}`, {
+        headers: {
+          Authorization: `${user?.user?.id}`,
+        },
+      });
+      console.log(userData?.id, 4646)
+      const { data: apData } = await apRes.json();
+      data = apData;
       break;
     default:
-      data = await apiRequest<{
-        jobs: JobAppType[];
-        totalJobs: number;
-        totalPages: number;
-      }>(`/savedJobs/${userData?.id}?page=${currentPage}`);
+      const svRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/savedJobs/${userData?.id}?page=${currentPage}`,
+        {
+          headers: {
+            Authorization: `${user?.user?.id}`,
+          },
+        }
+      );
+      const { data: svData } = await svRes.json();
+      data = svData;
       break;
   }
-  const { jobs, totalJobs, totalPages } = data.data;
+  const { jobs, totalJobs, totalPages } = data;
   if (!data) {
     return <div>Loading...</div>;
   }

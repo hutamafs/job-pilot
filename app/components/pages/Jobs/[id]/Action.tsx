@@ -6,6 +6,7 @@ import ApplyJobModal from "./ApplyJobModal";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { FaSpinner, FaBookmark } from "react-icons/fa";
 import { unsaveJob, saveJob } from "../query";
+
 const ActionComponent = ({
   id,
   name,
