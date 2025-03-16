@@ -6,6 +6,7 @@ import { JobApplication as JobAppType } from "@/app/types";
 import apiRequest from "@/app/utils/apiRequest.server";
 import { Pagination, DashboardJobCard } from "@/app/components";
 import FavoriteJobCard from "@/app/components/FavoriteJobCard";
+import { createClient } from "@/app/utils/supabase/server";
 
 interface CandidatePageProps {
   params: Promise<{ page: string }>;
@@ -13,11 +14,15 @@ interface CandidatePageProps {
 }
 
 const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
-  const { data: user } = await apiRequest<{
-    id: string;
-    name: string;
-    savedJobs: string[];
-  }>("/get-user");
+  const supabase = await createClient();
+  const { data: user } = await supabase.auth.getUser();
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
+    headers: {
+      Authorization: `${user?.user?.id}`,
+    },
+  });
+  const { data: userData } = await res.json();
+  console.log(userData, 2626);
   const { page } = await params;
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams?.page) || 1;
@@ -29,21 +34,21 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
         jobs: JobAppType[];
         totalJobs: number;
         totalPages: number;
-      }>(`/appliedJobs/${user.id}?limit=3`);
+      }>(`/appliedJobs/${userData?.id}?limit=3`);
       break;
     case "applied-jobs":
       data = await apiRequest<{
         jobs: JobAppType[];
         totalJobs: number;
         totalPages: number;
-      }>(`/appliedJobs/${user.id}?page=${currentPage}`);
+      }>(`/appliedJobs/${userData?.id}?page=${currentPage}`);
       break;
     default:
       data = await apiRequest<{
         jobs: JobAppType[];
         totalJobs: number;
         totalPages: number;
-      }>(`/savedJobs/${user.id}?page=${currentPage}`);
+      }>(`/savedJobs/${userData?.id}?page=${currentPage}`);
       break;
   }
   const { jobs, totalJobs, totalPages } = data.data;
@@ -57,7 +62,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
       {page === "overview" && (
         <div className="bg-white rounded-lg">
           <h2 className="text-xl text-black font-semibold">
-            Hello, {user.name}
+            Hello, {userData?.name}
           </h2>
           <p className="text-gray-500">
             Here is your daily activities and job alerts
@@ -74,7 +79,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
             <StatCard
               icon={<FaStar />}
               label="Saved Jobs"
-              count={user.savedJobs.length}
+              count={userData?.savedJobs.length}
               color="yellow"
             />
           </div>

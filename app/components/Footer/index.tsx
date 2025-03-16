@@ -12,7 +12,6 @@ const Footer = async () => {
     },
   });
   const { role } = await res.json();
-  console.log(role, 1515);
   return (
     <Container backgroundColor="bg-black-900">
       <footer className="text-gray-400 py-12 mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
