@@ -48,6 +48,7 @@ export default async function RootLayout({
     headers: {
       Authorization: `${user?.id}`,
     },
+    cache: "no-store",
   });
   const { data, role } = await res.json();
   return (

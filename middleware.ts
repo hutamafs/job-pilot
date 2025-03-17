@@ -7,8 +7,6 @@ export default async function middleware(request: NextRequest) {
   const supabase = await createClient();
   const response = NextResponse.next({ request });
   const { pathname, origin: urlOrigin } = request.nextUrl;
-  // const cookieStore = (await cookies()).getAll();
-  // console.log(cookieStore, 9999);
 
   // ✅ CORS Allowed Origins
   const allowedOrigins = [
@@ -71,6 +69,7 @@ export default async function middleware(request: NextRequest) {
     // const signInUrl = new URL("/sign-in", urlOrigin);
     // signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     const url = request.nextUrl.clone();
+    console.log(url, "ini url")
     url.pathname = "/sign-in";
     return NextResponse.rewrite(url);
     // return NextResponse.redirect(signInUrl);

@@ -3,7 +3,14 @@ import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
 import { signInAction } from "@/app/api/(auth)/sign-in/route";
 
-const CandidateSignIn = () => {
+interface SignInPageProps {
+  searchParams?: Promise<{ callbackUrl?: string }>;
+}
+
+const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
+  const params = await searchParams;
+  const callbackUrl = params?.callbackUrl || "/";
+
   return (
     <div className="flex items-center justify-center bg-gray-100 p-6 min-h-screen">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
@@ -28,6 +35,9 @@ const CandidateSignIn = () => {
             required
             className="border h-10 p-2 rounded-md w-full"
           />
+
+
+          <input type="hidden" name="callbackUrl" value={callbackUrl} />
 
           {/* Sign In Button */}
           <button
@@ -55,10 +65,11 @@ const CandidateSignIn = () => {
   );
 };
 
-const Page = () => {
+
+const Page = async ({ searchParams }: SignInPageProps) => {
   return (
     <Suspense fallback={<LoadingSpinner />}>
-      <CandidateSignIn />
+      <CandidateSignIn searchParams={searchParams} />
     </Suspense>
   );
 };

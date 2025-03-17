@@ -14,6 +14,7 @@ export async function GET(req: Request) {
     const industry = searchParams.getAll("industry") || null;
     const jobType = searchParams.getAll("jobType") || null;
 
+
     const user = await prisma.user.findUnique({
       where: { id },
     });

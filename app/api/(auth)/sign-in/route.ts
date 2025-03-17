@@ -5,7 +5,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { redirect } from "next/navigation";
 
 function encodedRedirect(
-  type: "error" | "success",
+  type: "error" | "success" | "signedIn",
   path: string,
   message: string
 ) {
@@ -15,6 +15,7 @@ function encodedRedirect(
 export const signInAction = async (formData: FormData) => {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const callbackUrl = formData.get("callbackUrl") || "/";
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -26,7 +27,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return encodedRedirect("success", "/", "Signed in successfully!");
+  return encodedRedirect("signedIn", callbackUrl as string, "true");
 };
 
 // export async function POST(req: Request) {

@@ -1,25 +1,40 @@
 "use client";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useNotif } from "./context/NotificationProvider";
-import { useEffect } from "react";
 import { LoadingSpinner } from "./components";
 
 const ParamsComponent = () => {
   const params = useSearchParams();
   const router = useRouter();
-  const confirmed = params.get("email_confirmed") === "true";
+  const emailConfirmed = params.get("email_confirmed") === "true";
+  const signedIn = params.get("signedIn") === "true";
   const { setNotif } = useNotif();
+  
+  // ✅ Prevent redundant execution
+  const hasHandledEmail = useRef(false);
+  const hasHandledSignIn = useRef(false);
 
+  // ✅ Handle email confirmation
   useEffect(() => {
-    if (confirmed) {
+    if (emailConfirmed && !hasHandledEmail.current) {
+      hasHandledEmail.current = true; // Prevent re-execution
       setNotif("success", "Email confirmed. Please sign in to continue.");
       setTimeout(() => {
         router.replace("/sign-in");
       }, 3000);
     }
-  }, [confirmed, router, setNotif]);
-  return <></>;
+  }, [emailConfirmed, router, setNotif]);
+
+  // ✅ Handle successful sign-in
+  useEffect(() => {
+    if (signedIn && !hasHandledSignIn.current) {
+      hasHandledSignIn.current = true; // Prevent re-execution
+      setNotif("success", "Signed in successfully!");
+    }
+  }, [signedIn, setNotif]);
+
+  return null;
 };
 
 const Page = () => {

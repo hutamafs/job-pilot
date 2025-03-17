@@ -23,16 +23,18 @@ const Navbar = ({
   const router = useRouter();
   const { setNotif } = useNotif();
   const [data, setData] = useState({
+    role,
     id: "",
   });
 
   useEffect(() => {
     if (user) {
       setData({
+        role,
         id: user?.id,
       });
     }
-  }, [user]);
+  }, [user, role]);
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
@@ -46,16 +48,19 @@ const Navbar = ({
     },
   ];
   const logout = async () => {
+    setData({
+      role: "",
+      id: "",
+    });
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     await supabase.auth.signOut();
-    setData({
-      id: "",
-    });
+    router.refresh()
     router.push("/sign-in");
     setNotif("success", "Signed out successfully");
+    console.log(user)
   };
 
   return (
@@ -65,10 +70,13 @@ const Navbar = ({
           JobPilot
         </Link>
 
+      {/* {JSON.stringify(user, null, 2)} */}
+      {/* {JSON.stringify(user, null, 2)} */}
+
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center">
           {navLinks
-            .filter((d) => d.role === "ALL" || d.role === role)
+            .filter((d) => d.role === "ALL" || d.role === data.role)
             .map(({ name, path }, index) => (
               <li key={index} className="mr-6">
                 <Link
@@ -112,7 +120,7 @@ const Navbar = ({
         <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg p-6 z-50">
           <ul className="flex flex-col items-start space-y-4">
             {navLinks
-              .filter((d) => d.role === "ALL" || d.role === role)
+              .filter((d) => d.role === "ALL" || d.role === data.role)
               .map(({ name, path }, index) => (
                 <li key={index}>
                   <Link
