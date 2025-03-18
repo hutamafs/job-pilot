@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Company as CompanyType } from "@/app/types";
 
 const EmployerCard: React.FC<CompanyType> = (props) => {
@@ -12,7 +12,7 @@ const EmployerCard: React.FC<CompanyType> = (props) => {
         <Image
           width={48}
           height={48}
-          src={props.profilePicture || ""}
+          src={props.logo || ""}
           alt={props.name}
           className="w-16 h-16 mr-2 rounded-lg"
         />

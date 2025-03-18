@@ -43,7 +43,7 @@ export default async function middleware(request: NextRequest) {
     "/jobs",
     "/candidates",
   ];
-  const authRoutes = ["/sign-in", "/candidate/sign-up"];
+  const authRoutes = ["/sign-in", "/candidate/sign-up", "/company/sign-up"];
 
   const isProtectedRoute = protectedRoutes.some((path) =>
     pathname.startsWith(path)
@@ -60,6 +60,8 @@ export default async function middleware(request: NextRequest) {
 
   // User is signed in and trying to access sign-in or sign-up
   if (user.user && isAuthRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
     return NextResponse.redirect(new URL("/", urlOrigin));
   }
 
@@ -69,7 +71,6 @@ export default async function middleware(request: NextRequest) {
     // const signInUrl = new URL("/sign-in", urlOrigin);
     // signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     const url = request.nextUrl.clone();
-    console.log(url, "ini url")
     url.pathname = "/sign-in";
     return NextResponse.rewrite(url);
     // return NextResponse.redirect(signInUrl);
@@ -86,8 +87,6 @@ export const config = {
     "/companies/:path*",
     "/jobs/:path*",
     "/sign-in",
-    "/sign-up",
-    "/candidate/sign-up",
   ],
 };
 

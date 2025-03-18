@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useState } from "react";
 import { FiBookmark } from "react-icons/fi";
 import { Job as JobCardProps } from "@/app/types";
@@ -69,7 +69,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             <Image
               width={48}
               height={48}
-              src={props.company.profilePicture}
+              src={props.company.logo || ""}
               alt={props.title}
               className="w-16 h-16 mr-2 rounded-lg"
             />

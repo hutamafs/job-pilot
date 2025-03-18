@@ -9,7 +9,7 @@ datasource db {
 
 enum UserRole {
   CANDIDATE
-  EMPLOYER
+  COMPANY
   ADMIN
 }
 
@@ -57,19 +57,25 @@ model Candidate {
 model Company {
   id             String   @id @default(uuid())
   name           String
-  profilePicture String?
+  logo String?
+  banner String?
   founded        DateTime
   description    String
   benefits       Json
   industry       String
   phone          String
-  teamSize       Int
+  teamSize       String
   vision         String?
   email          String   @unique
   website        String?
   createdAt      DateTime @default(now())
   jobs           Job[]
   location       String
+  facebook String?
+  twitter String?
+  instagram String?
+  youtube String?
+  organizationType String?
   user           User?    @relation(fields: [userId], references: [id])
 userId         String?  @unique
 }

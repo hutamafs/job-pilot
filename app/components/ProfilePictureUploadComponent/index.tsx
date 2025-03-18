@@ -1,6 +1,6 @@
 import { FaCamera } from "react-icons/fa";
 import LoadingSpinner from "../LoadingSpinner";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Candidate as CandidateType } from "@/app/types";
 
 interface ProfileUploadProps {

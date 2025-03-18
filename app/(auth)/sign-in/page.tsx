@@ -1,22 +1,91 @@
-import { Suspense } from "react";
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
-import { signInAction } from "@/app/api/(auth)/sign-in/route";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useNotif } from "@/app/context/NotificationProvider";
+import { useAuth } from "@/app/context/AuthProvider";
+import { createBrowserClient } from "@supabase/ssr";
+import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 
-interface SignInPageProps {
-  searchParams?: Promise<{ callbackUrl?: string }>;
-}
+const CandidateSignIn = () => {
+  const params = useSearchParams();
+  const role = params.get("role");
+  const { setNotif } = useNotif();
+  const { setUser, setRole } = useAuth();
+  const [routeRole, setRouteRole] = useState(role || "CANDIDATE");
 
-const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
-  const params = await searchParams;
-  const callbackUrl = params?.callbackUrl || "/";
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+      if (data.user?.role === "authenticated") {
+        const { data: user } = await fetchUser(data.user.id);
+
+        if (user.role === routeRole) {
+          setUser(user);
+          setRole(user.role);
+          setNotif("success", "Signed in successfully");
+          router.push(params.get("callbackUrl") || "/");
+        } else {
+          await supabase.auth.signOut();
+          throw new Error(
+            error?.message ||
+              `you dont have access to this account for ${routeRole} portal`
+          );
+        }
+      } else {
+        throw new Error(error?.message || "Invalid credentials");
+      }
+    } catch (error) {
+      setNotif("error", (error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center bg-gray-100 p-6 min-h-screen">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        {/* Toggle between Candidate & Employer */}
+        <div className="flex justify-center mb-4">
+          <button
+            onClick={() => setRouteRole("CANDIDATE")}
+            className={`px-4 py-2 rounded-l-md ${routeRole === "CANDIDATE" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          >
+            Candidate
+          </button>
+          <button
+            onClick={() => setRouteRole("COMPANY")}
+            className={`px-4 py-2 rounded-r-md ${routeRole === "COMPANY" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          >
+            Company
+          </button>
+        </div>
+
         <h2 className="text-2xl font-semibold text-center text-gray-700">
-          Candidate Sign In
+          {routeRole} Sign In
         </h2>
+
         <form className="flex flex-col gap-4 mt-4">
           {/* Email Input */}
           <input
@@ -25,6 +94,8 @@ const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
             placeholder="Email"
             required
             className="border h-10 p-2 rounded-md w-full"
+            onChange={handleChange}
+            value={formData.email}
           />
 
           {/* Password Input */}
@@ -34,19 +105,18 @@ const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
             placeholder="Password"
             required
             className="border h-10 p-2 rounded-md w-full"
+            onChange={handleChange}
+            value={formData.password}
           />
-
-
-          <input type="hidden" name="callbackUrl" value={callbackUrl} />
 
           {/* Sign In Button */}
           <button
-            // type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
-            }`}
-            formAction={signInAction}
+            type="submit"
+            className={`w-full bg-blue-600 text-white py-2 rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+            onClick={handleSubmit}
+            disabled={isLoading}
           >
-            sign in
+            {isLoading ? <LoadingSpinner /> : "Sign in"}
           </button>
         </form>
 
@@ -54,7 +124,11 @@ const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
         <p className="text-center text-sm mt-4 text-gray-600">
           Don&apos;t have an account?{" "}
           <Link
-            href="/candidate/sign-up"
+            href={
+              routeRole === "COMPANY"
+                ? "/company/sign-up"
+                : "/candidate/sign-up"
+            }
             className="text-blue-600 hover:underline"
           >
             Sign up here
@@ -65,13 +139,4 @@ const CandidateSignIn = async ({ searchParams }: SignInPageProps) => {
   );
 };
 
-
-const Page = async ({ searchParams }: SignInPageProps) => {
-  return (
-    <Suspense fallback={<LoadingSpinner />}>
-      <CandidateSignIn searchParams={searchParams} />
-    </Suspense>
-  );
-};
-
-export default Page;
+export default CandidateSignIn;

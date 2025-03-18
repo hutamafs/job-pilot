@@ -10,7 +10,7 @@ const ParamsComponent = () => {
   const emailConfirmed = params.get("email_confirmed") === "true";
   const signedIn = params.get("signedIn") === "true";
   const { setNotif } = useNotif();
-  
+  const role = params.get("role");
   // ✅ Prevent redundant execution
   const hasHandledEmail = useRef(false);
   const hasHandledSignIn = useRef(false);
@@ -18,18 +18,18 @@ const ParamsComponent = () => {
   // ✅ Handle email confirmation
   useEffect(() => {
     if (emailConfirmed && !hasHandledEmail.current) {
-      hasHandledEmail.current = true; // Prevent re-execution
+      hasHandledEmail.current = true;
       setNotif("success", "Email confirmed. Please sign in to continue.");
       setTimeout(() => {
-        router.replace("/sign-in");
+        router.replace(`/sign-in?role=${role}`);
       }, 3000);
     }
-  }, [emailConfirmed, router, setNotif]);
+  }, [emailConfirmed, router, setNotif, role]);
 
   // ✅ Handle successful sign-in
   useEffect(() => {
     if (signedIn && !hasHandledSignIn.current) {
-      hasHandledSignIn.current = true; // Prevent re-execution
+      hasHandledSignIn.current = true;
       setNotif("success", "Signed in successfully!");
     }
   }, [signedIn, setNotif]);

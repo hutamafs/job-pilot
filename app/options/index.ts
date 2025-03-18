@@ -278,3 +278,91 @@ export const skillsOptions: string[] = [
   "Networking",
   "Conflict Resolution",
 ];
+
+export const teamSizeOptions = [
+  {
+    label: "1-10 employees",
+    value: "1-10",
+  },
+  {
+    label: "11-50 employees",
+    value: "11-50",
+  },
+  {
+    label: "51-200 employees",
+    value: "51-200",
+  },
+  {
+    label: "201-500 employees",
+    value: "201-500",
+  },
+  {
+    label: "501-1000 employees",
+    value: "501-1000",
+  },
+  {
+    label: "1001-5000 employees",
+    value: "1001-5000",
+  },
+  {
+    label: "5001-10000 employees",
+    value: "5001-10000",
+  },
+  {
+    label: "10001+ employees",
+    value: "10001+",
+  },
+];
+
+
+export const organizationTypeOptions = [
+  {
+    label: "Startup",
+    value: "startup",
+  },
+  {
+    label: "Small Business",
+    value: "small_business",
+  },
+  {
+    label: "Medium Enterprise",
+    value: "medium_enterprise",
+  },
+  {
+    label: "Large Corporation",
+    value: "large_corporation",
+  },
+  {
+    label: "Non-Profit",
+    value: "non_profit",
+  },
+  {
+    label: "Government Agency",
+    value: "government_agency",
+  },
+  {
+    label: "Educational Institution",
+    value: "educational_institution",
+  },
+  {
+    label: "Freelancer",
+    value: "freelancer",
+  },
+];
+export const companyBenefitsOptions = [
+  { label: "Health Insurance", value: "health_insurance" },
+  { label: "Paid Time Off", value: "paid_time_off" },
+  { label: "Retirement Plan", value: "retirement_plan" },
+  { label: "Work From Home", value: "work_from_home" },
+  { label: "Gym Membership", value: "gym_membership" },
+  { label: "Stock Options", value: "stock_options" },
+  { label: "Tuition Reimbursement", value: "tuition_reimbursement" },
+  { label: "Childcare Assistance", value: "childcare_assistance" },
+  { label: "Commuter Benefits", value: "commuter_benefits" },
+  { label: "Employee Discounts", value: "employee_discounts" },
+  { label: "Wellness Programs", value: "wellness_programs" },
+  { label: "Professional Development", value: "professional_development" },
+  { label: "Flexible Schedule", value: "flexible_schedule" },
+  { label: "Parental Leave", value: "parental_leave" },
+  { label: "Life Insurance", value: "life_insurance" },
+];

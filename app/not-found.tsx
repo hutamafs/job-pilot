@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from "next/legacy/image";
 
 import notFoundImage from '@/asset/404/404.webp';
 

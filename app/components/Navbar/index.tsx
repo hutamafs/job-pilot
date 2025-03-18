@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,33 +8,14 @@ import { FiMenu, FiX } from "react-icons/fi";
 import Container from "../Container";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { createBrowserClient } from "@supabase/ssr";
+import { useAuth } from "@/app/context/AuthProvider";
 
-const Navbar = ({
-  user,
-  role,
-}: {
-  user: {
-    id: string;
-  };
-  role: string;
-}) => {
+const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { setNotif } = useNotif();
-  const [data, setData] = useState({
-    role,
-    id: "",
-  });
-
-  useEffect(() => {
-    if (user) {
-      setData({
-        role,
-        id: user?.id,
-      });
-    }
-  }, [user, role]);
+  const { user, role, setRole, setUser } = useAuth();
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
@@ -48,19 +29,16 @@ const Navbar = ({
     },
   ];
   const logout = async () => {
-    setData({
-      role: "",
-      id: "",
-    });
+    setRole("");
+    setUser(null);
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
     await supabase.auth.signOut();
-    router.refresh()
+    router.refresh();
     router.push("/sign-in");
     setNotif("success", "Signed out successfully");
-    console.log(user)
   };
 
   return (
@@ -70,13 +48,11 @@ const Navbar = ({
           JobPilot
         </Link>
 
-      {/* {JSON.stringify(user, null, 2)} */}
-      {/* {JSON.stringify(user, null, 2)} */}
-
         {/* Desktop Navigation */}
         <ul className="hidden md:flex items-center">
           {navLinks
-            .filter((d) => d.role === "ALL" || d.role === data.role)
+            .filter((d) => d.role === "ALL" || d.role === role)
+            .filter((d) => (role ? d : d.name !== "Dashboard"))
             .map(({ name, path }, index) => (
               <li key={index} className="mr-6">
                 <Link
@@ -87,7 +63,7 @@ const Navbar = ({
                 </Link>
               </li>
             ))}
-          {data.id ? (
+          {user ? (
             <button
               className="px-4 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700 transition"
               onClick={() => {
@@ -120,7 +96,8 @@ const Navbar = ({
         <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg p-6 z-50">
           <ul className="flex flex-col items-start space-y-4">
             {navLinks
-              .filter((d) => d.role === "ALL" || d.role === data.role)
+              .filter((d) => d.role === "ALL" || d.role === role)
+              .filter((d) => (role ? d : d.name !== "Dashboard"))
               .map(({ name, path }, index) => (
                 <li key={index}>
                   <Link

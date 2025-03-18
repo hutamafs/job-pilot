@@ -38,7 +38,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center md:items-start">
               <div className="w-16 h-16 bg-gray-200 rounded-full">
-                {data.company.profilePicture}
+                {data.company.logo}
               </div>
               <div className="flex flex-col ml-4 md:justify-center">
                 <h1 className="text-xl font-bold text-black">{data.title}</h1>

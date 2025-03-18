@@ -3,7 +3,7 @@ import { HiArrowRight } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdAttachMoney } from "react-icons/md";
 import { BsBookmarkFill } from "react-icons/bs";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { Job as JobType } from "@/app/types";
 import { unsaveJob } from "../pages/Jobs/query";
 import { useState } from "react";
@@ -51,7 +51,7 @@ const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
         {/* Logo */}
         <div className="w-12 h-12 md:w-14 md:h-14 flex-shrink-0">
           <Image
-            src={job.company.profilePicture || "/default-company.png"}
+            src={job.company.logo || "/default-company.png"}
             width={125}
             height={125}
             className="rounded-md object-cover"

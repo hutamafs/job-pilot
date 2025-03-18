@@ -42,7 +42,6 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
           Authorization: `${user?.user?.id}`,
         },
       });
-      console.log(userData?.id, 4646)
       const { data: apData } = await apRes.json();
       data = apData;
       break;

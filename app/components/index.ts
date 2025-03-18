@@ -13,6 +13,7 @@ import ProfileUpload from "./ProfilePictureUploadComponent";
 import ResumeUpload from "./ResumeUpload";
 import Notification from "./Notification";
 import LoadingSpinner from "./LoadingSpinner";
+import UploadContainer from "./UploadContainer";
 
 export {
   Container,
@@ -30,4 +31,5 @@ export {
   ResumeUpload,
   Notification,
   LoadingSpinner,
+  UploadContainer,
 };

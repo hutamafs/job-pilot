@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaWallet } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";

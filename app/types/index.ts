@@ -24,19 +24,27 @@ export interface Job {
 export interface Company {
   id: string;
   name: string;
-  profilePicture: string;
+  logo?: string;
+  banner?: string;
   founded: Date;
   description: string;
   benefits: string[];
   industry: string;
   phone: string;
-  teamSize: number;
+  teamSize: string;
   vision?: string;
   email: string;
   website?: string;
   location: string;
   createdAt: Date;
   jobs: Job[];
+  facebook?: string;
+  twitter?: string;
+  instagram?: string;
+  youtube?: string;
+  userId?: string;
+  password: string;
+  organizationType?: string;
 }
 
 export interface SavedJob {

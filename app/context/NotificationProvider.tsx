@@ -81,7 +81,7 @@ export const NotifProvider = ({ children }: { children: React.ReactNode }) => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className={`fixed bottom-5 right-5 md:right-1/2 transform -translate-x-1/2 ${bgColor} 
+            className={`fixed bottom-5 right-5 md:right-2 transform -translate-x-1/2 ${bgColor} 
               text-white px-4 py-3 rounded-md shadow-lg flex items-center gap-2 
               text-sm font-medium z-50`}
           >
