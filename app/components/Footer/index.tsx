@@ -2,7 +2,7 @@
 import Link from "next/link";
 // import { getUser } from "@/app/utils/supabase/getUser";
 
-import Container from "../Container";
+import Container from "../common/Container";
 
 const Footer = async () => {
   // const user = await getUser();

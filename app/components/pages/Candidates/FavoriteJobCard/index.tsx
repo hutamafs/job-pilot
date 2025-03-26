@@ -5,11 +5,11 @@ import { MdAttachMoney } from "react-icons/md";
 import { BsBookmarkFill } from "react-icons/bs";
 import Image from "next/legacy/image";
 import { Job as JobType } from "@/app/types";
-import { unsaveJob } from "../pages/Jobs/query";
+import { unsaveJob } from "@/app/utils/jobs/query";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useNotif } from "@/app/context/NotificationProvider";
-import ApplyJobModal from "../pages/Jobs/[id]/ApplyJobModal";
+import ApplyJobModal from "./ApplyJobModal";
 
 interface FavoriteJobCardType {
   id: string;
@@ -72,7 +72,7 @@ const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
           <div className="flex items-center gap-x-4 justify-between mt-1">
             <div className="flex items-center gap-1">
               <IoLocationOutline className="text-gray-400 w-5 h-5" />
-              <p className="text-xs md:text-sm text-gray-500">{job.location}</p>
+              <p className="text-xs md:text-sm text-gray-500">{job.city}</p>
             </div>
             <div className="flex items-center">
               <MdAttachMoney className="text-gray-500 w-5 h-5" />
@@ -125,7 +125,7 @@ const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
           ) : (
             <button
               onClick={handleApplyNow}
-              className="text-gray-400 transition transform hover:scale-105 flex items-center gap-1 bg-primary500 text-white px-3 py-2 rounded-md"
+              className="transition transform hover:scale-105 flex items-center gap-1 bg-primary500 text-white px-3 py-2 rounded-md"
             >
               Apply Now
               <HiArrowRight />

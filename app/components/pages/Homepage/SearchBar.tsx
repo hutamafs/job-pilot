@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import Container from "../../Container";
+import Container from "../../common/Container";
 
 const SearchBar = () => {
   const [search, setSearch] = useState("");

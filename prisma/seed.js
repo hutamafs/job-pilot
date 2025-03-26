@@ -47,6 +47,7 @@ async function main() {
     await prisma.candidate.createMany({
       data: convertToString(candidatesData),
     });
+    await prisma.job.createMany({ data: convertToString(jobsData) });
 
     for (const user of usersData) {
       const isCandidate = user.id % 2 === 0; // Even = Candidate, Odd = Company
@@ -56,7 +57,7 @@ async function main() {
           id: String(user.id),
           email: user.email,
           password: user.password,
-          role: isCandidate ? "CANDIDATE" : "EMPLOYER",
+          role: isCandidate ? "CANDIDATE" : "COMPANY",
           ...(isCandidate
             ? { candidate: { connect: { id: String(user.id) } } } // Connect to Candidate
             : { company: { connect: { id: String(user.id) } } }), // Connect to Company
@@ -66,9 +67,9 @@ async function main() {
 
     // ✅ Insert Jobs
     await prisma.job.createMany({ data: convertToString(jobsData) });
-    await prisma.jobApplication.createMany({
-      data: convertToString(appliedJobsData),
-    });
+    // await prisma.jobApplication.createMany({
+    //   data: convertToString(appliedJobsData),
+    // });
 
     console.log("✅ Seeding completed successfully!");
   } catch (error) {

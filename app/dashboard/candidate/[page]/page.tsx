@@ -4,7 +4,7 @@ import { MdEdit } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi2";
 import { JobApplication as JobAppType } from "@/app/types";
 import { Pagination, DashboardJobCard } from "@/app/components";
-import FavoriteJobCard from "@/app/components/FavoriteJobCard";
+import FavoriteJobCard from "@/app/components/pages/Candidates/FavoriteJobCard";
 import { createClient } from "@/app/utils/supabase/server";
 
 interface CandidatePageProps {
@@ -28,20 +28,26 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
 
   switch (page) {
     case "overview":
-      const ovRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?limit=3`, {
-        headers: {
-          Authorization: `${user?.user?.id}`,
-        },
-      });
+      const ovRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?limit=3`,
+        {
+          headers: {
+            Authorization: `${user?.user?.id}`,
+          },
+        }
+      );
       const { data: ovData } = await ovRes.json();
       data = ovData;
       break;
     case "applied-jobs":
-      const apRes = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?page=${currentPage}`, {
-        headers: {
-          Authorization: `${user?.user?.id}`,
-        },
-      });
+      const apRes = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?page=${currentPage}`,
+        {
+          headers: {
+            Authorization: `${user?.user?.id}`,
+          },
+        }
+      );
       const { data: apData } = await apRes.json();
       data = apData;
       break;
@@ -184,7 +190,7 @@ type colorType = "blue" | "yellow";
 const OverviewCard = ({ d }: { d: JobAppType }) => (
   <tr className="border-b border-gray-200 hover:bg-gray-50">
     <td className="py-2 px-3 md:py-3 md:px-6">{d.job.title}</td>
-    <td className="py-2 px-3 md:py-3 md:px-6">{d.job.location}</td>
+    <td className="py-2 px-3 md:py-3 md:px-6">{d.job.city}</td>
     <td className="py-2 px-3 md:py-3 md:px-6">{d.job.salary}</td>
     <td className="py-2 px-3 md:py-3 md:px-6">
       {d.appliedAt ? new Date(d.appliedAt).toLocaleDateString() : ""}

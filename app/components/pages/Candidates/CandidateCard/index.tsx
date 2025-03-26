@@ -1,17 +1,23 @@
 "use client";
 
 import Image from "next/legacy/image";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaWallet } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import { HiArrowRight } from "react-icons/hi2";
-
+import { useNotif } from "@/app/context/NotificationProvider";
+import { saveCandidate, unsaveCandidate } from "@/app/utils/candidates/query";
 import ProfileModal from "./ProfileModal";
 import { Candidate as CandidateType } from "@/app/types";
+import LoadingSpinner from "@/app/components/common/LoadingSpinner";
 
-const ProfileCard: React.FC<CandidateType> = (d) => {
-  const [bookmarked, setBookmarked] = useState(false);
+const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
+  const [isSaved, setIsSaved] = useState(d.isSaved);
   const [isOpen, setIsOpen] = useState(false);
+  const { setNotif } = useNotif();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
@@ -20,6 +26,25 @@ const ProfileCard: React.FC<CandidateType> = (d) => {
       document.body.classList.remove("overflow-hidden");
     }
   }, [isOpen]);
+
+  const handleSaveCandidate = async () => {
+    try {
+      setIsLoading(true);
+      if (isSaved) {
+        await unsaveCandidate(d.id);
+        setNotif("success", "candidate has successfully been unsaved");
+      } else {
+        await saveCandidate(d.id);
+        setNotif("success", "candidate has successfully been saved");
+      }
+      setIsSaved(!isSaved);
+      router.refresh();
+    } catch (error) {
+      setNotif("error", (error as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
@@ -51,10 +76,12 @@ const ProfileCard: React.FC<CandidateType> = (d) => {
           </div>
         </div>
         <button
-          onClick={() => setBookmarked(!bookmarked)}
+          onClick={handleSaveCandidate}
           className="text-gray-400 hover:text-gray-600 absolute top-5 right-5 md:top-2 transition"
         >
-          {bookmarked ? (
+          {isLoading ? (
+            <LoadingSpinner />
+          ) : isSaved ? (
             <BsBookmarkFill className="text-blue-600" />
           ) : (
             <BsBookmark />
@@ -71,9 +98,11 @@ const ProfileCard: React.FC<CandidateType> = (d) => {
         profile={d}
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
+        isSaved={isSaved}
+        handleSaveCandidate={handleSaveCandidate}
       />
     </>
   );
 };
 
-export default ProfileCard;
+export default CandidateCard;

@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FiBookmark } from "react-icons/fi";
-import ApplyJobModal from "./ApplyJobModal";
+import ApplyJobModal from "../../Candidates/FavoriteJobCard/ApplyJobModal";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { FaSpinner, FaBookmark } from "react-icons/fa";
-import { unsaveJob, saveJob } from "../query";
+import { unsaveJob, saveJob } from "@/app/utils/jobs/query";
 
 const ActionComponent = ({
   id,

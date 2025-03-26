@@ -27,6 +27,11 @@ body {
   height: 100% !important;
 }
 
+.ProseMirror {
+  outline: none !important;
+  border: none !important;
+}
+
 .ProseMirror ol {
   list-style-type: decimal !important; /* ✅ Forces numbers (1, 2, 3) */
   padding-left: 1.5rem;

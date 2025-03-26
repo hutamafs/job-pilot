@@ -1,33 +1,36 @@
 import Image from "next/legacy/image";
-import Container from "../../Container";
-import * as Icon from '@/asset/banner';
+import Container from "../../common/Container";
+import * as Icon from "@/asset/banner";
 
 const data = [
   {
-    number: '1,75,324',
-    description: 'Live Jobs',
-    image: Icon.JobIcon
+    number: "1,75,324",
+    description: "Live Jobs",
+    image: Icon.JobIcon,
   },
   {
-    number: '1,75,324',
-    description: 'Companies',
-    image: Icon.CompanyIcon
+    number: "1,75,324",
+    description: "Companies",
+    image: Icon.CompanyIcon,
   },
   {
-    number: '1,75,324',
-    description: 'Candidate',
-    image: Icon.CandidateIcon
+    number: "1,75,324",
+    description: "Candidate",
+    image: Icon.CandidateIcon,
   },
   {
-    number: '1,75,324',
-    description: 'New Jobs',
-    image: Icon.JobIcon
-  }
-]
+    number: "1,75,324",
+    description: "New Jobs",
+    image: Icon.JobIcon,
+  },
+];
 
 const Banner = () => {
   return (
-    <Container className="py-[40px] lg:py-[100px] mx-auto" backgroundColor="bg-gray400">
+    <Container
+      className="py-[40px] lg:py-[100px] mx-auto"
+      backgroundColor="bg-gray400"
+    >
       <div className="w-full flex flex-col justify-center items-center">
         <div className="w-full flex justify-between items-center">
           <div className="flex flex-col w-[550px]">
@@ -35,7 +38,8 @@ const Banner = () => {
               Find a job that suits your interest & skills.
             </span>
             <span className="mt-6 text-gray-600 text-base">
-              Aliquam vitae turpis in diam convallis finibus in at risus. Nullam in scelerisque leo, eget sollicitudin velit bestibulum.
+              Aliquam vitae turpis in diam convallis finibus in at risus. Nullam
+              in scelerisque leo, eget sollicitudin velit bestibulum.
             </span>
           </div>
           <Image
@@ -46,10 +50,12 @@ const Banner = () => {
             alt="banner-image"
           />
         </div>
-      <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto mt-10">
-        {
-          data.map(({ number, description, image }) => (
-            <div key={description} className="flex items-center bg-white shadow-md p-5 rounded-lg">
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto mt-10">
+          {data.map(({ number, description, image }) => (
+            <div
+              key={description}
+              className="flex items-center bg-white shadow-md p-5 rounded-lg"
+            >
               <Image
                 src={image}
                 width={64}
@@ -62,12 +68,11 @@ const Banner = () => {
                 <p className="text-gray600 text-base">{description}</p>
               </div>
             </div>
-          )
-        )}
-      </div>
+          ))}
+        </div>
       </div>
     </Container>
-  )
+  );
 };
 
 export default Banner;

@@ -40,9 +40,7 @@ export const companyInfoSchema = z.object({
 
 export const companyFoundingSchema = z.object({
   organizationType: z.string().min(1, "Organization type is required"),
-  founded: z
-    .date()
-    .refine((date) => !isNaN(date.getTime()), "Founded date is required"),
+  founded: z.string().min(1, "Founded date is required"),
   industry: z.string().min(1, "Industry is required"),
   teamSize: z.string().min(1, "Team size is required"),
   vision: z.string().min(1, "Vision is required"),
@@ -54,4 +52,18 @@ export const companyContactSchema = z.object({
   location: z.string().min(1, "Location is required"),
   phone: z.string().regex(/^\+?\d{7,15}$/, "Invalid phone number format"),
   email: z.string().email("Invalid email address"),
+});
+
+export const jobSchema = z.object({
+  title: z.string().min(1, "Job title is required"),
+  description: z.string().min(1, "Description is required"),
+  requirements: z.array(z.string()).min(1, "Requirements cannot be empty"),
+  benefits: z.array(z.string()).min(1, "Benefits cannot be empty"),
+  jobType: z.string().min(1, "Job type is required"),
+  jobLevel: z.string().min(1, "Job level is required"),
+  experience: z.string().min(1, "Experience is required"),
+  education: z.string().min(1, "Education is required"),
+  salary: z.number().min(1, "Salary is required"),
+  country: z.string().min(1, "Country is required"),
+  city: z.string().min(1, "City is required"),
 });

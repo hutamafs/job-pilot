@@ -109,7 +109,6 @@ export default function SignupForm() {
         handleError(validatedFields.error);
         return;
       }
-      console.log("✅ Validation passed, moving to step:", currentStep + 1);
     }
     setCurrentStep(currentStep + 1);
   };
@@ -125,7 +124,9 @@ export default function SignupForm() {
         <div className="relative w-full h-2 bg-gray-300 rounded-full mb-6">
           <div
             className="absolute top-0 left-0 h-2 bg-blue-600 rounded-full transition-all"
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            style={{
+              width: `${Math.min(((currentStep + 1) / steps.length) * 100, 100)}%`,
+            }}
           />
         </div>
 

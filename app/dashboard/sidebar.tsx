@@ -10,8 +10,8 @@ import { FiSettings } from "react-icons/fi";
 const employerSidebar = [
   { name: "Overview", path: "overview", icon: <FaUser /> },
   {
-    name: "Employers Profile",
-    path: "employers-profile",
+    name: "Applied Candidates",
+    path: "applied-candidates",
     icon: <FaBriefcase />,
   },
   { name: "Post a Job", path: "post-job", icon: <FaBriefcase /> },
@@ -39,7 +39,7 @@ const Sidebar = ({ isCandidate }: { isCandidate: boolean }) => {
           {sidebarItems.map((item) => (
             <NavItem
               key={item.path}
-              href={`/dashboard/${isCandidate ? "candidate" : "employer"}/${item.path}`}
+              href={`/dashboard/${isCandidate ? "candidate" : "company"}/${item.path}`}
               label={item.name}
               icon={item.icon}
               active={subpath === item.path}

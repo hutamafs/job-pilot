@@ -33,7 +33,9 @@ const DashboardJobCard = ({
           <p className="text-xs text-gray-500">{job.company.name}</p>
         </div>
       </td>
-      <td className="py-3 px-6 text-left">{job.location}</td>
+      <td className="py-3 px-6 text-left">
+        {job.city}, {job.country}
+      </td>
       <td className="py-3 px-6 text-left font-semibold">${job.salary}</td>
       <td className="py-3 px-6 text-left">
         {new Date(appliedAt).toLocaleDateString()}

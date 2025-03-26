@@ -14,7 +14,6 @@ export async function GET(req: Request) {
     const industry = searchParams.getAll("industry") || null;
     const jobType = searchParams.getAll("jobType") || null;
 
-
     const user = await prisma.user.findUnique({
       where: { id },
     });
@@ -65,9 +64,9 @@ export async function GET(req: Request) {
             industry: { in: industry },
           },
         }),
-        location: location
-          ? { contains: location, mode: "insensitive" }
-          : undefined,
+        // location: location
+        //   ? { contains: location, mode: "insensitive" }
+        //   : undefined,
         jobType: jobType.length > 0 ? { in: jobType } : undefined,
         salary: salary > 0 ? { gte: salary } : undefined,
         OR: [

@@ -1,7 +1,7 @@
 import {
   Banner,
-  FeaturedJob,
-  TopCompanies,
+  // FeaturedJob,
+  // TopCompanies,
   QuickRegister,
 } from "@/app/components/pages/Homepage";
 import HomeWrapper from "./HomeWrapper";
@@ -12,8 +12,8 @@ const Home = async () => {
       <HomeWrapper />
       <div className="w-full h-full">
         <Banner />
-        <FeaturedJob />
-        <TopCompanies />
+        {/* <FeaturedJob />
+        <TopCompanies /> */}
         <QuickRegister />
       </div>
     </>

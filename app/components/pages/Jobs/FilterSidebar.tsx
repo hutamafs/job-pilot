@@ -3,7 +3,7 @@
 import { useEffect, useRef, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
-import { occupationType as jobTypes, industries } from "@/app/options";
+import { jobTypeOptions, industries } from "@/app/options";
 import { JobSearchQuery } from "@/app/types";
 
 const Pill = ({ str }: { str: string }) => (
@@ -144,17 +144,17 @@ const FilterSidebar = ({
         <div className="mb-4">
           <h3 className="text-md font-medium mb-2">Job Type</h3>
           <div className="space-y-2">
-            {jobTypes.map((type) => (
-              <label key={type} className="flex items-center space-x-2">
+            {jobTypeOptions.map(({ label, value }) => (
+              <label key={value} className="flex items-center space-x-2">
                 <input
                   type="checkbox"
                   className="accent-blue-600"
                   name="jobType"
-                  value={type}
+                  value={value}
                   onChange={handleInputChange}
-                  checked={query.jobType?.includes(type)}
+                  checked={query.jobType?.includes(value)}
                 />
-                <span>{type}</span>
+                <span>{label}</span>
               </label>
             ))}
           </div>

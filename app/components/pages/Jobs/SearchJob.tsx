@@ -2,7 +2,7 @@
 
 import { SetStateAction, Dispatch } from "react";
 import { FiSearch, FiMapPin, FiSliders } from "react-icons/fi";
-import Container from "../../Container";
+import Container from "../../common/Container";
 import { JobSearchQuery } from "@/app/types";
 import { countryOptions } from "@/app/options";
 interface JobSearchBarProps {

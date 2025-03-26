@@ -1,10 +1,12 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { StepProps } from "./page";
 import uploadFile from "@/app/utils/fileUpload";
 import { UploadContainer } from "@/app/components";
 import { countryOptions } from "@/app/options";
 
 export default function CompanyInfo({ data, setFormData }: StepProps) {
+  const pathname = usePathname();
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     name: string
@@ -68,22 +70,26 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
         onChange={handleChange}
         name="description"
       />
-      <input
-        type="email"
-        placeholder="Email Address"
-        className="w-full border p-2 rounded-md"
-        name="email"
-        value={data.email}
-        onChange={handleChange}
-      />
-      <input
-        type="text"
-        name="password"
-        placeholder="Password"
-        value={data.password}
-        onChange={handleChange}
-        className="border p-2 rounded-md w-full"
-      />
+      {pathname !== "/dashboard/company/settings" && (
+        <>
+          <input
+            type="email"
+            placeholder="Email Address"
+            className="w-full border p-2 rounded-md"
+            name="email"
+            value={data.email}
+            onChange={handleChange}
+          />
+          <input
+            type="text"
+            name="password"
+            placeholder="Password"
+            value={data.password}
+            onChange={handleChange}
+            className="border p-2 rounded-md w-full"
+          />
+        </>
+      )}
       <select
         className="w-full border p-2 rounded-md"
         name="location"

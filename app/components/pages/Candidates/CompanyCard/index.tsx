@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/legacy/image";
 import { Company as CompanyType } from "@/app/types";
 
-const EmployerCard: React.FC<CompanyType> = (props) => {
+const CompanyCard: React.FC<CompanyType> = (props) => {
   return (
     <div
       key={props.id}
@@ -40,4 +40,4 @@ const EmployerCard: React.FC<CompanyType> = (props) => {
   );
 };
 
-export default EmployerCard;
+export default CompanyCard;

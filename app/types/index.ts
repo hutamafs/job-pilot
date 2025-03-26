@@ -1,6 +1,5 @@
 export interface Job {
   id: string;
-  name: string;
   title: string;
   description: string;
   requirement: string[];
@@ -12,7 +11,8 @@ export interface Job {
   education: string;
   jobTags: string[];
   salary: string;
-  location: string;
+  country: string;
+  city: string;
   companyId: string;
   createdAt: Date;
   expiredAt: Date;
@@ -79,6 +79,7 @@ export interface Candidate {
   appliedJobs: Job[];
   savedJobs: Job[];
   skills: string[];
+  savedByCompanies: SavedCandidate[];
 }
 
 export interface JobApplication {
@@ -88,6 +89,7 @@ export interface JobApplication {
   status: string;
   appliedAt: string;
   job: Job;
+  candidate: Candidate;
 }
 
 export interface SettingsProps {
@@ -131,4 +133,14 @@ export interface CompanySearchQuery {
   search: string;
   location: string;
   page?: number;
+}
+
+export interface SavedCandidate {
+  id: string;
+  createdAt: Date;
+  company: Company;
+  companyId: string;
+  candidate: Candidate;
+  candidateId: string;
+  note?: string;
 }

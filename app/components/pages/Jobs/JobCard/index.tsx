@@ -4,7 +4,7 @@ import Image from "next/legacy/image";
 import { useState } from "react";
 import { FiBookmark } from "react-icons/fi";
 import { Job as JobCardProps } from "@/app/types";
-import { unsaveJob, saveJob } from "../query";
+import { unsaveJob, saveJob } from "../../../../utils/jobs/query";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { useRouter } from "next/navigation";
 import { FaBookmark, FaSpinner } from "react-icons/fa";
@@ -69,15 +69,17 @@ const JobCard: React.FC<JobCardProps> = (props) => {
             <Image
               width={48}
               height={48}
-              src={props.company.logo || ""}
+              src={props.company?.logo || ""}
               alt={props.title}
               className="w-16 h-16 mr-2 rounded-lg"
             />
             <div className="flex flex-col">
               <span className="text-gray-900 font-semibold">
-                {props.company.name}
+                {props.company?.name}
               </span>
-              <span className="text-gray-600">📍{props.location}</span>
+              <span className="text-gray-600">
+                📍{props.city}, {props.country}
+              </span>
             </div>
           </div>
           <button

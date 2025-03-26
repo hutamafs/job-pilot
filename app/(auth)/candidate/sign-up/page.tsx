@@ -9,8 +9,8 @@ import {
   countryOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
-import ResumeUpload from "@/app/components/ResumeUpload";
-import ProfileUpload from "@/app/components/ProfilePictureUploadComponent";
+import ResumeUpload from "@/app/components/common/ResumeUpload";
+import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
 import SelectSkill from "./SelectSkill";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";

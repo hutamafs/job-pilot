@@ -18,6 +18,7 @@ const AuthContext = createContext<UserContextType | null>(null);
 // ✅ Provider Component
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Candidate | Company | null>(null);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [role, setRole] = useState<string>("");
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,13 +33,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(user);
         setRole(user.role);
       }
+      setIsHydrated(true);
     };
     restoreSession();
-  }, []);
+  }, [supabase.auth]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, role, setRole }}>
-      {children}
+      {isHydrated ? children : null}
     </AuthContext.Provider>
   );
 };

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
-import Container from "../Container";
+import Container from "../common/Container";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { createBrowserClient } from "@supabase/ssr";
 import { useAuth } from "@/app/context/AuthProvider";
@@ -21,7 +21,7 @@ const Navbar = () => {
     // { name: "Home", path: "/", role: "ALL" },
     { name: "Find Job", path: "/jobs", role: "CANDIDATE" },
     { name: "Employers", path: "/companies", role: "CANDIDATE" },
-    { name: "Candidates", path: "/candidates", role: "EMPLOYER" },
+    { name: "Candidates", path: "/candidates", role: "COMPANY" },
     {
       name: "Dashboard",
       path: `/dashboard/${(role as unknown as string)?.toLowerCase()}/overview`,
