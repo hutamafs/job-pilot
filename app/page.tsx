@@ -1,21 +1,25 @@
 import {
   Banner,
-  // FeaturedJob,
-  // TopCompanies,
+  FeaturedJob,
+  TopCompanies,
   QuickRegister,
 } from "@/app/components/pages/Homepage";
 import HomeWrapper from "./HomeWrapper";
 import { getUserRole } from "./utils";
 
 const Home = async () => {
-  const { data } = await getUserRole();
+  const { data, role } = await getUserRole();
   return (
     <>
       <HomeWrapper />
       <div className="w-full h-full">
         <Banner />
-        {/* <FeaturedJob />
-        <TopCompanies /> */}
+        {role === "CANDIDATE" && (
+          <>
+            <FeaturedJob />
+            <TopCompanies />
+          </>
+        )}
         {!data && <QuickRegister />}
       </div>
     </>

@@ -2,28 +2,28 @@ import Image from "next/legacy/image";
 import Container from "../../common/Container";
 import * as Icon from "@/asset/banner";
 
-const data = [
-  {
-    number: "1,75,324",
-    description: "Live Jobs",
-    image: Icon.JobIcon,
-  },
-  {
-    number: "1,75,324",
-    description: "Companies",
-    image: Icon.CompanyIcon,
-  },
-  {
-    number: "1,75,324",
-    description: "Candidate",
-    image: Icon.CandidateIcon,
-  },
-  {
-    number: "1,75,324",
-    description: "New Jobs",
-    image: Icon.JobIcon,
-  },
-];
+// const data = [
+//   {
+//     number: "1,75,324",
+//     description: "Live Jobs",
+//     image: Icon.JobIcon,
+//   },
+//   {
+//     number: "1,75,324",
+//     description: "Companies",
+//     image: Icon.CompanyIcon,
+//   },
+//   {
+//     number: "1,75,324",
+//     description: "Candidate",
+//     image: Icon.CandidateIcon,
+//   },
+//   {
+//     number: "1,75,324",
+//     description: "New Jobs",
+//     image: Icon.JobIcon,
+//   },
+// ];
 
 const Banner = () => {
   return (
@@ -51,7 +51,7 @@ const Banner = () => {
           />
         </div>
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mx-auto mt-10">
-          {data.map(({ number, description, image }) => (
+          {/* {data.map(({ number, description, image }) => (
             <div
               key={description}
               className="flex items-center bg-white shadow-md p-5 rounded-lg"
@@ -68,7 +68,7 @@ const Banner = () => {
                 <p className="text-gray600 text-base">{description}</p>
               </div>
             </div>
-          ))}
+          ))} */}
         </div>
       </div>
     </Container>

@@ -45,6 +45,7 @@ const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
       setIsLoading(false);
     }
   };
+  console.log(d);
 
   return (
     <>

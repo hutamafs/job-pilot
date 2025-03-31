@@ -144,3 +144,8 @@ export interface SavedCandidate {
   candidateId: string;
   note?: string;
 }
+
+export interface StepProps {
+  data: Partial<Company>;
+  setFormData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
+}

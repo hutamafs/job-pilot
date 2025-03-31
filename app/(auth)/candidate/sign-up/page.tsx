@@ -40,6 +40,7 @@ const CandidateSignUp = () => {
     resumeUrl: "",
     profilePicture: "",
     skills: [],
+    location: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -334,6 +335,25 @@ const CandidateSignUp = () => {
           </select>
           {errors.nationality && (
             <p className="text-red-500 text-sm mt-1">{errors.nationality}</p>
+          )}
+
+          <select
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
+          >
+            <option value="" disabled>
+              Choose your location
+            </option>
+            {countryOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+          {errors.location && (
+            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
           )}
 
           {/* Website */}

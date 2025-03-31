@@ -52,9 +52,7 @@ const JobSearchBar = ({
             name="location"
             onChange={handleInputChange}
           >
-            <option value="" disabled>
-              Select a location
-            </option>
+            <option value="">Select a location</option>
             {countryOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}

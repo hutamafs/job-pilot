@@ -4,7 +4,7 @@ import Image from "next/legacy/image";
 import { useState } from "react";
 import { FiBookmark } from "react-icons/fi";
 import { Job as JobCardProps } from "@/app/types";
-import { unsaveJob, saveJob } from "../../../../utils/jobs/query";
+import { unsaveJob, saveJob } from "@/app/utils/jobs/query";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { useRouter } from "next/navigation";
 import { FaBookmark, FaSpinner } from "react-icons/fa";

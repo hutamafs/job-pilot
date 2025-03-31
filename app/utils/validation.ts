@@ -17,7 +17,6 @@ export const candidateSchema = z.object({
 
 export const companySchema = z.object({
   name: z.string().min(1, "Name is required"),
-  founded: z.string().min(1, "Founded date is required"),
   description: z.string().min(1, "Description is required"),
   benefits: z.any(),
   industry: z.string().min(1, "Industry is required"),

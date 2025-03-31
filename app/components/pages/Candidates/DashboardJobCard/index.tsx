@@ -43,7 +43,7 @@ const DashboardJobCard = ({
       <td className="py-3 px-6 text-left">
         <span
           className={`px-2 py-1 text-xs font-semibold rounded-full ${
-            status === "pending"
+            status === "applied"
               ? "bg-yellow-100 text-yellow-600"
               : status === "approved"
                 ? "bg-green-100 text-green-600"

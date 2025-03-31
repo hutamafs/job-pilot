@@ -14,12 +14,9 @@ export async function GET(
         { status: 400 }
       );
     }
-    const company = await prisma.user.findUnique({
-      where: { id },
-    });
 
     const data = await prisma.company.findUnique({
-      where: { userId: company?.id },
+      where: { id },
     });
     if (!data) {
       return NextResponse.json({ error: "Company not found" }, { status: 404 });
@@ -47,15 +44,10 @@ export async function PUT(
         { status: 400 }
       );
     }
-
-    const company = await prisma.company.findUnique({
-      where: { userId: id },
-    });
-
     const body = await req.json();
 
     const updatedCompany = await prisma.company.update({
-      where: { id: company?.id },
+      where: { id },
       data: body,
     });
 

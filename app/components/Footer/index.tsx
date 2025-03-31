@@ -39,7 +39,7 @@ const Footer = async () => {
                 href="/companies"
                 className="hover:text-primary500 transition"
               >
-                Browse Employers
+                Browse Companies
               </Link>
             </li>
             <li>
@@ -62,7 +62,7 @@ const Footer = async () => {
         </div>
 
         <div>
-          <h4 className="text-white text-lg font-semibold">Employers</h4>
+          <h4 className="text-white text-lg font-semibold">Companies</h4>
           <ul className="mt-2 space-y-2">
             <li>
               <Link
@@ -82,10 +82,10 @@ const Footer = async () => {
             </li>
             <li>
               <Link
-                href="/company-dashboard"
+                href="/dashboard"
                 className="hover:text-primary500 transition"
               >
-                Employers Dashboard
+                Dashboard
               </Link>
             </li>
             <li>

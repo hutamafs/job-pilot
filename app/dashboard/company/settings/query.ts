@@ -2,7 +2,9 @@ import { Company } from "@/app/types";
 
 export const getCompanyDetails = async (id: string) => {
   try {
-    const res = await fetch(`/api/companies/${id}`, {
+    const userRes = await fetch(`/api/users/${id}`);
+    const { data: user } = await userRes.json();
+    const res = await fetch(`/api/companies/${user?.id}`, {
       method: "GET",
     });
     const { data } = await res.json();
@@ -19,7 +21,9 @@ export const updateCompanyDetails = async (
   id: string,
   updatedData: Partial<Company>
 ) => {
-  const res = await fetch(`/api/companies/${id}`, {
+  const userRes = await fetch(`/api/users/${id}`);
+  const { data: user } = await userRes.json();
+  const res = await fetch(`/api/companies/${user?.id}`, {
     method: "PUT",
     body: JSON.stringify(updatedData),
   });

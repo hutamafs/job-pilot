@@ -20,7 +20,7 @@ const Navbar = () => {
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
     { name: "Find Job", path: "/jobs", role: "CANDIDATE" },
-    { name: "Employers", path: "/companies", role: "CANDIDATE" },
+    { name: "Companies", path: "/companies", role: "CANDIDATE" },
     { name: "Candidates", path: "/candidates", role: "COMPANY" },
     {
       name: "Dashboard",

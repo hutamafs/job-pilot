@@ -115,7 +115,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
           description={`You have not ${page === "saved-jobs" ? "saved" : "applied"} any jobs yet`}
         />
       ) : (
-        <div className="mt-12">
+        <div className={page === "overview" ? "mt-6" : "mt-0"}>
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold mb-4">
               {page === "overview"

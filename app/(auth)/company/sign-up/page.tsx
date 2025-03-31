@@ -2,18 +2,15 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CompanyInfo, FoundingInfo, SocialMedia } from "./index";
+import SocialMedia from "./SocialMedia";
+import CompanyInfo from "@/app/components/pages/Companies/CompanyInfo";
+import FoundingInfo from "@/app/components/pages/Companies/FoundingInfo";
 import { Company } from "@/app/types";
 import { companyInfoSchema, companyFoundingSchema } from "@/app/utils";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { z } from "zod";
 import { LoadingSpinner } from "@/app/components";
 const steps = ["Company Info", "Founding Info", "Social Media"];
-
-export interface StepProps {
-  data: Partial<Company>;
-  setFormData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
-}
 
 export default function SignupForm() {
   const router = useRouter();

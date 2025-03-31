@@ -18,12 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Job Pilot | Find Your Dream Job",
-  description: "A modern job portal connecting candidates and employers.",
+  description: "A modern job portal connecting candidates and companies.",
   keywords: ["jobs", "career", "employment", "job portal"],
   openGraph: {
     title: "Job Pilot - Find Your Dream Job",
     description:
-      "A modern job portal that helps job seekers and employers connect easily.",
+      "A modern job portal that helps job seekers and companies connect easily.",
     type: "website",
     url: "https://job-pilot.vercel.app",
     images: [
