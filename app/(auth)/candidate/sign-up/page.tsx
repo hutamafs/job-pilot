@@ -60,7 +60,6 @@ const CandidateSignUp = () => {
         setFormData((prev) => ({ ...prev, [name]: res.url }));
       } else {
         setNotif("error", "File upload failed.");
-        throw new Error("File upload failed.");
       }
     } catch (error) {
       console.error(error, "File upload failed.");
@@ -120,9 +119,12 @@ const CandidateSignUp = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error);
+        setNotif("error", data.error);
       }
-      setNotif("success", "Sign up successful. Please sign in to continue.");
+      setNotif(
+        "success",
+        "Sign up successful. Please check and verify your email first"
+      );
       router.push("/sign-in");
     } catch (error) {
       setNotif("error", (error as Error).message);
