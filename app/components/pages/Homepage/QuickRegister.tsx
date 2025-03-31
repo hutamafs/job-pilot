@@ -15,7 +15,7 @@ const QuickRegister = () => {
             a dolor convallis efficitur.
           </p>
           <Link
-            href="/register"
+            href="/candidate/sign-up"
             className="mt-4 px-5 py-3 bg-primary500 text-white font-semibold rounded-md hover:bg-primary500/80 transition"
           >
             Register Now →
@@ -28,7 +28,7 @@ const QuickRegister = () => {
             efficitur dolor.
           </p>
           <Link
-            href="/register"
+            href="/company/sign-up"
             className="mt-4 px-5 py-3 bg-white text-primary500 font-semibold rounded-md hover:bg-gray-100 transition"
           >
             Register Now →

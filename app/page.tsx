@@ -5,8 +5,10 @@ import {
   QuickRegister,
 } from "@/app/components/pages/Homepage";
 import HomeWrapper from "./HomeWrapper";
+import { getUserRole } from "./utils";
 
 const Home = async () => {
+  const { data } = await getUserRole();
   return (
     <>
       <HomeWrapper />
@@ -14,7 +16,7 @@ const Home = async () => {
         <Banner />
         {/* <FeaturedJob />
         <TopCompanies /> */}
-        <QuickRegister />
+        {!data && <QuickRegister />}
       </div>
     </>
   );
