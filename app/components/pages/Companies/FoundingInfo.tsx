@@ -1,7 +1,7 @@
 "use client";
 import Select from "react-select";
 
-import { StepProps } from "./page";
+import { StepProps } from "@/app/types";
 import {
   industries,
   teamSizeOptions,
@@ -77,6 +77,10 @@ export default function FoundingInfo({ data, setFormData }: StepProps) {
           <Select
             options={companyBenefitsOptions}
             isMulti
+            value={data?.benefits?.map((benefit) => ({
+              label: benefit.split("_").join(" "),
+              value: benefit,
+            }))}
             onChange={(e) => {
               setFormData((prev) => ({
                 ...prev,

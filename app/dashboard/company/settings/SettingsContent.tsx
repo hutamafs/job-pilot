@@ -10,7 +10,8 @@ import { FaUser, FaGlobe } from "react-icons/fa";
 import { getCompanyDetails, updateCompanyDetails } from "./query";
 import { Company } from "@/app/types";
 import { MutationStatus } from "@/app/components";
-import { CompanyInfo, FoundingInfo } from "@/app/(auth)/company/sign-up";
+import CompanyInfo from "@/app/components/pages/Companies/CompanyInfo";
+import FoundingInfo from "@/app/components/pages/Companies/FoundingInfo";
 import { z } from "zod";
 import { companyInfoSchema, companyFoundingSchema } from "@/app/utils";
 import { useNotif } from "@/app/context/NotificationProvider";
@@ -52,6 +53,7 @@ const SettingsContent = () => {
     queryKey: ["companyDetails"],
     queryFn: () => getCompanyDetails(user?.id ?? ""),
   });
+  console.log(data, 56);
 
   const { isIdle, isPending, isError, isSuccess, mutate, error } = useMutation({
     mutationFn: (updatedData: Partial<Company>) =>

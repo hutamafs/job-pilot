@@ -1,5 +1,5 @@
 export const dynamic = "force-dynamic";
-import { Container, JobCard } from "@/app/components";
+import { Container, JobCard, EmptyState } from "@/app/components";
 import { Job as JobType, JobSearchQuery } from "@/app/types";
 import { Pagination } from "@/app/components";
 import { SearchFilterWrapper } from "@/app/components/pages/Jobs";
@@ -37,20 +37,20 @@ const Jobs = async ({ searchParams }: JobsProps) => {
     );
     const { data, totalPages } = await response.json();
 
-    if (!data) {
-      return null;
-    }
-
     return (
       <div className="relative">
         <SearchFilterWrapper query={query} />
         <Container className="py-8">
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
-            {data.map((d: JobType) => (
-              <JobCard key={d.id} {...d} />
-            ))}
-          </div>
-          <Pagination totalPages={totalPages} />
+          {!data || data.length === 0 ? (
+            <EmptyState description="No jobs found, please adjust your filter" />
+          ) : (
+            <>
+              <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
+                {data?.map((d: JobType) => <JobCard key={d.id} {...d} />)}
+              </div>
+              <Pagination totalPages={totalPages} />
+            </>
+          )}
         </Container>
       </div>
     );

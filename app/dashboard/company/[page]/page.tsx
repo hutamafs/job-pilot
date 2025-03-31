@@ -4,6 +4,7 @@ import { HiArrowRight } from "react-icons/hi2";
 import { Pagination, PostedJobs } from "@/app/components";
 import { getUserRole } from "@/app/utils";
 import { SavedCandidate } from "@/app/types";
+import { EmptyState } from "@/app/components";
 import SavedCandidateCard from "@/app/components/pages/Companies/SavedCandidateCard";
 
 interface CompanyPageProps {
@@ -103,40 +104,46 @@ const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
       )}
 
       {/* Recently Applied Jobs */}
-      <div className="mt-2">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold mb-4">{titleToDisplay()}</h3>
-          {page === "overview" && (
-            <Link
-              href="/dashboard/company/my-jobs"
-              className="text-blue-500 flex items-center"
-            >
-              View All <HiArrowRight className="ml-2" />
-            </Link>
+      {totalSavedCandidates === 0 ? (
+        <EmptyState
+          description={`You have not ${page === "overview" ? "posted any job" : "saved any candidates"} yet`}
+        />
+      ) : (
+        <div className="mt-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold mb-4">{titleToDisplay()}</h3>
+            {page === "overview" && (
+              <Link
+                href="/dashboard/company/my-jobs"
+                className="text-blue-500 flex items-center"
+              >
+                View All <HiArrowRight className="ml-2" />
+              </Link>
+            )}
+          </div>
+          {(page === "my-jobs" || page === "overview") && (
+            <PostedJobs
+              jobs={page === "my-jobs" ? data.jobs : data.jobs.slice(0, 5)}
+            />
           )}
+          {page === "saved-candidates" &&
+            data.candidates.map((c: SavedCandidate) => (
+              <SavedCandidateCard c={c.candidate} key={c.id} />
+            ))}
+          {page === "my-jobs" &&
+            (data.jobs.length > 0 ? (
+              <Pagination totalPages={totalPages} />
+            ) : (
+              <></>
+            ))}
+          {page === "saved-candidates" &&
+            (data.candidates.length > 0 ? (
+              <Pagination totalPages={totalPages} />
+            ) : (
+              <></>
+            ))}
         </div>
-        {(page === "my-jobs" || page === "overview") && (
-          <PostedJobs
-            jobs={page === "my-jobs" ? data.jobs : data.jobs.slice(0, 5)}
-          />
-        )}
-        {page === "saved-candidates" &&
-          data.candidates.map((c: SavedCandidate) => (
-            <SavedCandidateCard c={c.candidate} key={c.id} />
-          ))}
-        {page === "my-jobs" &&
-          (data.jobs.length > 0 ? (
-            <Pagination totalPages={totalPages} />
-          ) : (
-            <></>
-          ))}
-        {page === "saved-candidates" &&
-          (data.candidates.length > 0 ? (
-            <Pagination totalPages={totalPages} />
-          ) : (
-            <></>
-          ))}
-      </div>
+      )}
     </div>
   );
 };

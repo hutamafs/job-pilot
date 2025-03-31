@@ -8,18 +8,9 @@ export default async function middleware(request: NextRequest) {
   const response = NextResponse.next({ request });
   const { pathname, origin: urlOrigin } = request.nextUrl;
 
-  // ✅ CORS Allowed Origins
-  const allowedOrigins = [
-    "https://job-pilot.vercel.app",
-    "https://job-pilot-git-develop-hutamafs-projects.vercel.app",
-    "https://job-pilot-git-auth-hutamafs-projects.vercel.app",
-    "https://job-pilot-git-main-hutamafs-projects.vercel.app",
-    "http://localhost:3000",
-  ];
-  const origin = request.headers.get("origin") || "";
   response.headers.set(
     "Access-Control-Allow-Origin",
-    allowedOrigins.includes(origin) ? origin : "https://job-pilot.vercel.app"
+    `${process.env.NEXT_PUBLIC_BASE_URL}`
   );
   response.headers.set(
     "Access-Control-Allow-Methods",
@@ -68,18 +59,14 @@ export default async function middleware(request: NextRequest) {
   // Verify Token with Supabase
 
   if (error || !user.user) {
-    // const signInUrl = new URL("/sign-in", urlOrigin);
-    // signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
     return NextResponse.rewrite(url);
-    // return NextResponse.redirect(signInUrl);
-    // return NextResponse.redirect("/sign-in");
   }
   return response;
 }
 
-// ✅ Apply middleware to relevant paths
+// Apply middleware to relevant paths
 export const config = {
   matcher: [
     "/dashboard/:path*",
@@ -89,28 +76,3 @@ export const config = {
     "/sign-in",
   ],
 };
-
-// import { createServerClient } from "@supabase/ssr";
-
-// const supabase = createServerClient(
-//   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-//   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-//   {
-//     cookies: {
-//       getAll() {
-//         return request.cookies.getAll();
-//       },
-//       setAll(cookiesToSet) {
-//         cookiesToSet.forEach(({ name, value }) =>
-//           request.cookies.set(name, value)
-//         );
-//         response = NextResponse.next({
-//           request,
-//         });
-//         cookiesToSet.forEach(({ name, value, options }) =>
-//           response.cookies.set(name, value, options)
-//         );
-//       },
-//     },
-//   }
-// );

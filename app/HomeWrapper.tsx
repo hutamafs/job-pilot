@@ -10,7 +10,7 @@ const ParamsComponent = () => {
   const emailConfirmed = params.get("email_confirmed") === "true";
   const signedIn = params.get("signedIn") === "true";
   const { setNotif } = useNotif();
-  const role = params.get("role");
+  const role = params.get("role") || "CANDIDATE";
   // ✅ Prevent redundant execution
   const hasHandledEmail = useRef(false);
   const hasHandledSignIn = useRef(false);
@@ -19,8 +19,8 @@ const ParamsComponent = () => {
   useEffect(() => {
     if (emailConfirmed && !hasHandledEmail.current) {
       hasHandledEmail.current = true;
-      setNotif("success", "Email confirmed. Please sign in to continue.");
       setTimeout(() => {
+        setNotif("success", "Email confirmed. Please sign in to continue.");
         router.replace(`/sign-in?role=${role}`);
       }, 3000);
     }

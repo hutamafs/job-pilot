@@ -1,16 +1,10 @@
-"use server";
 import Link from "next/link";
-// import { getUser } from "@/app/utils/supabase/getUser";
+import { getUserRole } from "@/app/utils";
 
 import Container from "../common/Container";
 
 const Footer = async () => {
-  // const user = await getUser();
-  // const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
-  //   headers: {
-  //     Authorization: `${user?.id}`,
-  //   },
-  // });
+  const { role } = await getUserRole();
 
   return (
     <Container backgroundColor="bg-black-900">
@@ -26,78 +20,82 @@ const Footer = async () => {
           </p>
         </div>
 
-        <div>
-          <h4 className="text-white text-lg font-semibold">Candidate</h4>
-          <ul className="mt-2 space-y-2">
-            <li>
-              <Link href="/jobs" className="hover:text-primary500 transition">
-                Browse Jobs
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/companies"
-                className="hover:text-primary500 transition"
-              >
-                Browse Employers
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/dashboard"
-                className="hover:text-primary500 transition"
-              >
-                Candidate Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/saved-jobs"
-                className="hover:text-primary500 transition"
-              >
-                Saved Jobs
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {role === "CANDIDATE" && (
+          <div>
+            <h4 className="text-white text-lg font-semibold">Candidate</h4>
+            <ul className="mt-2 space-y-2">
+              <li>
+                <Link href="/jobs" className="hover:text-primary500 transition">
+                  Browse Jobs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/companies"
+                  className="hover:text-primary500 transition"
+                >
+                  Browse Companies
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/candidate/overview"
+                  className="hover:text-primary500 transition"
+                >
+                  Candidate Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/candidate/saved-jobs"
+                  className="hover:text-primary500 transition"
+                >
+                  Saved Jobs
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
 
-        <div>
-          <h4 className="text-white text-lg font-semibold">Employers</h4>
-          <ul className="mt-2 space-y-2">
-            <li>
-              <Link
-                href="/post-job"
-                className="hover:text-primary500 transition"
-              >
-                Post a Job
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/candidates"
-                className="hover:text-primary500 transition"
-              >
-                Browse Candidates
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/company-dashboard"
-                className="hover:text-primary500 transition"
-              >
-                Employers Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/applications"
-                className="hover:text-primary500 transition"
-              >
-                Applications
-              </Link>
-            </li>
-          </ul>
-        </div>
+        {role === "COMPANY" && (
+          <div>
+            <h4 className="text-white text-lg font-semibold">Companies</h4>
+            <ul className="mt-2 space-y-2">
+              <li>
+                <Link
+                  href="/dashboard/company/post-job"
+                  className="hover:text-primary500 transition"
+                >
+                  Post a Job
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/candidates"
+                  className="hover:text-primary500 transition"
+                >
+                  Browse Candidates
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/company/overview"
+                  className="hover:text-primary500 transition"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/dashboard/company/saved-candidates"
+                  className="hover:text-primary500 transition"
+                >
+                  saved candidates
+                </Link>
+              </li>
+            </ul>
+          </div>
+        )}
       </footer>
       <div className="mt-8 border-t w-full border-gray-700 pt-6">
         <p>© {new Date().getFullYear()} JobPilot. All Rights Reserved.</p>

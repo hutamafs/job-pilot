@@ -37,24 +37,6 @@ const JobSearchWrapper = ({ query }: { query: JobSearchQuery }) => {
     e: React.MouseEvent<HTMLButtonElement> | React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
-    // Object.entries(q).forEach(([key, value]) => {
-    //   if (value) {
-    //     params.set(key, value);
-    //   }
-    // });
-    // Object.entries(query).forEach(([key, value]) => {
-    // if (value) {
-    //   if (key === "industry" || key === "jobType") {
-    //     if (Array.isArray(value) && value.length) {
-    //       value.forEach((v: string) => {
-    //         params.append(key, v);
-    //       });
-    //     }
-    //   } else {
-    //     params.set(key, value);
-    //   }
-    // }
-    // });
     router.push(`/jobs?${stringifyQuery(q)}`);
   };
 

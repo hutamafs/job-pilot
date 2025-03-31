@@ -27,7 +27,7 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
 }) => {
   const router = useRouter();
   const [coverLetter, setCoverLetter] = useState(
-    "<p>Write down your biography here...</p>"
+    "<p>Write down your cover letter here...</p>"
   );
   const [isLoading, setIsLoading] = useState(false);
   const { setNotif } = useNotif();

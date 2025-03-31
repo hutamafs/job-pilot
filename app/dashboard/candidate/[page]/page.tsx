@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { FaStar, FaBriefcase } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
+// import { MdEdit } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi2";
 import { JobApplication as JobAppType } from "@/app/types";
-import { Pagination, DashboardJobCard } from "@/app/components";
+import { Pagination, DashboardJobCard, EmptyState } from "@/app/components";
 import FavoriteJobCard from "@/app/components/pages/Candidates/FavoriteJobCard";
 import { createClient } from "@/app/utils/supabase/server";
 
@@ -98,7 +98,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
           </div>
 
           {/* Profile Incomplete Warning */}
-          <div className="bg-red-100 text-red-600 p-4 mt-6 rounded-lg flex items-center justify-between">
+          {/* <div className="bg-red-100 text-red-600 p-4 mt-6 rounded-lg flex items-center justify-between">
             <span>Your profile editing is not completed.</span>
             <Link
               href="/dashboard/candidate/settings"
@@ -106,81 +106,90 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
             >
               <MdEdit className="mr-2" /> Edit Profile
             </Link>
-          </div>
+          </div> */}
         </div>
       )}
 
-      {/* Recently Applied Jobs */}
-      <div className="mt-12">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold mb-4">
-            {page === "overview"
-              ? "Recently Applied"
-              : page === "applied-jobs"
-                ? "Applied jobs"
-                : "Saved Jobs"}
-          </h3>
-          {page === "overview" && (
-            <Link
-              href="/dashboard/candidate/applied-jobs"
-              className="text-blue-500 flex items-center"
-            >
-              View All <HiArrowRight className="ml-2" />
-            </Link>
-          )}
-        </div>
+      {totalJobs === 0 ? (
+        <EmptyState
+          description={`You have not ${page === "saved-jobs" ? "saved" : "applied"} any jobs yet`}
+        />
+      ) : (
+        <div className={page === "overview" ? "mt-6" : "mt-0"}>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold mb-4">
+              {page === "overview"
+                ? "Recently Applied"
+                : page === "applied-jobs"
+                  ? "Applied jobs"
+                  : "Saved Jobs"}
+            </h3>
+            {page === "overview" && (
+              <Link
+                href="/dashboard/candidate/applied-jobs"
+                className="text-blue-500 flex items-center"
+              >
+                View All <HiArrowRight className="ml-2" />
+              </Link>
+            )}
+          </div>
 
-        <div className="overflow-x-auto">
-          {page === "saved-jobs" ? (
-            <div className="w-full border-collapse min-w-[600px] md:min-w-full">
-              {/* Table Body */}
-              <div className="text-gray-700 text-xs md:text-sm">
-                {jobs.map((d: JobAppType) => (
-                  <FavoriteJobCard key={d.id} {...d} />
-                ))}
+          <div className="overflow-x-auto">
+            {page === "saved-jobs" ? (
+              <div className="w-full border-collapse min-w-[600px] md:min-w-full">
+                {/* Table Body */}
+                <div className="text-gray-700 text-xs md:text-sm">
+                  {jobs.map((d: JobAppType) => (
+                    <FavoriteJobCard key={d.id} {...d} />
+                  ))}
+                </div>
               </div>
-            </div>
-          ) : (
-            <table className="w-full border-collapse min-w-[600px] md:min-w-full">
-              {/* Table Header */}
-              <thead>
-                <tr className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm leading-normal">
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">Job</th>
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                    Location
-                  </th>
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                    Salary
-                  </th>
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                    Date Applied
-                  </th>
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-left">
-                    Status
-                  </th>
-                  <th className="py-2 px-3 md:py-3 md:px-6 text-right">
-                    Action
-                  </th>
-                </tr>
-              </thead>
+            ) : (
+              <table className="w-full border-collapse min-w-[600px] md:min-w-full">
+                {/* Table Header */}
+                <thead>
+                  <tr className="bg-gray-100 text-gray-600 uppercase text-xs md:text-sm leading-normal">
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-left">Job</th>
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                      Location
+                    </th>
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                      Salary
+                    </th>
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                      Date Applied
+                    </th>
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-left">
+                      Status
+                    </th>
+                    <th className="py-2 px-3 md:py-3 md:px-6 text-right">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
 
-              {/* Table Body */}
-              <tbody className="text-gray-700 text-xs md:text-sm">
-                {jobs.map((d: JobAppType) => {
-                  if (page === "overview") {
-                    return <OverviewCard key={d.id} d={d} />;
-                  } else if (page === "applied-jobs") {
-                    return <DashboardJobCard key={d.id} {...d} />;
-                  }
-                })}
-              </tbody>
-            </table>
-          )}
+                {/* Table Body */}
+                <tbody className="text-gray-700 text-xs md:text-sm">
+                  {jobs.map((d: JobAppType) => {
+                    if (page === "overview") {
+                      return <OverviewCard key={d.id} d={d} />;
+                    } else if (page === "applied-jobs") {
+                      return <DashboardJobCard key={d.id} {...d} />;
+                    }
+                  })}
+                </tbody>
+              </table>
+            )}
 
-          {page !== "overview" &&
-            (jobs.length > 0 ? <Pagination totalPages={totalPages} /> : <></>)}
+            {page !== "overview" &&
+              (jobs.length > 0 ? (
+                <Pagination totalPages={totalPages} />
+              ) : (
+                <></>
+              ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

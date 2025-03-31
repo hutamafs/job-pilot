@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import { StepProps } from "./page";
+import { StepProps } from "@/app/types";
 import uploadFile from "@/app/utils/fileUpload";
 import { UploadContainer } from "@/app/components";
 import { countryOptions } from "@/app/options";

@@ -10,7 +10,7 @@ const CompanyCard: React.FC<CompanyType> = (props) => {
     >
       <Link href={`/companies/${props.id}`} className="flex mt-4">
         <Image
-          width={48}
+          width={72}
           height={48}
           src={props.logo || ""}
           alt={props.name}

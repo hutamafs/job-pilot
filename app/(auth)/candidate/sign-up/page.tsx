@@ -7,13 +7,14 @@ import {
   experienceOptions,
   educationOptions,
   countryOptions,
+  skillOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
 import ResumeUpload from "@/app/components/common/ResumeUpload";
 import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
-import SelectSkill from "./SelectSkill";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
+import Select from "react-select";
 
 const CandidateSignUp = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -40,6 +41,7 @@ const CandidateSignUp = () => {
     resumeUrl: "",
     profilePicture: "",
     skills: [],
+    location: "",
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -60,7 +62,6 @@ const CandidateSignUp = () => {
         setFormData((prev) => ({ ...prev, [name]: res.url }));
       } else {
         setNotif("error", "File upload failed.");
-        throw new Error("File upload failed.");
       }
     } catch (error) {
       console.error(error, "File upload failed.");
@@ -120,9 +121,12 @@ const CandidateSignUp = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error);
+        setNotif("error", data.error);
       }
-      setNotif("success", "Sign up successful. Please sign in to continue.");
+      setNotif(
+        "success",
+        "Sign up successful. Please check and verify your email first"
+      );
       router.push("/sign-in");
     } catch (error) {
       setNotif("error", (error as Error).message);
@@ -334,6 +338,25 @@ const CandidateSignUp = () => {
             <p className="text-red-500 text-sm mt-1">{errors.nationality}</p>
           )}
 
+          <select
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            className="w-full border p-2 rounded-lg"
+          >
+            <option value="" disabled>
+              Choose your location
+            </option>
+            {countryOptions.map(({ label, value }) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+          {errors.location && (
+            <p className="text-red-500 text-sm mt-1">{errors.location}</p>
+          )}
+
           {/* Website */}
           <input
             type="text"
@@ -374,13 +397,16 @@ const CandidateSignUp = () => {
             <p className="text-red-500 text-sm mt-1">{errors.resumeUrl}</p>
           )}
 
-          <SelectSkill
-            formData={formData as Partial<Candidate> & { skills: string[] }}
-            setFormData={
-              setFormData as React.Dispatch<
-                React.SetStateAction<Partial<Candidate> & { skills: string[] }>
-              >
-            }
+          <Select
+            options={skillOptions}
+            isMulti
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                skills: e.map((option) => option.value),
+              }));
+            }}
+            placeholder="Select your skills"
           />
 
           {/* Submit Button */}
