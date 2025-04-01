@@ -10,7 +10,7 @@ import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 
 const CandidateSignIn = () => {
   const params = useSearchParams();
-  const role = params.get("role");
+  const role = params?.get("role");
   const { setNotif } = useNotif();
   const { setUser, setRole } = useAuth();
   const [routeRole, setRouteRole] = useState(role || "CANDIDATE");

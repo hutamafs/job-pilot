@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (data.user) {
         const { data: user } = await fetchUser(data.user.id);
         setUser(user);
-        setRole(user.role);
+        setRole(user?.role);
       }
       setIsHydrated(true);
     };

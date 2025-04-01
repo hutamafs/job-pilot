@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useRef, SetStateAction } from "react";
+import React, { useEffect, useRef, SetStateAction } from "react";
 import { motion } from "framer-motion";
 import { FaTimes } from "react-icons/fa";
 import { jobTypeOptions, industries } from "@/app/options";
 import { JobSearchQuery } from "@/app/types";
 
-const Pill = ({ str }: { str: string }) => (
+const Pill = ({ str, onClick }: { str: string; onClick: () => void }) => (
   <div className="flex items-center bg-gray-200 rounded-md px-3 py-1 text-sm">
     <span>{str}</span>
-    <button type="button" className="ml-2 text-gray-500 hover:text-red-600">
+    <button
+      onClick={onClick}
+      type="button"
+      className="ml-2 text-gray-500 hover:text-red-600"
+    >
       ✕
     </button>
   </div>
@@ -60,6 +64,14 @@ const FilterSidebar = ({
     };
   }, [isOpen, setIsOpen]);
 
+  const handlePillChange = (name: string, value: string) => {
+    setQuery((prev) => {
+      const updatedArray = (
+        prev[name as keyof JobSearchQuery] as string[]
+      ).filter((item: string) => item !== value);
+      return { ...prev, [name]: updatedArray };
+    });
+  };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked } = e.target;
     setQuery((prev) => {
@@ -92,7 +104,7 @@ const FilterSidebar = ({
         initial={{ x: "-100%" }}
         animate={{ x: isOpen ? 0 : "-100%" }}
         transition={{ type: "spring", stiffness: 120 }}
-        className="fixed top-0 left-0 h-full w-80 bg-white shadow-lg z-50 p-6 overflow-y-auto w-full sm:w-80"
+        className="fixed top-0 left-0 h-full bg-white shadow-lg z-50 p-6 overflow-y-auto w-full sm:w-80"
       >
         {/* 🔹 Close Button */}
         <button
@@ -110,15 +122,32 @@ const FilterSidebar = ({
             if (!value || (Array.isArray(value) && value.length === 0))
               return [];
             if (key === "industry" || key === "jobType") {
-              return (value as unknown as string[]).map((el) => (
-                <Pill key={el} str={el} />
-              ));
+              if (Array.isArray(value)) {
+                return value.map((el) => (
+                  <Pill
+                    key={el}
+                    onClick={() => handlePillChange(key, el)}
+                    str={el}
+                  />
+                ));
+              }
+              return (
+                <Pill
+                  key={value}
+                  onClick={() => handlePillChange(key, value)}
+                  str={value}
+                />
+              );
             }
             if (key === "salary") {
-              return <Pill key={key} str={`${key}: $${+value}`} />;
+              return (
+                <Pill onClick={() => {}} key={key} str={`${key}: $${+value}`} />
+              );
             }
             if (key === "search" || key === "location") {
-              return <Pill key={key} str={`${key}: ${value}`} />;
+              return (
+                <Pill onClick={() => {}} key={key} str={`${key}: ${value}`} />
+              );
             }
           })}
         </div>

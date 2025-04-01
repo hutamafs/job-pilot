@@ -67,8 +67,8 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         <div className="flex justify-between mt-4">
           <div className="flex">
             <Image
-              width={48}
-              height={48}
+              width={100}
+              height={60}
               src={props.company?.logo || ""}
               alt={props.title}
               className="w-16 h-16 mr-2 rounded-lg"

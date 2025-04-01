@@ -106,7 +106,7 @@ const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
       {/* Recently Applied Jobs */}
       {totalSavedCandidates === 0 ? (
         <EmptyState
-          description={`You have not ${page === "overview" ? "posted any job" : "saved any candidates"} yet`}
+          description={`You have not ${page === "saved-candidates" ? "saved any candidates" : "posted any job"} yet`}
         />
       ) : (
         <div className="mt-2">
