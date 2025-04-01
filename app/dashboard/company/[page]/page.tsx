@@ -43,7 +43,7 @@ const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
       data = await fetchData("posted-jobs", `page=${currentPage}`);
       break;
   }
-  const { totalSavedCandidates, totalPages } = data;
+  const { totalPages } = data;
 
   if (!data) {
     return <div>Loading...</div>;
@@ -79,34 +79,23 @@ const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
             <StatCard
               icon={<FaBriefcase />}
               label="Saved Candidates"
-              count={totalSavedCandidates}
+              count={data.totalSavedCandidates}
               color="blue"
             />
             <StatCard
               icon={<FaStar />}
               label="Jobs Posted"
-              count={data.jobs.length}
+              count={data.totalJobs}
               color="yellow"
             />
           </div>
-
-          {/* Profile Incomplete Warning */}
-          {/* <div className="bg-red-100 text-red-600 p-4 mt-6 rounded-lg flex items-center justify-between">
-            <span>Your profile editing is not completed.</span>
-            <Link
-              href="/dashboard/candidate/settings"
-              className="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg"
-            >
-              <MdEdit className="mr-2" /> Edit Profile
-            </Link>
-          </div> */}
         </div>
       )}
 
       {/* Recently Applied Jobs */}
-      {totalSavedCandidates === 0 ? (
+      {data.totalCandidates === 0 && page === "saved-candidates" ? (
         <EmptyState
-          description={`You have not ${page === "overview" ? "posted any job" : "saved any candidates"} yet`}
+          description={`You have not ${page === "saved-candidates" ? "saved any candidates" : "posted any job"} yet`}
         />
       ) : (
         <div className="mt-2">

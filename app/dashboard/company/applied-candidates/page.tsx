@@ -16,8 +16,10 @@ import ApplicationCard from "./ApplicationCard";
 import { getAllJobApplications } from "@/app/utils/company/query";
 import { JobApplication } from "@/app/types";
 import ConfirmationModal from "./ConfirmationModal";
+import { LoadingSpinner } from "@/app/components";
 
 const ApplicationsBoard = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [columns, setColumns] = useState<Record<string, JobApplication[]>>({
     applied: [],
     interviewed: [],
@@ -47,6 +49,7 @@ const ApplicationsBoard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const { data } = await getAllJobApplications();
         const jobApplications = data?.jobApplications || [];
 
@@ -68,6 +71,8 @@ const ApplicationsBoard = () => {
         backupColumnsRef.current = grouped;
       } catch (error) {
         console.error("Failed to fetch job applications:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -105,7 +110,9 @@ const ApplicationsBoard = () => {
       .flat()
       .find((app) => app.id === activeId) || null;
 
-  return isMobile ? (
+  return isLoading ? (
+    <LoadingSpinner />
+  ) : isMobile ? (
     <div className="space-y-6 pb-6">
       {Object.entries(columns).map(([status, apps]) => (
         <div key={status} className="bg-gray-100 rounded-lg p-4">
