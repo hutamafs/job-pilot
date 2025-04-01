@@ -5,6 +5,13 @@ export async function GET(req: Request) {
   const user = await prisma.user.findUnique({
     where: { id: req.headers.get("authorization")! },
   });
+
+  if (!user) {
+    return NextResponse.json(
+      { message: "you have not logged in or user not found" },
+      { status: 404 }
+    );
+  }
   let userData = null;
 
   if (user?.role === "CANDIDATE") {

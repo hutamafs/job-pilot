@@ -67,11 +67,11 @@ const JobCard: React.FC<JobCardProps> = (props) => {
         <div className="flex justify-between mt-4">
           <div className="flex">
             <Image
-              width={100}
-              height={60}
+              width={72}
+              height={48}
               src={props.company?.logo || ""}
               alt={props.title}
-              className="w-16 h-16 mr-2 rounded-lg"
+              className="mr-2 rounded-lg"
             />
             <div className="flex flex-col">
               <span className="text-gray-900 font-semibold">

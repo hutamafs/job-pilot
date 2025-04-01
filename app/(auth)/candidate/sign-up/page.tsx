@@ -7,13 +7,14 @@ import {
   experienceOptions,
   educationOptions,
   countryOptions,
+  skillOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
 import ResumeUpload from "@/app/components/common/ResumeUpload";
 import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
-import SelectSkill from "./SelectSkill";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
+import Select from "react-select";
 
 const CandidateSignUp = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -396,13 +397,16 @@ const CandidateSignUp = () => {
             <p className="text-red-500 text-sm mt-1">{errors.resumeUrl}</p>
           )}
 
-          <SelectSkill
-            formData={formData as Partial<Candidate> & { skills: string[] }}
-            setFormData={
-              setFormData as React.Dispatch<
-                React.SetStateAction<Partial<Candidate> & { skills: string[] }>
-              >
-            }
+          <Select
+            options={skillOptions}
+            isMulti
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                skills: e.map((option) => option.value),
+              }));
+            }}
+            placeholder="Select your skills"
           />
 
           {/* Submit Button */}
