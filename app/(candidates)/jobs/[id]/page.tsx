@@ -1,4 +1,5 @@
 import { Container } from "@/app/components";
+import Link from "next/link";
 import Image from "next/image";
 import ActionComponent from "@/app/components/pages/Jobs/[id]/ActionComponent";
 import {
@@ -10,10 +11,9 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
-import { IoIosLink } from "react-icons/io";
-import { FaLinkedin, FaFacebook, FaTwitter, FaEnvelope } from "react-icons/fa";
 import { createClient } from "@/app/utils/supabase/server";
 import { getUserRole } from "@/app/utils";
+import SocialMediaComponent from "@/app/components/pages/Jobs/[id]/SocialMediaComponent";
 
 const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const supabase = await createClient();
@@ -34,6 +34,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     if (!data) {
       return null;
     }
+    console.log(data, 36);
 
     return (
       <Container>
@@ -45,9 +46,8 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 <Image
                   src={data.company.logo}
                   alt={data.company.name}
-                  width={64}
-                  height={64}
-                  className="w-16 h-16 bg-gray-200"
+                  width={72}
+                  height={48}
                 />
               ) : (
                 <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
@@ -69,7 +69,14 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
               </div>
             </div>
-            {role !== "COMPANY" && (
+            {role === "COMPANY" ? (
+              <Link
+                className="flex items-center justify-center text-lightBlue50 bg-primary500 font-bold px-4 py-2 rounded-lg hover:text-orange-200"
+                href={`/dashboard/company/edit-job/${data.id}`}
+              >
+                Edit
+              </Link>
+            ) : (
               <ActionComponent
                 name={data.title}
                 id={resolvedParams.id}
@@ -158,18 +165,22 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                   <FaRegCalendarAlt className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Job Posted:</p>
                   <p className="font-semibold text-black text-sm">
-                    {new Date(data.createdAt).toLocaleDateString()}
+                    {new Date(data.createdAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 <div className="flex flex-col">
                   <FaRegClock className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Job Expire:</p>
                   <p className="font-semibold text-black text-sm">
-                    {new Date(
-                      new Date(data.createdAt).setMonth(
-                        new Date(data.createdAt).getMonth() + 1
-                      )
-                    ).toLocaleDateString()}
+                    {new Date(data.expiredAt).toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
                   </p>
                 </div>
                 <div className="flex flex-col">
@@ -183,7 +194,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                   <FaWallet className="mr-2 text-primary500 mb-2 text-xl" />
                   <p className="text-gray-600">Experience:</p>
                   <p className="font-semibold text-black text-sm">
-                    {data.experience} years
+                    {data.experience}
                   </p>
                 </div>
                 <div className="flex flex-col">
@@ -196,20 +207,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               </div>
             </div>
 
-            <div className="py-4 border-t">
-              <h3 className="text-lg font-semibold mb-2 text-black">
-                Share this job:
-              </h3>
-              <div className="flex space-x-4 items-center">
-                <button className="flex items-center font-semibold text-primary500 bg-gray-100 px-3 py-2 rounded-md">
-                  <IoIosLink className="mr-2 " /> Copy Links
-                </button>
-                <FaLinkedin className="text-blue-600 text-xl cursor-pointer" />
-                <FaFacebook className="text-blue-700 text-xl cursor-pointer" />
-                <FaTwitter className="text-blue-400 text-xl cursor-pointer" />
-                <FaEnvelope className="text-gray-500 text-xl cursor-pointer" />
-              </div>
-            </div>
+            <SocialMediaComponent />
 
             <div className="py-4 border-t">
               <h3 className="text-lg font-semibold mb-2 text-black">
