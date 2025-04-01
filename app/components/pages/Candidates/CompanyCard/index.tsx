@@ -14,7 +14,7 @@ const CompanyCard: React.FC<CompanyType> = (props) => {
           height={48}
           src={props.logo || ""}
           alt={props.name}
-          className="mr-2 rounded-lg"
+          className="w-16 h-16 mr-2 rounded-lg"
         />
         <div className="flex flex-col">
           <div className="flex items-center">
