@@ -19,7 +19,6 @@ const Footer = async () => {
             6391 Elgin St. Celina, Delaware 10299, New York, United States
           </p>
         </div>
-
         {role === "CANDIDATE" && (
           <div>
             <h4 className="text-white text-lg font-semibold">Candidate</h4>

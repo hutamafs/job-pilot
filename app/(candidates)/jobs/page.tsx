@@ -14,14 +14,14 @@ const Jobs = async ({ searchParams }: JobsProps) => {
   try {
     const user = await getUser();
     const resolvedParams = await searchParams;
-    const industryParam = resolvedParams?.industry as string | undefined;
-    const jobTypeParam = resolvedParams?.jobType as string | undefined;
+    const industryParam = resolvedParams?.industry as string[] | undefined;
+    const jobTypeParam = resolvedParams?.jobType as string[] | undefined;
     const query: JobSearchQuery = {
       search: resolvedParams?.search ?? "",
       location: resolvedParams?.location ?? "",
       company: resolvedParams?.company ?? "",
-      industry: industryParam ? industryParam.split(",") : [],
-      jobType: jobTypeParam ? jobTypeParam.split(",") : [],
+      industry: industryParam ?? [],
+      jobType: jobTypeParam ?? [],
       salary: resolvedParams?.salary ? Number(resolvedParams.salary) : 0,
       page: resolvedParams?.page ? Number(resolvedParams.page) : 1,
     };
