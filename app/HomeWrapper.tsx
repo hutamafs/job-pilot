@@ -1,8 +1,10 @@
 "use client";
 import { Suspense, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, redirect } from "next/navigation";
 import { useNotif } from "./context/NotificationProvider";
+import { useAuth } from "./context/AuthProvider";
 import { LoadingSpinner } from "./components";
+import { supabase } from "@/app/utils/supabase";
 
 const ParamsComponent = () => {
   const params = useSearchParams();
@@ -10,6 +12,7 @@ const ParamsComponent = () => {
   const emailConfirmed = params.get("email_confirmed") === "true";
   const signedIn = params.get("signedIn") === "true";
   const { setNotif } = useNotif();
+  const { role: setPasswordRole } = useAuth();
   const role = params.get("role") || "CANDIDATE";
   // ✅ Prevent redundant execution
   const hasHandledEmail = useRef(false);
@@ -33,6 +36,14 @@ const ParamsComponent = () => {
       setNotif("success", "Signed in successfully!");
     }
   }, [signedIn, setNotif]);
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event) => {
+      if (event == "PASSWORD_RECOVERY") {
+        redirect(`/sign-in?action=reset-password&role=${setPasswordRole}`);
+      }
+    });
+  }, []);
 
   return null;
 };

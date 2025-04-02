@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,10 +8,12 @@ import { useAuth } from "@/app/context/AuthProvider";
 import { createBrowserClient } from "@supabase/ssr";
 import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 import ResetPasswordModal from "@/app/components/pages/SignIn/ResetPasswordModal";
+import SetPasswordModal from "@/app/components/pages/SignIn/SetPasswordModal";
 
-const CandidateSignIn = () => {
+const SignInPage = () => {
   const params = useSearchParams();
   const role = params?.get("role");
+  const action = params?.get("action");
   const { setNotif } = useNotif();
   const { setUser, setRole } = useAuth();
   const [routeRole, setRouteRole] = useState(role || "CANDIDATE");
@@ -27,6 +29,14 @@ const CandidateSignIn = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+  const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
+  const [resetPasswordRole, setResetPasswordRole] = useState("CANDIDATE");
+
+  useEffect(() => {
+    if (action === "reset-password") {
+      setShowSetPasswordModal(true);
+    }
+  }, [action, resetPasswordRole]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -135,8 +145,13 @@ const CandidateSignIn = () => {
 
         {showResetPasswordModal && (
           <ResetPasswordModal
+            setResetPasswordRole={setResetPasswordRole}
             onClose={() => setShowResetPasswordModal(false)}
           />
+        )}
+
+        {showSetPasswordModal && (
+          <SetPasswordModal onClose={() => setShowSetPasswordModal(false)} />
         )}
 
         {/* Sign Up Link */}
@@ -158,4 +173,4 @@ const CandidateSignIn = () => {
   );
 };
 
-export default CandidateSignIn;
+export default SignInPage;
