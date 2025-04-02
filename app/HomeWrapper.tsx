@@ -43,7 +43,7 @@ const ParamsComponent = () => {
         redirect(`/sign-in?action=reset-password&role=${setPasswordRole}`);
       }
     });
-  }, []);
+  }, [setPasswordRole]);
 
   return null;
 };
