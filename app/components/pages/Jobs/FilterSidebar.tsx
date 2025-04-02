@@ -192,8 +192,8 @@ const FilterSidebar = ({
           <h3 className="text-md font-medium mb-2">Salary (Yearly in AUD)</h3>
           <input
             type="range"
-            min="1000"
-            max="15000"
+            min="50000"
+            max="150000"
             value={query.salary}
             onChange={handleInputChange}
             className="w-full"

@@ -3,6 +3,7 @@ import Image from "next/legacy/image";
 import { Company as CompanyType } from "@/app/types";
 
 const CompanyCard: React.FC<CompanyType> = (props) => {
+  console.log(props, 6);
   return (
     <div
       key={props.id}
@@ -30,7 +31,7 @@ const CompanyCard: React.FC<CompanyType> = (props) => {
       </Link>
       <div className="mt-4 w-full bg-lightBlue50 px-6 py-3 rounded-sm flex items-center justify-center ">
         <Link
-          href={`/jobs?company=${props.id}`}
+          href={`/jobs?company=${props.name}`}
           className="text-blue-600 font-semibold hover:underline"
         >
           Open Positions ({props.jobs.length})

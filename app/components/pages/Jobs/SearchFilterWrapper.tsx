@@ -38,6 +38,7 @@ const JobSearchWrapper = ({ query }: { query: JobSearchQuery }) => {
   ) => {
     e.preventDefault();
     router.push(`/jobs?${stringifyQuery(q)}`);
+    setIsOpen(false);
   };
 
   return (
