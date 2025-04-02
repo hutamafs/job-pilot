@@ -7,6 +7,7 @@ import { useNotif } from "@/app/context/NotificationProvider";
 import { useAuth } from "@/app/context/AuthProvider";
 import { createBrowserClient } from "@supabase/ssr";
 import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
+import ResetPasswordModal from "@/app/components/pages/SignIn/ResetPasswordModal";
 
 const CandidateSignIn = () => {
   const params = useSearchParams();
@@ -25,6 +26,7 @@ const CandidateSignIn = () => {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -119,6 +121,23 @@ const CandidateSignIn = () => {
             {isLoading ? <LoadingSpinner /> : "Sign in"}
           </button>
         </form>
+
+        {/* Reset Password Link */}
+        <p className="text-center text-sm mt-2 text-gray-600">
+          <button
+            type="button"
+            className="text-orange-600 hover:underline bg-transparent border-none p-0 cursor-pointer"
+            onClick={() => setShowResetPasswordModal(true)}
+          >
+            Forgot your password?
+          </button>
+        </p>
+
+        {showResetPasswordModal && (
+          <ResetPasswordModal
+            onClose={() => setShowResetPasswordModal(false)}
+          />
+        )}
 
         {/* Sign Up Link */}
         <p className="text-center text-sm mt-4 text-gray-600">

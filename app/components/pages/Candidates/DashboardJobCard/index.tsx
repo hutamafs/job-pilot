@@ -56,9 +56,9 @@ const DashboardJobCard = ({
       <td className="py-3 px-6 text-right">
         <Link
           href={`/jobs/${job.id}`}
-          className="bg-blue-500 block w-full text-white text-xs px-3 py-1 rounded-md hover:bg-blue-600"
+          className="bg-blue-500 inline-block w-full text-center text-white text-sm p-3 rounded-md hover:bg-blue-600"
         >
-          View Details
+          Details
         </Link>
       </td>
     </tr>

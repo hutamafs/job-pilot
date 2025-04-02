@@ -71,7 +71,7 @@ const SettingsContent = () => {
 
   useEffect(() => {
     if (data) {
-      setFormData((prev) => ({ ...prev, ...data }));
+      setFormData((prev) => ({ ...prev, ...data.data }));
     }
   }, [data]);
 
