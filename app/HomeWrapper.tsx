@@ -2,7 +2,6 @@
 import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams, redirect } from "next/navigation";
 import { useNotif } from "./context/NotificationProvider";
-import { useAuth } from "./context/AuthProvider";
 import { LoadingSpinner } from "./components";
 import { supabase } from "@/app/utils/supabase";
 
@@ -11,8 +10,9 @@ const ParamsComponent = () => {
   const router = useRouter();
   const emailConfirmed = params.get("email_confirmed") === "true";
   const signedIn = params.get("signedIn") === "true";
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const type = hashParams.get("type");
   const { setNotif } = useNotif();
-  const { role: setPasswordRole } = useAuth();
   const role = params.get("role") || "CANDIDATE";
   // ✅ Prevent redundant execution
   const hasHandledEmail = useRef(false);
@@ -38,12 +38,33 @@ const ParamsComponent = () => {
   }, [signedIn, setNotif]);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event) => {
-      if (event == "PASSWORD_RECOVERY") {
-        redirect(`/sign-in?action=reset-password&role=${setPasswordRole}`);
-      }
-    });
-  }, [setPasswordRole]);
+    const accessToken = params.get("access_token") || "";
+    const getRole = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser(accessToken);
+      return user;
+    };
+
+    if (type === "recovery") {
+      (async () => {
+        const user = await getRole();
+
+        if (user) {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`,
+            {
+              headers: {
+                Authorization: `${user?.id}`,
+              },
+            }
+          );
+          const { role } = await res.json();
+          redirect(`/sign-in?action=reset-password&role=${role}`);
+        }
+      })();
+    }
+  }, [params, type]);
 
   return null;
 };

@@ -46,3 +46,8 @@ body {
 .ProseMirror li {
   margin-left: 1rem; /* Adjusts spacing */
 }
+
+.ProseMirror p.is-empty::before {
+  content: attr(data-placeholder);
+  @apply text-gray-400 italic pointer-events-none inline;
+}

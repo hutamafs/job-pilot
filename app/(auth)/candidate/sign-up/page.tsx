@@ -33,7 +33,7 @@ const CandidateSignUp = () => {
     confirmedPassword: "",
     role: "",
     bio: "",
-    dob: null,
+    dob: new Date().toISOString().split("T")[0],
     nationality: "",
     maritalStatus: "",
     gender: "",

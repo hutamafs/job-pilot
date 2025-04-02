@@ -9,6 +9,7 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
 import { LoadingSpinner } from "@/app/components";
 import { useNotif } from "@/app/context/NotificationProvider";
+import Placeholder from "@tiptap/extension-placeholder";
 
 interface CoverLetterFormProps {
   isOpen: boolean;
@@ -26,14 +27,20 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
   setIsApplied,
 }) => {
   const router = useRouter();
-  const [coverLetter, setCoverLetter] = useState(
-    "<p>Write down your cover letter here...</p>"
-  );
+  const [coverLetter, setCoverLetter] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { setNotif } = useNotif();
 
   const editor = useEditor({
-    extensions: [StarterKit, BulletList, OrderedList, ListItem],
+    extensions: [
+      StarterKit,
+      BulletList,
+      OrderedList,
+      ListItem,
+      Placeholder.configure({
+        placeholder: "Write down your cover letter here…",
+      }),
+    ],
     content: coverLetter,
     onUpdate: ({ editor }) => {
       setCoverLetter(editor.getHTML());
@@ -147,7 +154,10 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
 
             {/* Editor Content */}
             <div className="border editor-container rounded-md mt-4 p-2 min-h-[150px] h-[200px]">
-              <EditorContent editor={editor} />
+              <EditorContent
+                placeholder="Write down your cover letter here.."
+                editor={editor}
+              />
             </div>
 
             {/* Buttons */}
