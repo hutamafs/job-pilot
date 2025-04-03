@@ -8,16 +8,14 @@ import { useAuth } from "@/app/context/AuthProvider";
 import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 import ResetPasswordModal from "@/app/components/pages/SignIn/ResetPasswordModal";
 import SetPasswordModal from "@/app/components/pages/SignIn/SetPasswordModal";
-import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 
 const SignInPage = () => {
   const params = useSearchParams();
   const role = params?.get("role");
   const action = params?.get("action");
   const { setNotif } = useNotif();
-  const { setUser, setRole } = useAuth();
+  const { setUser, setRole, supabase } = useAuth();
   const [routeRole, setRouteRole] = useState(role || "CANDIDATE");
-  const supabase = getSupabaseClient();
 
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -27,7 +25,6 @@ const SignInPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
-  // const [resetPasswordRole, setResetPasswordRole] = useState("CANDIDATE");
 
   useEffect(() => {
     const accessToken = params.get("access_token") || "";
@@ -56,7 +53,7 @@ const SignInPage = () => {
       })();
       setShowSetPasswordModal(true);
     }
-  }, [params, action]);
+  }, [params, action, supabase.auth]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,8 +73,8 @@ const SignInPage = () => {
         if (user.role === routeRole) {
           setUser(user);
           setRole(user.role);
-          setNotif("success", "Signed in successfully");
           router.push(params.get("callbackUrl") || "/");
+          setNotif("success", "Signed in successfully");
         } else {
           await supabase.auth.signOut();
           throw new Error(

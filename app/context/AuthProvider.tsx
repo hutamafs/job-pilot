@@ -1,8 +1,9 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
 import { Candidate, Company } from "../types";
-import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 import { fetchUser } from "../utils/supabase/getUserAfterSignIn";
+import { createBrowserClient } from "@supabase/ssr";
+import { type SupabaseClient } from "@supabase/supabase-js";
 
 // Define User Context Type
 interface UserContextType {
@@ -10,6 +11,7 @@ interface UserContextType {
   setUser: (user: Candidate | Company | null) => void;
   role: string;
   setRole: (role: string) => void;
+  supabase: SupabaseClient;
 }
 
 // Create Context
@@ -20,7 +22,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<Candidate | Company | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
   const [role, setRole] = useState<string>("");
-  const supabase = getSupabaseClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -36,7 +41,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [supabase.auth]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser, role, setRole }}>
+    <AuthContext.Provider value={{ user, setUser, role, setRole, supabase }}>
       {isHydrated ? children : null}
     </AuthContext.Provider>
   );

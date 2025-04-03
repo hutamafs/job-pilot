@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import Container from "../common/Container";
 import { useNotif } from "@/app/context/NotificationProvider";
-import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 import { useAuth } from "@/app/context/AuthProvider";
 
 const Navbar = () => {
@@ -15,8 +14,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { setNotif } = useNotif();
-  const { user, role, setRole, setUser } = useAuth();
-  const supabase = getSupabaseClient();
+  const { user, role, setRole, setUser, supabase } = useAuth();
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },

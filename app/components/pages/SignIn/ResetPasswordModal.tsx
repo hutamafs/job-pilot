@@ -1,15 +1,15 @@
 "use client";
 import Modal from "../../common/Modal";
 import { useState } from "react";
-import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import { useNotif } from "@/app/context/NotificationProvider";
+import { useAuth } from "@/app/context/AuthProvider";
 
 const ResetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const { setNotif } = useNotif();
+  const { supabase } = useAuth();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = getSupabaseClient();
 
   const resetPassword = async () => {
     try {

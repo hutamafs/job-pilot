@@ -1,13 +1,14 @@
 "use client";
 import Modal from "../../common/Modal";
 import { useState } from "react";
-import { supabase } from "@/app/utils/supabase";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useAuth } from "@/app/context/AuthProvider";
 
 const SetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const { setNotif } = useNotif();
+  const { supabase } = useAuth();
   const [formData, setFormData] = useState({
     password: "",
     confirmedPassword: "",
