@@ -8,11 +8,7 @@ import { CompanySearchQuery } from "@/app/types";
 import { countryOptions } from "@/app/options";
 import { stringifyQuery } from "@/app/utils";
 
-interface CompanySearchProps {
-  query: CompanySearchQuery;
-}
-
-const CompanySearchBar = ({ query }: CompanySearchProps) => {
+const CompanySearchBar = ({ query }: { query: CompanySearchQuery }) => {
   const router = useRouter();
   const [q, setQuery] = useState<CompanySearchQuery>({
     search: "",

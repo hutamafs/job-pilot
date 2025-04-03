@@ -22,7 +22,7 @@ const tabs = [
 ];
 
 const SettingsContent = () => {
-  const user = useUser();
+  const user = useUser() as { id: string } | null;
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("personal");
   const [formData, setFormData] = useState<Partial<SettingsProps>>({
@@ -45,28 +45,33 @@ const SettingsContent = () => {
   });
   const { data } = useSuspenseQuery({
     queryKey: ["candidateDetails"],
-    queryFn: () => getCandidateDetails(user.id),
+    queryFn: () =>
+      user && user.id
+        ? getCandidateDetails(user.id)
+        : Promise.reject("User ID is missing"),
   });
 
-  const { isIdle, isPending, isError, isSuccess, mutate } = useMutation({
-    mutationFn: (updatedData: Partial<SettingsProps>) =>
-      updateCandidateDetails(user.id, updatedData),
+  const { isIdle, isPending, isError, isSuccess, mutateAsync } = useMutation({
+    mutationFn: async (updatedData: Partial<SettingsProps>) => {
+      if (!user || !user.id) throw new Error("User ID is missing");
+
+      const result = await updateCandidateDetails(user.id, updatedData);
+
+      if (result.error) throw new Error(result.error);
+
+      if (!result.error) return result.data;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["candidateDetails"] });
     },
     onError: (error) => {
-      console.error("Update failed:", error);
+      console.log("Error updating candidate details:", error);
     },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      mutate(formData);
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      alert("Failed to update profile. Please try again.");
-    }
+    await mutateAsync(formData);
   };
 
   useEffect(() => {

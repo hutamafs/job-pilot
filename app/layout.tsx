@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar, Footer } from "./components";
 import { NotifProvider, AuthProvider } from "./context";
+import { ReactQueryProvider } from "./utils/tanstack";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,10 +56,12 @@ export default async function RootLayout({
             <div id="modal"></div>
 
             {/* Main Content */}
-            <main className="w-full flex flex-col flex-grow">
-              <Navbar />
-              {children}
-            </main>
+            <ReactQueryProvider>
+              <main className="w-full flex flex-col flex-grow">
+                <Navbar />
+                {children}
+              </main>
+            </ReactQueryProvider>
           </NotifProvider>
         </AuthProvider>
         <Footer />

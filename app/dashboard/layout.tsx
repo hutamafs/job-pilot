@@ -1,8 +1,9 @@
 import { UserProvider } from "./DashboardProvider";
 import Sidebar from "./sidebar";
 import { Container } from "../components";
-import React, { ReactElement } from "react";
-import { getUserRole } from "@/app/utils";
+import { ReactElement } from "react";
+import { getServerSession } from "../lib/";
+import { SessionData } from "../types";
 interface DashboardLayoutProps {
   children: ReactElement<{ userId: string }>;
 }
@@ -10,14 +11,18 @@ interface DashboardLayoutProps {
 export default async function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
-  const { data, role } = await getUserRole();
+  const session = await getServerSession();
+
+  if (!session) {
+    return null;
+  }
 
   return (
-    <UserProvider user={data}>
+    <UserProvider user={session?.user as SessionData}>
       <Container className="">
         <div className="flex flex-col lg:flex-row">
           <div className="w-full lg:w-64">
-            <Sidebar isCandidate={role === "CANDIDATE"} />
+            <Sidebar isCandidate={session?.user?.type === "CANDIDATE"} />
           </div>
           <div className="w-[1px] bg-gray-300" />
 

@@ -11,10 +11,10 @@ const CompanyCard: React.FC<CompanyType> = (props) => {
       <Link href={`/companies/${props.id}`} className="flex mt-4">
         <Image
           width={72}
-          height={48}
+          height={60}
           src={props.logo || ""}
           alt={props.name}
-          className="w-16 h-16 mr-2 rounded-lg"
+          className="mr-2 rounded-lg"
         />
         <div className="flex flex-col">
           <div className="flex items-center">

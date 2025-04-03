@@ -13,11 +13,27 @@ export async function GET(
   try {
     const { id } = await params;
     if (!id) {
-      return;
-      NextResponse.json({ error: "Candidate ID is required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Candidate ID is required" },
+        { status: 400 }
+      );
     }
 
-    const data = await prisma.candidate.findUnique({ where: { id } });
+    const data = await prisma.candidate.findUnique({
+      where: { id },
+      include: {
+        savedJobs: {
+          include: {
+            job: true,
+          },
+        },
+        appliedJobs: {
+          include: {
+            job: true,
+          },
+        },
+      },
+    });
     if (!data) {
       return NextResponse.json(
         { error: "Candidate not found" },
@@ -50,6 +66,8 @@ export async function PUT(
 
     const body = await req.json();
     delete body.userId;
+    delete body.savedJobs;
+    delete body.appliedJobs;
 
     const updatedCandidate = await prisma.candidate.update({
       where: { id },

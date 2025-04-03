@@ -13,6 +13,8 @@ const ParamsComponent = () => {
     new URLSearchParams(window.location.hash.substring(1))
   );
 
+  const error = params.get("error");
+
   useEffect(() => {
     const handleHashChange = () => {
       setHashParams(new URLSearchParams(window.location.hash.substring(1)));
@@ -29,6 +31,12 @@ const ParamsComponent = () => {
   // ✅ Prevent redundant execution
   const hasHandledEmail = useRef(false);
   const hasHandledSignIn = useRef(false);
+
+  useEffect(() => {
+    if (error) {
+      setNotif("error", "you do not have access to that page");
+    }
+  }, [error, setNotif, role, router]);
 
   // ✅ Handle email confirmation
   useEffect(() => {

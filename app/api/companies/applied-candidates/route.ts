@@ -1,15 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUserRole } from "@/app/utils";
+import { getServerSession } from "@/app/lib";
+
+async function getCompany() {
+  const session = await getServerSession();
+  const company = session.user;
+
+  return { company };
+}
 
 export async function GET() {
   try {
-    const { data } = await getUserRole();
+    const { company } = await getCompany();
 
     const jobApplications = await prisma.jobApplication.findMany({
       where: {
         job: {
-          companyId: data?.id,
+          companyId: company?.id,
         },
       },
       include: {

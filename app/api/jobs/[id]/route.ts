@@ -1,13 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUserRole } from "@/app/utils";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { data: user } = await getUserRole();
+    const userId = req.headers.get("authorization")! || "";
     const id = (await params).id;
 
     if (!id) {
@@ -23,12 +22,12 @@ export async function GET(
         company: true,
         applications: {
           where: {
-            candidateId: user?.id,
+            candidateId: userId,
           },
         },
         savedJobs: {
           where: {
-            candidateId: user?.id,
+            candidateId: userId,
           },
         },
       },

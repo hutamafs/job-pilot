@@ -11,26 +11,24 @@ import {
   FaUser,
 } from "react-icons/fa";
 import { FiMapPin } from "react-icons/fi";
-import { createClient } from "@/app/utils/supabase/server";
-import { getUserRole } from "@/app/utils";
 import SocialMediaComponent from "@/app/components/pages/Jobs/[id]/SocialMediaComponent";
+import { getServerSession } from "@/app/lib";
 
 const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
-  const supabase = await createClient();
-  const { data: user } = await supabase.auth.getUser();
-  const { role } = await getUserRole();
   try {
     const resolvedParams = await params;
+    const session = await getServerSession();
+    const user = session.user;
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/jobs/${resolvedParams.id}`,
       {
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `${user?.user?.id}`,
+          Authorization: `${user?.id}`,
         },
       }
     );
     const { data } = await response.json();
+    console.log(user, 26);
     if (!data) {
       return null;
     }
@@ -68,7 +66,7 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 </div>
               </div>
             </div>
-            {role === "COMPANY" ? (
+            {user?.type === "COMPANY" ? (
               <Link
                 className="flex items-center justify-center text-lightBlue50 bg-primary500 font-bold px-4 py-2 rounded-lg hover:text-orange-200"
                 href={`/dashboard/company/jobs/${data.id}`}

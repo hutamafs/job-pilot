@@ -17,6 +17,7 @@ import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
 import Select from "react-select";
+import { useEffect } from "react";
 
 const CandidateSignUp = () => {
   const formRef = useRef<HTMLFormElement>(null);
@@ -123,13 +124,12 @@ const CandidateSignUp = () => {
       }
       setIsPageLoading(true);
 
-      const res = await fetch("/api/sign-up/candidate", {
+      const res = await fetch("/api/sign-up/", {
         method: "POST",
         body: JSON.stringify({
           ...formData,
-          userRole: "CANDIDATE",
+          role: "CANDIDATE",
         }),
-        headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
 
@@ -148,6 +148,22 @@ const CandidateSignUp = () => {
       setIsPageLoading(false);
     }
   };
+
+  const handleDisableButton = () => {
+    const result = candidateSchema.safeParse(formData);
+    if (!result.success) {
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      handleDisableButton();
+    }, 300); // 300ms debounce time
+
+    return () => clearTimeout(debounce);
+  }, [formData]);
 
   return isPageLoading ? (
     <LoadingSpinner />
@@ -460,8 +476,9 @@ const CandidateSignUp = () => {
 
           {/* Submit Button */}
           <button
+            disabled={isLoading || handleDisableButton()}
             type="submit"
-            className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+            className="bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md hover:bg-blue-700"
           >
             Sign up
           </button>

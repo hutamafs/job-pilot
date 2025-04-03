@@ -39,7 +39,7 @@ const ApplicationCard = ({ application }: { application: JobApplication }) => {
       </div>
       <div className="mt-3">
         <Link
-          href={application.candidate.profilePicture}
+          href={application.candidate.resumeUrl}
           className="text-blue-600 text-sm font-medium underline hover:text-red-800 cursor-pointer"
           target="_blank"
           rel="noopener noreferrer"

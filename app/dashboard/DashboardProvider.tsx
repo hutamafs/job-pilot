@@ -1,12 +1,8 @@
 "use client";
 import React, { createContext, useContext } from "react";
+import { SessionData } from "../types";
 
-interface User {
-  id: string;
-  name: string;
-}
-
-const UserContext = createContext<User | null>(null);
+const UserContext = createContext<SessionData | null>(null);
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -18,7 +14,7 @@ export const UserProvider = ({
   user,
   children,
 }: {
-  user: User;
+  user: SessionData;
   children: React.ReactNode;
 }) => {
   return <UserContext.Provider value={user}>{children}</UserContext.Provider>;

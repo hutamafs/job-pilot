@@ -10,6 +10,7 @@ import ListItem from "@tiptap/extension-list-item";
 import { LoadingSpinner } from "@/app/components";
 import { useNotif } from "@/app/context/NotificationProvider";
 import Placeholder from "@tiptap/extension-placeholder";
+import { getClientSession } from "@/app/lib";
 
 interface CoverLetterFormProps {
   isOpen: boolean;
@@ -50,8 +51,16 @@ const ApplyJobModal: React.FC<CoverLetterFormProps> = ({
   const handleSubmit = async () => {
     try {
       setIsLoading(true);
+      const session = await getClientSession();
+      if (!session) {
+        throw new Error("Session not found");
+      }
+      const { user } = session;
       const res = await fetch(`/api/jobs/${id}/apply-job`, {
         method: "POST",
+        headers: {
+          Authorization: `${user?.id}`,
+        },
         body: JSON.stringify({
           coverLetter,
         }),

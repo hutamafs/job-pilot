@@ -123,7 +123,7 @@ const CompanyDetails = async ({
             <h3 className="text-lg font-semibold mb-4">Contact Information</h3>
             <div className="space-y-3 text-gray-600">
               <div className="flex items-center gap-2">
-                <FaGlobe className="text-blue-500 text-lg" />
+                <FaGlobe className="text-blue-500 h-24 w-24" />
                 <Link
                   href={
                     data.website.startsWith("http")
@@ -132,7 +132,7 @@ const CompanyDetails = async ({
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-semibold hover:underline"
+                  className="text-sm font-bold hover:underline"
                 >
                   {data.website}
                 </Link>

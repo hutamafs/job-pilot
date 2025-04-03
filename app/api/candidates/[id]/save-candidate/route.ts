@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUser } from "@/app/utils/supabase/getUser";
+import { getServerSession } from "@/app/lib";
 
 async function getCompany() {
-  const u = await getUser();
-  const user = await prisma.user.findUnique({
-    where: { id: u?.id },
-  });
-  const company = await prisma.company.findUnique({
-    where: { userId: user?.id },
-  });
+  const session = await getServerSession();
+  const company = session.user;
 
   return { company };
 }

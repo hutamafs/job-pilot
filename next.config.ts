@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    domains: ["dummyimage.com"],
+    domains: ["job-kerja-pilot.s3.ap-southeast-2.amazonaws.com"],
   },
 };
 

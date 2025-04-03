@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
@@ -62,7 +63,7 @@ const SavedCandidateCard = ({ c }: CandidateCardProps) => {
   };
 
   return (
-    <div className="w-full bg-white border rounded-lg shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative">
+    <div className="w-full bg-white border rounded-lg shadow-sm p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 relative mb-4">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         <Image
@@ -79,7 +80,7 @@ const SavedCandidateCard = ({ c }: CandidateCardProps) => {
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center justify-between gap-3 mt-4 sm:gap-4">
+      <div className="flex items-center justify-between gap-3 mt-4 md:mt-0 sm:gap-4">
         {/* Save Candidate Button */}
         <button
           onClick={handleSaveCandidate}
@@ -90,14 +91,14 @@ const SavedCandidateCard = ({ c }: CandidateCardProps) => {
         </button>
 
         {/* View Profile Button */}
-        <button
-          type="button"
+        <Link
+          href={`/candidates?open_id=${c.id}`}
           onClick={() => setDropdownOpen(false)}
           className="flex items-center gap-2 bg-blue-100 hover:bg-blue-200 text-blue-600 font-medium px-3 py-1.5 text-sm rounded-md transition whitespace-nowrap"
         >
           View Profile
           <FaArrowRight className="text-sm" />
-        </button>
+        </Link>
 
         {/* Dropdown */}
         <div className="relative">
@@ -121,13 +122,14 @@ const SavedCandidateCard = ({ c }: CandidateCardProps) => {
                 <FaEnvelope className="text-blue-500" />
                 Send Email
               </button>
-              <button
-                // onClick={onDownloadCV}
+              <Link
+                target="_blank"
+                href={c.resumeUrl}
                 className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 w-full text-left"
               >
                 <FaDownload className="text-blue-500" />
                 Download CV
-              </button>
+              </Link>
             </div>
           )}
         </div>

@@ -5,22 +5,22 @@ import {
   QuickRegister,
 } from "@/app/components/pages/Homepage";
 import HomeWrapper from "./HomeWrapper";
-import { getUserRole } from "./utils";
+import { getSessionUser } from "./utils/getSessionUser";
 
 const Home = async () => {
-  const { data, role } = await getUserRole();
+  const user = await getSessionUser();
   return (
     <>
       <HomeWrapper />
       <div className="w-full h-full">
         <Banner />
-        {role === "CANDIDATE" && (
+        {user?.type === "CANDIDATE" && (
           <>
             <FeaturedJob />
             <TopCompanies />
           </>
         )}
-        {!data && <QuickRegister />}
+        {!user && <QuickRegister />}
       </div>
     </>
   );

@@ -22,9 +22,15 @@ export const updateCandidateDetails = async (
       method: "PUT",
       body: JSON.stringify(updatedData),
     });
-    const { data } = await res.json();
-    if (!res.ok) throw new Error(data.message);
-    return { data, success: true };
+    const result = await res.json();
+    if (!res.ok) {
+      throw new Error(result.error || "Unknown error occurred");
+    }
+
+    return {
+      data: result.data,
+      success: true,
+    };
   } catch (error) {
     return {
       error: (error as Error).message,

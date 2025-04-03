@@ -9,6 +9,7 @@ export async function GET(
 ) {
   try {
     const id = (await params).id;
+    console.log(id, 112);
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page")) || 1;
     const limit = Number(searchParams.get("limit")) || PAGE_SIZE;
@@ -22,7 +23,7 @@ export async function GET(
       },
       include: {
         candidate: true,
-      }
+      },
     });
 
     const totalCandidates = await prisma.savedCandidate.count({

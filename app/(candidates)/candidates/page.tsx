@@ -1,28 +1,64 @@
+"use client";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Container } from "@/app/components";
-import { CandidateCard } from "@/app/components";
+import { CandidateCard, LoadingSpinner, EmptyState } from "@/app/components";
 import { Candidate as CandidateType } from "@/app/types";
 import { Pagination } from "@/app/components";
-import { getUserRole } from "@/app/utils/getUserRole";
-import { SavedCandidate } from "@/app/types";
-interface CandidateProps {
-  searchParams?: Promise<{ query?: string; page?: string }>;
-}
+import { stringifyQuery } from "@/app/utils";
+import { SavedCandidate, CandidateSearchQuery } from "@/app/types";
+import { getClientSession } from "@/app/lib/";
 
-const Candidates = async ({ searchParams }: CandidateProps) => {
-  const { data: userData } = await getUserRole();
-  const resolvedParams = await searchParams;
-  const currentPage = Number(resolvedParams?.page) || 1;
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/candidates?page=${currentPage}`
-  );
-  const { data, totalPages } = await response.json();
+const Candidates = () => {
+  const searchParams = useSearchParams();
+  const [user, setUser] = useState("");
+  const query: CandidateSearchQuery = {
+    search: searchParams.get("search") ?? "",
+    location: searchParams.get("location") ?? "",
+    page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
+  };
+  const params = stringifyQuery(query);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const session = await getClientSession();
+      if (session?.user) {
+        setUser(session.user.id);
+      }
+    };
+    fetchUser();
+  }, []);
+
+  const fetchCandidates = async () => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/candidates?${params}`,
+      {
+        headers: {
+          Authorization: user || "",
+        },
+      }
+    );
+    const { data, totalPages } = await response.json();
+    return { data, totalPages };
+  };
+
+  const {
+    data: queryResult,
+    isFetching,
+    isLoading,
+  } = useQuery({
+    queryKey: ["candidates", params, user],
+    queryFn: fetchCandidates,
+    enabled: !!user,
+  });
+  const data = queryResult?.data || [];
+  const totalPages = queryResult?.totalPages || 0;
 
   const savedCandidateIds = new Set(
     data
       .filter((c: CandidateType) =>
-        c.savedByCompanies.some(
-          (s: SavedCandidate) => s.companyId === userData.id
-        )
+        c.savedByCompanies.some((s: SavedCandidate) => s.companyId === user)
       )
       .map((c: CandidateType) => c.id)
   );
@@ -33,16 +69,34 @@ const Candidates = async ({ searchParams }: CandidateProps) => {
   try {
     return (
       <Container width="w-full md:w-1/2">
-        <div className="flex flex-col items-center justify-center">
-          {data.map((d: CandidateType) => (
-            <CandidateCard
-              key={d.id}
-              {...d}
-              isSaved={savedCandidateIds.has(d.id)}
-            />
-          ))}
-        </div>
-        <Pagination totalPages={totalPages} />
+        {isLoading ? (
+          <div className="flex justify-center items-center p-12">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <>
+            {!data || data.length === 0 ? (
+              <EmptyState description="No jobs found, please adjust your filter" />
+            ) : (
+              <>
+                <div
+                  className={`flex flex-col items-center justify-center transition-opacity duration-300 ${
+                    isFetching ? "opacity-50" : "opacity-100"
+                  }`}
+                >
+                  {data.map((d: CandidateType) => (
+                    <CandidateCard
+                      key={d.id}
+                      {...d}
+                      isSaved={savedCandidateIds.has(d.id)}
+                    />
+                  ))}
+                </div>
+                <Pagination totalPages={totalPages} />
+              </>
+            )}
+          </>
+        )}
       </Container>
     );
   } catch (error) {

@@ -25,53 +25,68 @@ export default function FoundingInfo({ data, setFormData }: StepProps) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <select
-          className="w-full border p-2 rounded-md"
-          name="organizationType"
-          onChange={handleChange}
-          value={data.organizationType}
-        >
-          <option disabled value="">
-            Select Organization Type
-          </option>
-          {organizationTypeOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+        <div>
+          <label className="block text-md font-medium text-gray-700">
+            Organization Type
+          </label>
+          <select
+            className="w-full border p-2 rounded-md"
+            name="organizationType"
+            onChange={handleChange}
+            value={data.organizationType}
+          >
+            <option disabled value="">
+              Select Organization Type
             </option>
-          ))}
-        </select>
-        <select
-          className="w-full border p-2 rounded-md"
-          name="industry"
-          onChange={handleChange}
-          value={data.industry}
-        >
-          <option disabled value="">
-            Select Industry
-          </option>
-          {industries.map((option) => (
-            <option key={option} value={option}>
-              {option}
+            {organizationTypeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-md font-medium text-gray-700">
+            Industry type
+          </label>
+          <select
+            className="w-full border p-2 rounded-md"
+            name="industry"
+            onChange={handleChange}
+            value={data.industry}
+          >
+            <option disabled value="">
+              Select Industry
             </option>
-          ))}
-        </select>
-        <select
-          className="w-full border p-2 rounded-md"
-          name="teamSize"
-          onChange={handleChange}
-          value={data.teamSize}
-        >
-          <option disabled value="">
-            Select Team Size
-          </option>
-          {teamSizeOptions.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
+            {industries.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-md font-medium text-gray-700">
+            Company Size
+          </label>
+          <select
+            className="w-full border p-2 rounded-md"
+            name="teamSize"
+            onChange={handleChange}
+            value={data.teamSize}
+          >
+            <option disabled value="">
+              Select Team Size
             </option>
-          ))}
-        </select>
+            {teamSizeOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="col-span-1 md:col-span-3">
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-md font-medium text-gray-700">
             Benefits
           </label>
           <Select
@@ -91,35 +106,50 @@ export default function FoundingInfo({ data, setFormData }: StepProps) {
         </div>
       </div>
 
-      <input
-        type="date"
-        placeholder="Founding Date"
-        className="w-full border p-2 rounded-md"
-        name="founded"
-        value={
-          data.founded
-            ? typeof data.founded === "string"
-              ? data.founded
-              : data.founded.toISOString().split("T")[0]
-            : ""
-        }
-        onChange={handleChange}
-      />
-      <input
-        type="string"
-        placeholder="Company Website"
-        className="w-full border p-2 rounded-md"
-        name="website"
-        value={data.website}
-        onChange={handleChange}
-      />
-      <textarea
-        placeholder="Company Vision"
-        className="w-full border p-2 rounded-md h-24"
-        name="vision"
-        value={data.vision}
-        onChange={handleChange}
-      />
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Founded
+        </label>
+        <input
+          type="date"
+          placeholder="Founding Date"
+          className="w-full border p-2 rounded-md"
+          name="founded"
+          value={
+            data.founded
+              ? typeof data.founded === "string"
+                ? data.founded
+                : data.founded.toISOString().split("T")[0]
+              : ""
+          }
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Company Website
+        </label>
+        <input
+          type="string"
+          placeholder="Company Website"
+          className="w-full border p-2 rounded-md"
+          name="website"
+          value={data.website}
+          onChange={handleChange}
+        />
+      </div>
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Company Vision
+        </label>
+        <textarea
+          placeholder="Company Vision"
+          className="w-full border p-2 rounded-md h-48"
+          name="vision"
+          value={data.vision}
+          onChange={handleChange}
+        />
+      </div>
     </div>
   );
 }

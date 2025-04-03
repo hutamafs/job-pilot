@@ -1,21 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUser } from "@/app/utils/supabase/getUser";
+import { getServerSession } from "@/app/lib";
 
 async function getUserAndJob(jobId: string) {
-  const u = await getUser();
-  const user = await prisma.user.findUnique({
-    where: { id: u?.id },
-  });
-  const candidate = await prisma.candidate.findUnique({
-    where: { userId: user?.id },
-  });
+  const session = await getServerSession();
+  const user = session?.user;
 
   const job = await prisma.job.findUnique({
     where: { id: jobId },
   });
 
-  return { candidate, job };
+  return { candidate: user, job };
 }
 
 export async function POST(
