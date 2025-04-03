@@ -1,36 +1,20 @@
 "use client";
 import Modal from "../../common/Modal";
 import { useState } from "react";
-import { supabase } from "@/app/utils/supabase";
+import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import { useNotif } from "@/app/context/NotificationProvider";
-import { useAuth } from "@/app/context/AuthProvider";
 
-const ResetPasswordModal = ({
-  onClose,
-}: {
-  onClose: () => void;
-  setResetPasswordRole: (role: string) => void;
-}) => {
+const ResetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const { setNotif } = useNotif();
-  const { setRole } = useAuth();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const supabase = getSupabaseClient();
 
   const resetPassword = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-role-by-email?email=${encodeURIComponent(email)}`,
-        {
-          method: "GET",
-        }
-      );
-      const { data: role } = await response.json();
-      setRole(role);
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/sign-in?action=reset-password&role=${role}`,
-      });
+      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 
       if (error) throw new Error(error.message);
       if (data) {
@@ -40,6 +24,7 @@ const ResetPasswordModal = ({
       setNotif("error", (error as Error).message);
     } finally {
       setIsLoading(false);
+      onClose();
     }
   };
 

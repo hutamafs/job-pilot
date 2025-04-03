@@ -5,10 +5,10 @@ import { LoadingSpinner } from "@/app/components";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { useAuth } from "@/app/context/AuthProvider";
-import { createBrowserClient } from "@supabase/ssr";
 import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 import ResetPasswordModal from "@/app/components/pages/SignIn/ResetPasswordModal";
 import SetPasswordModal from "@/app/components/pages/SignIn/SetPasswordModal";
+import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 
 const SignInPage = () => {
   const params = useSearchParams();
@@ -17,26 +17,46 @@ const SignInPage = () => {
   const { setNotif } = useNotif();
   const { setUser, setRole } = useAuth();
   const [routeRole, setRouteRole] = useState(role || "CANDIDATE");
+  const supabase = getSupabaseClient();
 
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
   const [isLoading, setIsLoading] = useState(false);
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
-  const [resetPasswordRole, setResetPasswordRole] = useState("CANDIDATE");
+  // const [resetPasswordRole, setResetPasswordRole] = useState("CANDIDATE");
 
   useEffect(() => {
+    const accessToken = params.get("access_token") || "";
+    const getRole = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser(accessToken);
+      return user;
+    };
     if (action === "reset-password") {
+      (async () => {
+        const user = await getRole();
+
+        if (user) {
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`,
+            {
+              headers: {
+                Authorization: `${user?.id}`,
+              },
+            }
+          );
+          const { role } = await res.json();
+          setRouteRole(role);
+        }
+      })();
       setShowSetPasswordModal(true);
     }
-  }, [action, resetPasswordRole]);
+  }, [params, action]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -145,7 +165,6 @@ const SignInPage = () => {
 
         {showResetPasswordModal && (
           <ResetPasswordModal
-            setResetPasswordRole={setResetPasswordRole}
             onClose={() => setShowResetPasswordModal(false)}
           />
         )}

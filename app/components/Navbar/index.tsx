@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { FiMenu, FiX } from "react-icons/fi";
 import Container from "../common/Container";
 import { useNotif } from "@/app/context/NotificationProvider";
-import { createBrowserClient } from "@supabase/ssr";
+import { getSupabaseClient } from "@/app/utils/supabase/browserClient";
 import { useAuth } from "@/app/context/AuthProvider";
 
 const Navbar = () => {
@@ -16,6 +16,7 @@ const Navbar = () => {
   const router = useRouter();
   const { setNotif } = useNotif();
   const { user, role, setRole, setUser } = useAuth();
+  const supabase = getSupabaseClient();
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
@@ -31,10 +32,6 @@ const Navbar = () => {
   const logout = async () => {
     setRole("");
     setUser(null);
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
     await supabase.auth.signOut();
     router.refresh();
     router.push("/sign-in");

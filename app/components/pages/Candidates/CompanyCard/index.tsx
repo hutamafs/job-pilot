@@ -3,7 +3,6 @@ import Image from "next/legacy/image";
 import { Company as CompanyType } from "@/app/types";
 
 const CompanyCard: React.FC<CompanyType> = (props) => {
-  console.log(props, 6);
   return (
     <div
       key={props.id}

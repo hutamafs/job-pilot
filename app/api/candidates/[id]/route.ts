@@ -12,7 +12,6 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    console.log(id, 25);
     if (!id) {
       return;
       NextResponse.json({ error: "Candidate ID is required" }, { status: 400 });
