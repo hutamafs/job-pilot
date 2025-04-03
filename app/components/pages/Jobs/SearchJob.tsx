@@ -4,8 +4,11 @@ import { SetStateAction, Dispatch } from "react";
 import { FiSearch, FiMapPin, FiSliders } from "react-icons/fi";
 import Container from "../../common/Container";
 import { JobSearchQuery } from "@/app/types";
-import { countryOptions } from "@/app/options";
 interface JobSearchBarProps {
+  countries: {
+    label: string;
+    value: string;
+  }[];
   query: JobSearchQuery;
   setQuery: React.Dispatch<SetStateAction<JobSearchQuery>>;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -13,6 +16,7 @@ interface JobSearchBarProps {
 }
 
 const JobSearchBar = ({
+  countries,
   query,
   setQuery,
   handleSubmitFilter,
@@ -26,7 +30,6 @@ const JobSearchBar = ({
     const { name, value } = e.target;
     setQuery((prev) => ({ ...prev, [name]: value }));
   };
-
   return (
     <Container className="py-3">
       <form
@@ -53,7 +56,7 @@ const JobSearchBar = ({
             onChange={handleInputChange}
           >
             <option value="">Select a location</option>
-            {countryOptions.map((option) => (
+            {countries.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

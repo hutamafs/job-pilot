@@ -2,10 +2,10 @@ import Link from "next/link";
 import { FaStar, FaBriefcase } from "react-icons/fa";
 import { HiArrowRight } from "react-icons/hi2";
 import { Pagination, PostedJobs } from "@/app/components";
-import { getUserRole } from "@/app/utils";
 import { SavedCandidate } from "@/app/types";
 import { EmptyState } from "@/app/components";
 import SavedCandidateCard from "@/app/components/pages/Companies/SavedCandidateCard";
+import { getServerSession } from "@/app/lib";
 
 interface CompanyPageProps {
   params: Promise<{ page: string }>;
@@ -13,7 +13,8 @@ interface CompanyPageProps {
 }
 
 const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
-  const { data: userData } = await getUserRole();
+  const session = await getServerSession();
+  const user = session?.user;
   const { page } = await params;
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams?.page) || 1;
@@ -21,12 +22,7 @@ const CompanyPage = async ({ params, searchParams }: CompanyPageProps) => {
 
   const fetchData = async (url: string, qs: string) => {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/${url}/${userData?.id}?${qs}`,
-      {
-        headers: {
-          Authorization: `${userData?.id}`,
-        },
-      }
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/${url}/${user?.id}?${qs}`
     );
     const { data } = await res.json();
     return data;

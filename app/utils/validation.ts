@@ -8,7 +8,7 @@ export const candidateSchema = z.object({
   role: z.string().min(1, "Job title is required"),
   bio: z.string().min(1, "Biography is required"),
   nationality: z.string().min(1, "Nationality is required"),
-  gender: z.enum(["male", "female"]),
+  gender: z.string().min(1, "Gender is required"),
   experience: z.string().min(1, "Experience is required"),
   education: z.string().min(1, "Education is required"),
   phone: z.string().regex(/^\+?\d{7,15}$/, "Invalid phone number format"),

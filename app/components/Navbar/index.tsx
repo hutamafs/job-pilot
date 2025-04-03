@@ -14,7 +14,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
   const { setNotif } = useNotif();
-  const { user, role, setRole, setUser, supabase } = useAuth();
+  const { user, role, setRole, setUser } = useAuth();
 
   const navLinks = [
     // { name: "Home", path: "/", role: "ALL" },
@@ -30,7 +30,7 @@ const Navbar = () => {
   const logout = async () => {
     setRole("");
     setUser(null);
-    await supabase.auth.signOut();
+    await fetch("/api/logout", { method: "POST" });
     router.refresh();
     router.push("/sign-in");
     setNotif("success", "Signed out successfully");

@@ -23,7 +23,7 @@ export default function SignupForm() {
     name: "",
     banner: "",
     logo: "",
-    founded: new Date(),
+    founded: new Date().toISOString().split("T")[0],
     description: "",
     benefits: [],
     industry: "",
@@ -61,31 +61,6 @@ export default function SignupForm() {
     return () => clearTimeout(timer);
   }, [formData, currentStep]);
 
-  /*
-  const handleError = (errors: z.ZodError) => {
-    const formattedErrors: Record<string, string> = {};
-
-    errors.errors.forEach((err: z.ZodIssue) => {
-      if (err.path) {
-        formattedErrors[err.path[0]] = err.message;
-      }
-    });
-    const firstErrorField = Object.keys(formattedErrors)[0];
-    if (firstErrorField) {
-      const errorElement = formRef.current?.querySelector(
-        `[name="${firstErrorField}"]`
-      );
-      setNotif("error", formattedErrors[firstErrorField]);
-      errorElement?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-      (errorElement as HTMLElement)?.focus();
-    }
-    return;
-  };
-  */
-
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -96,14 +71,11 @@ export default function SignupForm() {
         method: "POST",
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const { success, data, message } = await res.json();
+      if (!success) {
         throw new Error(data.error);
       }
-      setNotif(
-        "success",
-        "Company created successfully, please check your email inbox to confirm"
-      );
+      setNotif("success", message);
       router.push("/sign-in?role=COMPANY");
     } catch (error) {
       setNotif("error", (error as Error).message);
@@ -119,21 +91,9 @@ export default function SignupForm() {
       setNotif("error", "Passwords do not match");
       return;
     }
-    // let validatedFields;
-    // if (currentStep < steps.length) {
-    //   if (currentStep === 0) {
-    //     validatedFields = companyInfoSchema.safeParse(formData);
-    //   } else if (currentStep === 1) {
-    //     validatedFields = companyFoundingSchema.safeParse(formData);
-    //   }
     if (currentStep === 2) {
       handleSubmit(e);
     }
-    // if (validatedFields && !validatedFields?.success) {
-    //   handleError(validatedFields.error);
-    //   return;
-    // }
-    // }
     setCurrentStep(currentStep + 1);
     return false;
   };

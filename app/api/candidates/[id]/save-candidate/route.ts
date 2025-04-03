@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUser } from "@/app/utils/supabase/getUser";
+import { getServerSession, apiResponse } from "@/app/lib";
 
 async function getCompany() {
-  const u = await getUser();
-  const user = await prisma.user.findUnique({
-    where: { id: u?.id },
-  });
-  const company = await prisma.company.findUnique({
-    where: { userId: user?.id },
-  });
+  const session = await getServerSession();
+  const company = session.user;
 
   return { company };
 }
@@ -28,7 +23,7 @@ export async function POST(
   });
 
   if (!foundCandidate) {
-    await prisma.savedCandidate.create({
+    const candidate = await prisma.savedCandidate.create({
       data: {
         companyId: company!.id,
         candidateId: id,
@@ -36,11 +31,22 @@ export async function POST(
     });
 
     return NextResponse.json(
-      { message: `Candidate has been saved successfully` },
+      apiResponse({
+        success: true,
+        message: "Candidate has been saved successfully",
+        data: candidate,
+      }),
       { status: 201 }
     );
   }
-  return NextResponse.json({ message: "already saved" }, { status: 400 });
+  return NextResponse.json(
+    apiResponse({
+      success: false,
+      message: "Candidate already saved",
+      error: "Candidate already saved",
+    }),
+    { status: 400 }
+  );
 }
 
 export async function DELETE(
@@ -64,9 +70,20 @@ export async function DELETE(
     });
 
     return NextResponse.json(
-      { message: `Candidate has been unsaved` },
+      apiResponse({
+        success: true,
+        message: "Candidate has been unsaved",
+        error: "Candidate has been unsaved",
+      }),
       { status: 200 }
     );
   }
-  return NextResponse.json({ message: "already unsaved" }, { status: 400 });
+  return NextResponse.json(
+    apiResponse({
+      success: false,
+      message: "already unsaved",
+      error: "already unsaved",
+    }),
+    { status: 400 }
+  );
 }

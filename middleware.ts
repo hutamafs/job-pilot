@@ -1,10 +1,23 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 import { NextResponse } from "next/server";
-import { createClient } from "@/app/utils/supabase/server";
 import type { NextRequest } from "next/server";
-// import { cookies } from "next/headers";
+import { cookies } from "next/headers";
+import { getIronSession } from "iron-session";
+import { sessionOptions } from "@/app/lib/session";
+import { SessionData } from "@/app/types";
+
+async function getSession() {
+  const session = await getIronSession<SessionData>(
+    await cookies(),
+    sessionOptions
+  );
+  return session;
+}
 
 export default async function middleware(request: NextRequest) {
-  const supabase = await createClient();
+  const { user } = await getSession();
   const response = NextResponse.next({ request });
   const { pathname, origin: urlOrigin } = request.nextUrl;
 
@@ -28,8 +41,7 @@ export default async function middleware(request: NextRequest) {
 
   // ✅ Define Protected & Auth Routes
   const protectedRoutes = [
-    "/dashboard",
-    "/profile",
+    "/dashboard/:path*",
     "/companies",
     "/jobs",
     "/candidates",
@@ -42,23 +54,49 @@ export default async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((path) => pathname.startsWith(path));
 
   // User is not signed in and trying to access a protected route
-  const { data: user, error } = await supabase.auth.getUser();
-  if (!user.user && isProtectedRoute) {
+
+  if (!user && isProtectedRoute) {
     const signInUrl = new URL("/sign-in", urlOrigin);
     signInUrl.searchParams.set("callbackUrl", request.nextUrl.href);
     return NextResponse.redirect(signInUrl);
   }
 
+  // Define route access by user type
+  const routeAccessMap = {
+    COMPANY: ["/dashboard/company", "/candidates"],
+    CANDIDATE: ["/dashboard/candidate", "/companies"],
+  };
+
+  // Check if user is trying to access a route they don't have permission for
+  if (user) {
+    const userType = user.type;
+
+    // Get all route patterns the current user shouldn't access
+    const forbiddenRoutes = Object.entries(routeAccessMap)
+      .filter(([type]) => type !== userType)
+      .flatMap(([, routes]) => routes);
+
+    // Check if current path starts with any forbidden route pattern
+    const isAccessingForbiddenRoute = forbiddenRoutes.some((route) =>
+      pathname.startsWith(route)
+    );
+
+    if (isAccessingForbiddenRoute) {
+      const redirectUrl = new URL("/", urlOrigin);
+      redirectUrl.searchParams.set("error", "unauthorized");
+      return NextResponse.redirect(redirectUrl);
+    }
+  }
+
   // User is signed in and trying to access sign-in or sign-up
-  if (user.user && isAuthRoute) {
+  if (user && isAuthRoute) {
     const url = request.nextUrl.clone();
+
     url.pathname = "/";
     return NextResponse.redirect(new URL("/", urlOrigin));
   }
 
-  // Verify Token with Supabase
-
-  if (error || !user.user) {
+  if (!user) {
     const url = request.nextUrl.clone();
     url.pathname = "/sign-in";
     return NextResponse.rewrite(url);
@@ -74,5 +112,6 @@ export const config = {
     "/companies/:path*",
     "/jobs/:path*",
     "/sign-in",
+    "/candidates/:path*",
   ],
 };

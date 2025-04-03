@@ -3,23 +3,21 @@ import Modal from "../../common/Modal";
 import { useState } from "react";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import { useNotif } from "@/app/context/NotificationProvider";
-import { useAuth } from "@/app/context/AuthProvider";
 
 const ResetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const { setNotif } = useNotif();
-  const { supabase } = useAuth();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const resetPassword = async () => {
     try {
       setIsLoading(true);
-      const { data, error } = await supabase.auth.resetPasswordForEmail(email);
+      // const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 
-      if (error) throw new Error(error.message);
-      if (data) {
-        setNotif("success", "Password reset email sent successfully");
-      }
+      // if (error) throw new Error(error.message);
+      // if (data) {
+      //   setNotif("success", "Password reset email sent successfully");
+      // }
     } catch (error) {
       setNotif("error", (error as Error).message);
     } finally {

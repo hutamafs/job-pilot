@@ -68,7 +68,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
           <div className="flex">
             <Image
               width={72}
-              height={48}
+              height={64}
               src={props.company?.logo || ""}
               alt={props.title}
               className="w-16 h-16 mr-2 rounded-lg"
@@ -78,7 +78,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
                 {props.company?.name}
               </span>
               <span className="text-gray-600">
-                📍{props.city}, {props.country}
+                📍 {props.city && `${props.city},`} {props.country}
               </span>
             </div>
           </div>

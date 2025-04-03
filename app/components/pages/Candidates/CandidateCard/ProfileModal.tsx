@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import {
   FaTimes,
   FaEnvelope,
@@ -7,6 +8,9 @@ import {
   FaMapMarkerAlt,
   FaPhone,
   FaBookmark,
+  FaLinkedin,
+  // FaGithub,
+  FaFacebook,
 } from "react-icons/fa";
 import { FiBookmark } from "react-icons/fi";
 import {
@@ -28,6 +32,31 @@ interface ProfileModalProps {
   handleSaveCandidate: () => Promise<void>;
 }
 
+interface SocialLinkProps {
+  href?: string;
+  icon: React.ReactNode;
+  color?: string;
+}
+
+const SocialLink: React.FC<SocialLinkProps> = ({
+  href,
+  icon,
+  color = "text-blue-600",
+}) => {
+  if (!href) return null;
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
+    >
+      <span className={`${color} text-lg`}>{icon}</span>
+    </a>
+  );
+};
+
 const ProfileModal: React.FC<ProfileModalProps> = ({
   isOpen,
   onClose,
@@ -37,9 +66,9 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
 }) => {
   if (!isOpen) return null;
   return (
-    <Modal closeModal={onClose}>
+    <Modal className="w-[90%] p-3 md:p-6 lg:w-[767px]" closeModal={onClose}>
       {/* Header */}
-      <div className="flex justify-between items-center border-b pb-4">
+      <div className="flex justify-between items-center border-b pb-4 pr-5">
         <div>
           <h2 className="text-xl font-semibold text-black">{profile.name}</h2>
           <p className="text-gray-500 text-sm">{profile.role}</p>
@@ -53,16 +82,16 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
         </button>
         <button
           onClick={onClose}
-          className="text-gray-800 hover:text-gray-700 absolute -right-10 top-0"
+          className="text-gray-800 hover:text-gray-700 absolute right-1 top-2"
         >
           <FaTimes size={20} />
         </button>
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-[55%_45%] gap-6 mt-4">
         {/* Left - Main Content */}
-        <div className="md:col-span-2 space-y-4">
+        <div className="md:basis-[55%] space-y-4">
           <h3 className="text-lg font-semibold text-black">BIOGRAPHY</h3>
           <p className="text-sm text-gray-600">{profile.bio}</p>
 
@@ -70,35 +99,30 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
           <p className="text-sm text-gray-600">{profile.coverLetter}</p>
 
           {/* Social Media */}
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2 text-black">
-              Follow me Social Media
-            </h3>
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
-              >
-                <FaGlobe className="text-blue-500 text-lg" />
-              </a>
-              <a
-                href="#"
-                className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
-              >
-                <FaEnvelope className="text-blue-600 text-lg" />
-              </a>
-              <a
-                href="#"
-                className="p-2 bg-blue-100 rounded-full hover:bg-blue-200"
-              >
-                <FaDownload className="text-gray-600 text-lg" />
-              </a>
+          {(profile.linkedin || profile.facebook || profile.website) && (
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold mb-2 text-black">
+                Follow my Social Media
+              </h3>
+              <div className="flex gap-3">
+                <SocialLink
+                  href={profile.website}
+                  icon={<FaGlobe />}
+                  color="text-blue-500"
+                />
+                <SocialLink
+                  href={`mailto:${profile.email}`}
+                  icon={<FaEnvelope />}
+                />
+                <SocialLink href={profile.linkedin} icon={<FaLinkedin />} />
+                <SocialLink href={profile.facebook} icon={<FaFacebook />} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Right - Sidebar */}
-        <div className="space-y-4">
+        <div className="md:basis-[45%] space-y-4">
           {/* Personal Info */}
           <div className="p-4 bg-white shadow-md rounded-lg space-y-3">
             <div className="flex items-center gap-2 text-gray-600">
@@ -157,9 +181,13 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
               </p>
               <p className="text-sm text-gray-700">{profile.name} PDF</p>
             </div>
-            <button className="text-blue-500 hover:text-blue-700">
+            <Link
+              target="_blank"
+              href={profile.resumeUrl}
+              className="text-blue-500 hover:text-blue-700"
+            >
               <FaDownload size={18} />
-            </button>
+            </Link>
           </div>
 
           {/* Contact Info */}
@@ -168,24 +196,23 @@ const ProfileModal: React.FC<ProfileModalProps> = ({
               Contact Information
             </h3>
             <div className="flex items-center gap-2 text-gray-600">
-              <FaGlobe className="text-blue-500 text-lg" />
-              {profile.website ? (
-                <a
-                  href={
-                    profile.website.startsWith("http")
-                      ? `https://${profile.website}`
-                      : profile.website
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm font-semibold hover:underline"
-                >
-                  {profile.website}
-                </a>
-              ) : (
-                <span className="text-sm text-gray-500">
-                  No website available
-                </span>
+              {profile.website && (
+                <>
+                  <FaGlobe className="text-blue-500 text-lg" />
+
+                  <a
+                    href={
+                      profile.website.startsWith("http")
+                        ? `https://${profile.website}`
+                        : profile.website
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold hover:underline break-all"
+                  >
+                    {profile.website}
+                  </a>
+                </>
               )}
             </div>
             <div className="flex items-center gap-2 text-gray-600">

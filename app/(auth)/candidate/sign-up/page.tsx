@@ -1,6 +1,7 @@
 "use client";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useCallback, useEffect } from "react";
+import Select from "react-select";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -8,7 +9,6 @@ import { fileUpload, candidateSchema } from "@/app/utils";
 import {
   experienceOptions,
   educationOptions,
-  countryOptions,
   skillOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
@@ -16,9 +16,14 @@ import ResumeUpload from "@/app/components/common/ResumeUpload";
 import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
-import Select from "react-select";
+import { getCountries } from "@/app/lib";
 
 const CandidateSignUp = () => {
+  const [countries, setCountries] = useState([]);
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
+  const image = searchParams.get("image") || "";
+  const name = searchParams.get("name") || "";
   const formRef = useRef<HTMLFormElement>(null);
   const { setNotif } = useNotif();
   const router = useRouter();
@@ -27,8 +32,8 @@ const CandidateSignUp = () => {
   const [formData, setFormData] = useState<
     Partial<Candidate> & { confirmedPassword?: string }
   >({
-    email: "",
-    name: "",
+    email,
+    name,
     password: "",
     confirmedPassword: "",
     role: "",
@@ -44,7 +49,7 @@ const CandidateSignUp = () => {
     website: "",
     phone: "",
     resumeUrl: "",
-    profilePicture: "",
+    profilePicture: image,
     skills: [],
     location: "",
   });
@@ -87,7 +92,7 @@ const CandidateSignUp = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "phone" ? value.replace(/\D/g, "") : value,
     }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -127,27 +132,51 @@ const CandidateSignUp = () => {
         method: "POST",
         body: JSON.stringify({
           ...formData,
-          userRole: "CANDIDATE",
+          role: "CANDIDATE",
         }),
-        headers: { "Content-Type": "application/json" },
       });
-      const data = await res.json();
+      const { success, data, message } = await res.json();
 
-      if (!res.ok) {
+      if (!success) {
         setNotif("error", data.error);
+      } else {
+        setNotif("success", message);
+        router.push("/sign-in");
       }
-      setNotif(
-        "success",
-        "Sign up successful. Please check and verify your email first"
-      );
-      router.push("/sign-in");
     } catch (error) {
       setNotif("error", (error as Error).message);
-      console.error(error);
     } finally {
       setIsPageLoading(false);
     }
   };
+
+  const handleDisableButton = useCallback(() => {
+    const result = candidateSchema.safeParse(formData);
+    if (!result.success) {
+      return true;
+    }
+    return false;
+  }, [formData]);
+
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      handleDisableButton();
+    }, 300); // 300ms debounce time
+
+    return () => clearTimeout(debounce);
+  }, [handleDisableButton]);
+
+  useEffect(() => {
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+    fetchAndProcessCountries();
+  }, []);
 
   return isPageLoading ? (
     <LoadingSpinner />
@@ -173,12 +202,13 @@ const CandidateSignUp = () => {
 
           {/* Email */}
           <input
+            disabled={!!email}
             type="email"
             name="email"
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="border h-10 p-2 rounded-md w-full"
+            className="border disabled:cursor-not-allowed disabeled:bg-gray-400 h-10 p-2 rounded-md w-full"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -240,7 +270,6 @@ const CandidateSignUp = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            required
             className="border p-2 rounded-md w-full"
           />
           {errors.name && (
@@ -254,7 +283,6 @@ const CandidateSignUp = () => {
             placeholder="Job Title"
             value={formData.role}
             onChange={handleChange}
-            required
             className="border p-2 rounded-md w-full"
           />
           {errors.role && (
@@ -263,9 +291,10 @@ const CandidateSignUp = () => {
 
           {/* Phone */}
           <input
-            type="number"
+            type="tel"
             name="phone"
-            placeholder="Phone Number"
+            inputMode="numeric"
+            placeholder="e.g. 04167890123"
             value={formData.phone}
             onChange={handleChange}
             className="border p-2 rounded-md w-full"
@@ -377,7 +406,7 @@ const CandidateSignUp = () => {
             <option value="" disabled>
               Choose your nationality
             </option>
-            {countryOptions.map(({ label, value }) => (
+            {countries.map(({ label, value }) => (
               <option key={value} value={value}>
                 {label}
               </option>
@@ -396,7 +425,7 @@ const CandidateSignUp = () => {
             <option value="" disabled>
               Choose your location
             </option>
-            {countryOptions.map(({ label, value }) => (
+            {countries.map(({ label, value }) => (
               <option key={value} value={value}>
                 {label}
               </option>
@@ -460,8 +489,9 @@ const CandidateSignUp = () => {
 
           {/* Submit Button */}
           <button
+            // disabled={isLoading || handleDisableButton()}
             type="submit"
-            className="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+            className="bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md hover:bg-blue-700"
           >
             Sign up
           </button>

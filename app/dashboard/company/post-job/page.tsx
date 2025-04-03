@@ -16,7 +16,7 @@ import {
 import { useNotif } from "@/app/context/NotificationProvider";
 import { jobSchema } from "@/app/utils/validation";
 import { LoadingSpinner } from "@/app/components";
-import { useAuth } from "@/app/context/AuthProvider";
+
 const customStyles: StylesConfig<{ label: string; value: string }, true> = {
   multiValue: (base) => ({
     ...base,
@@ -39,7 +39,6 @@ const customStyles: StylesConfig<{ label: string; value: string }, true> = {
 
 const PostJobForm = () => {
   const router = useRouter();
-  const { user } = useAuth();
   const formRef = useRef<HTMLFormElement>(null);
   const { setNotif } = useNotif();
   const [isLoading, setIsLoading] = useState(false);
@@ -97,12 +96,11 @@ const PostJobForm = () => {
         return;
       }
       setIsLoading(true);
-      const res = await fetch(`/api/posted-jobs/${user?.id}`, {
+      const res = await fetch(`/api/posted-jobs}`, {
         method: "POST",
         body: JSON.stringify({
           ...formData,
         }),
-        headers: { "Content-Type": "application/json" },
       });
       const data = await res.json();
 

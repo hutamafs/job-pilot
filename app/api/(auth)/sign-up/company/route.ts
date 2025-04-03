@@ -3,6 +3,7 @@ import { prisma } from "@/app/utils/prisma";
 import { supabase } from "@/app/utils/supabase";
 import { hashPassword } from "@/app/utils/auth";
 import { Prisma } from "@prisma/client";
+import { apiResponse } from "@/app/lib";
 
 export async function POST(req: Request) {
   try {
@@ -47,6 +48,7 @@ export async function POST(req: Request) {
         email,
         role: "COMPANY",
         password: hashedPassword,
+        authProvider: "CREDENTIAL",
       },
     });
 
@@ -77,25 +79,39 @@ export async function POST(req: Request) {
       data: compData,
     });
 
-    return NextResponse.json({ user, company }, { status: 201 });
+    return NextResponse.json(
+      apiResponse({
+        success: true,
+        message: "Company signed up successfully",
+        data: {
+          user,
+          company,
+        },
+      }),
+      { status: 201 }
+    );
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
         const targetField = error.meta?.target;
-        console.error(`Unique constraint failed on field: ${targetField}`);
 
         return NextResponse.json(
-          {
+          apiResponse({
+            success: false,
+            message: `Failed to create company`,
             error: `The ${targetField} is already in use.`,
-            field: targetField,
-          },
+          }),
           { status: 400 }
         );
       }
     }
 
     return NextResponse.json(
-      { error: (error as Error).message },
+      apiResponse({
+        success: false,
+        message: `Failed to sign up company`,
+        error: `Failed to sign up company`,
+      }),
       { status: 500 }
     );
   }

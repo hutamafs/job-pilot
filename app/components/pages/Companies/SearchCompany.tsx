@@ -5,14 +5,15 @@ import { useRouter } from "next/navigation";
 import { FiSearch, FiMapPin } from "react-icons/fi";
 import Container from "../../common/Container";
 import { CompanySearchQuery } from "@/app/types";
-import { countryOptions } from "@/app/options";
 import { stringifyQuery } from "@/app/utils";
 
-interface CompanySearchProps {
+const CompanySearchBar = ({
+  countries,
+  query,
+}: {
+  countries: { label: string; value: string }[];
   query: CompanySearchQuery;
-}
-
-const CompanySearchBar = ({ query }: CompanySearchProps) => {
+}) => {
   const router = useRouter();
   const [q, setQuery] = useState<CompanySearchQuery>({
     search: "",
@@ -68,7 +69,7 @@ const CompanySearchBar = ({ query }: CompanySearchProps) => {
             onChange={handleInputChange}
           >
             <option value="">Select a location</option>
-            {countryOptions.map((option) => (
+            {countries.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

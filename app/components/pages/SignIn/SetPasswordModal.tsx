@@ -4,11 +4,11 @@ import { useState } from "react";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useAuth } from "@/app/context/AuthProvider";
+// import { useAuth } from "@/app/context/AuthProvider";
 
 const SetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const { setNotif } = useNotif();
-  const { supabase } = useAuth();
+  // const { supabase } = useAuth();
   const [formData, setFormData] = useState({
     password: "",
     confirmedPassword: "",
@@ -30,19 +30,19 @@ const SetPasswordModal = ({ onClose }: { onClose: () => void }) => {
   const resetPassword = async () => {
     try {
       setIsLoading(true);
-      if (formData.password !== formData.confirmedPassword) {
-        setNotif("error", "Passwords do not match");
-        return;
-      }
-      const { data, error } = await supabase.auth.updateUser({
-        password: formData.password,
-      });
-      if (error) throw new Error(error.message);
-      if (data) {
-        setNotif("success", "Password has been changed");
+      // if (formData.password !== formData.confirmedPassword) {
+      //   setNotif("error", "Passwords do not match");
+      //   return;
+      // }
+      // const { data, error } = await supabase.auth.updateUser({
+      //   password: formData.password,
+      // });
+      // if (error) throw new Error(error.message);
+      // if (data) {
+      //   setNotif("success", "Password has been changed");
 
-        onClose();
-      }
+      //   onClose();
+      // }
     } catch (error) {
       setNotif("error", (error as Error).message);
     } finally {

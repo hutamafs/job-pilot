@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "dummyimage.com",
         pathname: "/**",
       },
@@ -45,7 +50,7 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    domains: ["dummyimage.com"],
+    domains: ["job-kerja-pilot.s3.ap-southeast-2.amazonaws.com"],
   },
 };
 

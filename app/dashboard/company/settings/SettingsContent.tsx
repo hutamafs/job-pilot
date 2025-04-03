@@ -24,7 +24,7 @@ const tabs = [
   // { id: "account", label: "Account Setting", icon: <FaCog /> },
 ];
 
-const SettingsContent = () => {
+const Settings = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const formRef = useRef<HTMLFormElement>(null);
@@ -34,7 +34,7 @@ const SettingsContent = () => {
     name: "",
     banner: "",
     logo: "",
-    founded: new Date(),
+    founded: new Date().toISOString().split("T")[0],
     description: "",
     benefits: [],
     industry: "",
@@ -97,7 +97,6 @@ const SettingsContent = () => {
       if (tabForField && tabForField !== activeTab) {
         setActiveTab(tabForField);
 
-        // Wait for tab content to mount
         setTimeout(() => {
           const errorElement = formRef.current?.querySelector(
             `[name="${firstErrorField}"]`
@@ -105,7 +104,7 @@ const SettingsContent = () => {
           setNotif("error", formattedErrors[firstErrorField]);
           errorElement?.scrollIntoView({ behavior: "smooth", block: "center" });
           (errorElement as HTMLElement)?.focus();
-        }, 100); // 100ms gives time for React to render the new tab
+        }, 100);
       } else {
         const errorElement = formRef.current?.querySelector(
           `[name="${firstErrorField}"]`
@@ -199,4 +198,4 @@ const SettingsContent = () => {
   );
 };
 
-export default SettingsContent;
+export default Settings;

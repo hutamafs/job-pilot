@@ -1,7 +1,7 @@
 "use client";
-
+import { useSearchParams } from "next/navigation";
 import Image from "next/legacy/image";
-import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { FaMapMarkerAlt, FaWallet } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
@@ -14,11 +14,13 @@ import LoadingSpinner from "@/app/components/common/LoadingSpinner";
 import userImage from "@/asset/user-logo.jpg";
 
 const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
+  const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const selectedId = searchParams.get("open_id");
   const [isSaved, setIsSaved] = useState(d.isSaved);
   const [isOpen, setIsOpen] = useState(false);
   const { setNotif } = useNotif();
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
@@ -27,6 +29,14 @@ const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
       document.body.classList.remove("overflow-hidden");
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (selectedId === d.id) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, [selectedId, d.id]);
 
   const handleSaveCandidate = async () => {
     try {
@@ -39,7 +49,7 @@ const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
         setNotif("success", "candidate has successfully been saved");
       }
       setIsSaved(!isSaved);
-      router.refresh();
+      await queryClient.invalidateQueries({ queryKey: ["candidates"] });
     } catch (error) {
       setNotif("error", (error as Error).message);
     } finally {
@@ -50,7 +60,7 @@ const CandidateCard: React.FC<CandidateType & { isSaved: boolean }> = (d) => {
   return (
     <>
       <div
-        className={`flex flex-col md:flex-row md:items-center justify-between p-4 mb-3 border rounded-lg transition-all w-full relative
+        className={`flex flex-col md:flex-row md:items-center justify-between p-4 mb-3 border rounded-lg transition-all w-full relative 
         }`}
       >
         <div className="flex md:items-center gap-4">

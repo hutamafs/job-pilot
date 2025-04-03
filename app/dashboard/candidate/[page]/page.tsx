@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { FaStar, FaBriefcase } from "react-icons/fa";
-// import { MdEdit } from "react-icons/md";
 import { HiArrowRight } from "react-icons/hi2";
 import { JobApplication as JobAppType } from "@/app/types";
 import { Pagination, DashboardJobCard, EmptyState } from "@/app/components";
 import FavoriteJobCard from "@/app/components/pages/Candidates/FavoriteJobCard";
-import { createClient } from "@/app/utils/supabase/server";
+import { getServerSession } from "@/app/lib";
 
 interface CandidatePageProps {
   params: Promise<{ page: string }>;
@@ -13,14 +12,12 @@ interface CandidatePageProps {
 }
 
 const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
-  const supabase = await createClient();
-  const { data: user } = await supabase.auth.getUser();
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`, {
-    headers: {
-      Authorization: `${user?.user?.id}`,
-    },
-  });
-  const { data: userData } = await res.json();
+  const session = await getServerSession();
+  const user = session?.user;
+  const candidateRes = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/candidates/${user?.id}`
+  );
+  const { data: candidateData } = await candidateRes.json();
   const { page } = await params;
   const resolvedParams = await searchParams;
   const currentPage = Number(resolvedParams?.page) || 1;
@@ -29,45 +26,27 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
   switch (page) {
     case "overview":
       const ovRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?limit=3`,
-        {
-          headers: {
-            Authorization: `${user?.user?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?limit=3`
       );
       const { data: ovData } = await ovRes.json();
       data = ovData;
       break;
     case "applied-jobs":
       const apRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${userData?.id}?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `${user?.user?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?page=${currentPage}`
       );
       const { data: apData } = await apRes.json();
       data = apData;
       break;
     default:
       const svRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/savedJobs/${userData?.id}?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `${user?.user?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/savedJobs/${candidateData?.id}?page=${currentPage}`
       );
       const { data: svData } = await svRes.json();
       data = svData;
       break;
   }
   const { jobs, totalJobs, totalPages } = data;
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="md:px-4 w-full">
@@ -75,7 +54,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
       {page === "overview" && (
         <div className="bg-white rounded-lg">
           <h2 className="text-xl text-black font-semibold">
-            Hello, {userData?.name}
+            Hello, {user?.name}
           </h2>
           <p className="text-gray-500">
             Here is your daily activities and job alerts
@@ -92,7 +71,7 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
             <StatCard
               icon={<FaStar />}
               label="Saved Jobs"
-              count={userData?.savedJobs.length}
+              count={candidateData?.savedJobs?.length || 0}
               color="yellow"
             />
           </div>

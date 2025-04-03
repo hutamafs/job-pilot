@@ -1,18 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUserRole } from "@/app/utils";
+import { apiResponse } from "@/app/lib";
 
 export async function GET(
-  req: Request,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { data: user } = await getUserRole();
+    const userId = req.headers.get("authorization")! || "";
     const id = (await params).id;
 
     if (!id) {
       return NextResponse.json(
-        { error: "Job ID is required" },
+        apiResponse({
+          success: false,
+          message: "Job ID is required",
+          error: "Job ID is required",
+        }),
         { status: 400 }
       );
     }
@@ -23,23 +27,43 @@ export async function GET(
         company: true,
         applications: {
           where: {
-            candidateId: user?.id,
+            candidateId: userId,
           },
         },
         savedJobs: {
           where: {
-            candidateId: user?.id,
+            candidateId: userId,
           },
         },
       },
     });
     if (!data) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+      return NextResponse.json(
+        apiResponse({
+          success: false,
+          message: "Job not found",
+          error: "Job not found",
+        }),
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json(
+      apiResponse({
+        success: true,
+        message: "Company fetched successfully",
+        data,
+      }),
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error fetching job:", error);
-    return NextResponse.json({ error: "Failed to fetch job" }, { status: 500 });
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch job",
+        error: (error as Error).message,
+      }),
+      { status: 500 }
+    );
   }
 }

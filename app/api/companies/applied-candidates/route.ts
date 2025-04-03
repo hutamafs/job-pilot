@@ -1,15 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getUserRole } from "@/app/utils";
+import { getServerSession, apiResponse } from "@/app/lib";
+
+async function getCompany() {
+  const session = await getServerSession();
+  const company = session.user;
+
+  return { company };
+}
 
 export async function GET() {
   try {
-    const { data } = await getUserRole();
+    const { company } = await getCompany();
 
     const jobApplications = await prisma.jobApplication.findMany({
       where: {
         job: {
-          companyId: data?.id,
+          companyId: company?.id,
         },
       },
       include: {
@@ -18,11 +25,21 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ jobApplications }, { status: 200 });
-  } catch (error) {
-    console.error("Error fetching all job applications:", error);
     return NextResponse.json(
-      { error: "Failed to fetch all job applications" },
+      apiResponse({
+        success: true,
+        message: "Job applications fetched successfully",
+        data: jobApplications,
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch all job applications",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }
@@ -46,13 +63,20 @@ export async function PUT(req: Request) {
     });
 
     return NextResponse.json(
-      { data: jobApplications.job.title },
+      apiResponse({
+        success: true,
+        message: "Companies fetched successfully",
+        data: jobApplications.job.title,
+      }),
       { status: 200 }
     );
   } catch (error) {
-    console.error("Job Application has been updated", error);
     return NextResponse.json(
-      { error: "Failed to update job application" },
+      apiResponse({
+        success: false,
+        message: "Companies fetched successfully",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

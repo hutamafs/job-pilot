@@ -1,11 +1,12 @@
 export const dynamic = "force-dynamic";
 import Link from "next/link";
-import { getUserRole } from "@/app/utils";
+import { getServerSession } from "@/app/lib";
 
 import Container from "../common/Container";
 
 const Footer = async () => {
-  const { role } = await getUserRole();
+  const session = await getServerSession();
+  const role = session?.user?.type;
 
   return (
     <Container backgroundColor="bg-black-900">

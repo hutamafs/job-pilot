@@ -1,10 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
+import { getServerSession, apiResponse } from "@/app/lib";
+
 const PAGE_SIZE = 21;
+
+async function getCandidate() {
+  const session = await getServerSession();
+  const candidate = session.user;
+
+  return { candidate };
+}
 
 export async function GET(req: Request) {
   try {
-    const id = req.headers.get("authorization")!;
+    const { candidate } = await getCandidate();
     const { searchParams } = new URL(req.url);
     const page = Number(searchParams.get("page")) || 1;
     const search = searchParams.get("search") || "";
@@ -13,14 +22,6 @@ export async function GET(req: Request) {
     const salary = Number(searchParams.get("salary")) || 0;
     const industry = searchParams.getAll("industry") || null;
     const jobType = searchParams.getAll("jobType") || null;
-
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-
-    const candidate = await prisma.candidate.findUnique({
-      where: { userId: user?.id },
-    });
 
     const skip = (page - 1) * PAGE_SIZE;
 
@@ -86,15 +87,25 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json({
-      data: jobs,
-      totalJobs,
-      totalPages: Math.ceil(totalJobs / PAGE_SIZE),
-    });
-  } catch (error) {
-    console.error("Error fetching jobs:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs" },
+      apiResponse({
+        success: true,
+        message: "Jobs fetched successfully",
+        data: {
+          jobs,
+          totalJobs,
+          totalPages: Math.ceil(totalJobs / PAGE_SIZE),
+        },
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "failed to fetch jobs",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

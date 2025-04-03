@@ -1,14 +1,28 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StepProps } from "@/app/types";
 import uploadFile from "@/app/utils/fileUpload";
 import { UploadContainer } from "@/app/components";
-import { countryOptions } from "@/app/options";
+import { getCountries } from "@/app/lib";
 
 export default function CompanyInfo({ data, setFormData }: StepProps) {
   const pathname = usePathname();
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+    fetchAndProcessCountries();
+  }, []);
+
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     name: string
@@ -36,15 +50,17 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
       | React.ChangeEvent<HTMLTextAreaElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "phone" ? value.replace(/\D/g, "") : value,
     }));
   };
   return (
     <div className="space-y-4">
       {/* Upload Section */}
       <div className="flex flex-col md:flex-row gap-4">
+        <div></div>
         <UploadContainer
           source={data.logo || ""}
           label="Company Logo"
@@ -62,21 +78,31 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
       </div>
 
       {/* Company Details */}
-      <input
-        type="text"
-        placeholder="Company Name"
-        value={data.name}
-        onChange={handleChange}
-        name="name"
-        className="w-full border p-2 rounded-md"
-      />
-      <textarea
-        placeholder="About Us"
-        className="w-full border p-2 rounded-md h-24"
-        value={data.description}
-        onChange={handleChange}
-        name="description"
-      />
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Company name
+        </label>
+        <input
+          type="text"
+          placeholder="Company Name"
+          value={data.name}
+          onChange={handleChange}
+          name="name"
+          className="w-full border p-2 rounded-md"
+        />
+      </div>
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Company desription
+        </label>
+        <textarea
+          placeholder="About Us"
+          className="w-full border p-2 rounded-md h-24"
+          value={data.description}
+          onChange={handleChange}
+          name="description"
+        />
+      </div>
       {pathname !== "/dashboard/company/settings" && (
         <>
           <input
@@ -133,29 +159,40 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
           </div>
         </>
       )}
-      <select
-        className="w-full border p-2 rounded-md"
-        name="location"
-        value={data.location}
-        onChange={handleChange}
-      >
-        <option disabled value="">
-          Select Country
-        </option>
-        {countryOptions.map((country) => (
-          <option key={country.value} value={country.value}>
-            {country.label}
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Country
+        </label>
+        <select
+          className="w-full border p-2 rounded-md"
+          name="location"
+          value={data.location}
+          onChange={handleChange}
+        >
+          <option disabled value="">
+            Select Country
           </option>
-        ))}
-      </select>
-      <input
-        type="tel"
-        placeholder="Phone Number"
-        className="w-full border p-2 rounded-md"
-        name="phone"
-        value={data.phone}
-        onChange={handleChange}
-      />
+          {countries.map(({ label, value }) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block text-md font-medium text-gray-700">
+          Phone number
+        </label>
+        <input
+          type="tel"
+          placeholder="Phone Number"
+          inputMode="numeric"
+          className="w-full border p-2 rounded-md"
+          name="phone"
+          value={data.phone}
+          onChange={handleChange}
+        />
+      </div>
     </div>
   );
 }

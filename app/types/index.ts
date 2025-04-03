@@ -1,3 +1,9 @@
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
 export interface Job {
   id: string;
   title: string;
@@ -26,7 +32,7 @@ export interface Company {
   name: string;
   logo?: string;
   banner?: string;
-  founded: Date;
+  founded: string;
   description: string;
   benefits: string[];
   industry: string;
@@ -45,6 +51,7 @@ export interface Company {
   userId?: string;
   password: string;
   organizationType?: string;
+  type: string;
 }
 
 export interface SavedJob {
@@ -80,6 +87,8 @@ export interface Candidate {
   savedJobs: Job[];
   skills: string[];
   savedByCompanies: SavedCandidate[];
+
+  type: string;
 }
 
 export interface JobApplication {
@@ -130,8 +139,14 @@ export interface JobSearchQuery {
 }
 
 export interface CompanySearchQuery {
-  search: string;
-  location: string;
+  search?: string;
+  location?: string;
+  page?: number;
+}
+
+export interface CandidateSearchQuery {
+  search?: string;
+  location?: string;
   page?: number;
 }
 
@@ -148,4 +163,13 @@ export interface SavedCandidate {
 export interface StepProps {
   data: Partial<Company & { confirmedPassword?: string }>;
   setFormData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
+}
+
+export interface SessionUserBase {
+  id?: string;
+  type: "CANDIDATE" | "COMPANY" | "ADMIN";
+}
+
+export interface SessionData {
+  user?: ((Candidate | Company) & SessionUserBase) | null;
 }

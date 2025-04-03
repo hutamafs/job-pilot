@@ -7,7 +7,13 @@ import FilterSidebar from "./FilterSidebar";
 import { JobSearchQuery } from "@/app/types";
 import { stringifyQuery } from "@/app/utils";
 
-const JobSearchWrapper = ({ query }: { query: JobSearchQuery }) => {
+const JobSearchWrapper = ({
+  countries,
+  query,
+}: {
+  countries: { label: string; value: string }[];
+  query: JobSearchQuery;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const [q, setQuery] = useState<JobSearchQuery>({
@@ -41,9 +47,15 @@ const JobSearchWrapper = ({ query }: { query: JobSearchQuery }) => {
     setIsOpen(false);
   };
 
+  const handleResetFilter = () => {
+    router.push("/jobs");
+    setIsOpen(false);
+  };
+
   return (
     <>
       <SearchJob
+        countries={countries}
         query={q}
         setQuery={setQuery}
         handleSubmitFilter={handleSubmitFilter}
@@ -55,6 +67,7 @@ const JobSearchWrapper = ({ query }: { query: JobSearchQuery }) => {
         setIsOpen={setIsOpen}
         setQuery={setQuery}
         handleSubmitFilter={handleSubmitFilter}
+        handleResetFilter={handleResetFilter}
       />
     </>
   );

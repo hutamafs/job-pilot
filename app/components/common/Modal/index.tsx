@@ -5,10 +5,12 @@ import { createPortal } from "react-dom";
 
 const Modal = ({
   children,
+  className,
   closeModal,
 }: {
   children: React.ReactNode;
   closeModal: () => void;
+  className?: string;
 }) => {
   const elRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +37,7 @@ const Modal = ({
       onClick={closeModal}
     >
       <div
-        className="bg-white p-6 max-w-4xl rounded-lg shadow-lg relative overflow-y-auto max-h-[90vh] z-[1001]"
+        className={`bg-white ${className} p-6 max-w-4xl rounded-lg overflow-x-hidden shadow-lg relative overflow-y-auto max-h-[90vh] z-[1001]`}
         onClick={(e) => e.stopPropagation()}
       >
         {children}

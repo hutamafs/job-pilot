@@ -1,21 +1,28 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useNotif } from "@/app/context/NotificationProvider";
 import { useAuth } from "@/app/context/AuthProvider";
-import { fetchUser } from "@/app/utils/supabase/getUserAfterSignIn";
 import ResetPasswordModal from "@/app/components/pages/SignIn/ResetPasswordModal";
 import SetPasswordModal from "@/app/components/pages/SignIn/SetPasswordModal";
 
 const SignInPage = () => {
   const params = useSearchParams();
+  const callbackUrl = params?.get("callbackUrl");
   const role = params?.get("role");
-  const action = params?.get("action");
   const { setNotif } = useNotif();
-  const { setUser, setRole, supabase } = useAuth();
+  const { setUser, setRole } = useAuth();
   const [routeRole, setRouteRole] = useState(role || "CANDIDATE");
+
+  useEffect(() => {
+    if (callbackUrl) {
+      setRole("");
+      setUser(null);
+    }
+  }, [setRole, setUser, callbackUrl]);
 
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -26,35 +33,6 @@ const SignInPage = () => {
   const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
   const [showSetPasswordModal, setShowSetPasswordModal] = useState(false);
 
-  useEffect(() => {
-    const accessToken = params.get("access_token") || "";
-    const getRole = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser(accessToken);
-      return user;
-    };
-    if (action === "reset-password") {
-      (async () => {
-        const user = await getRole();
-
-        if (user) {
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/get-user`,
-            {
-              headers: {
-                Authorization: `${user?.id}`,
-              },
-            }
-          );
-          const { role } = await res.json();
-          setRouteRole(role);
-        }
-      })();
-      setShowSetPasswordModal(true);
-    }
-  }, [params, action, supabase.auth]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -63,33 +41,35 @@ const SignInPage = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
+      const res = await fetch("/api/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          type: routeRole,
+        }),
       });
-      if (data.user?.role === "authenticated") {
-        const { data: user } = await fetchUser(data.user.id);
-
-        if (user.role === routeRole) {
-          setUser(user);
-          setRole(user.role);
-          router.push(params.get("callbackUrl") || "/");
-          setNotif("success", "Signed in successfully");
-        } else {
-          await supabase.auth.signOut();
-          throw new Error(
-            error?.message ||
-              `you dont have access to this account for ${routeRole} portal`
-          );
-        }
+      const { message, data: user } = await res.json();
+      if (res.ok) {
+        setRole(user.type);
+        setUser(user);
+        setNotif("success", "Signed in successfully");
+        router.push(callbackUrl || "/");
       } else {
-        throw new Error(error?.message || "Invalid credentials");
+        throw new Error(message);
       }
     } catch (error) {
       setNotif("error", (error as Error).message);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleCreateState = () => {
+    if (callbackUrl) {
+      return `?role=${routeRole}&callbackUrl=${callbackUrl}`;
+    }
+    return `?role=${routeRole}`;
   };
 
   return (
@@ -141,13 +121,26 @@ const SignInPage = () => {
           {/* Sign In Button */}
           <button
             type="submit"
-            className={`w-full bg-blue-600 text-white py-2 rounded-md ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+            className={`w-full bg-blue-600 text-white py-2 rounded-md disabled:cursor-not-allowed disabled:bg-gray-300 ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
             onClick={handleSubmit}
-            disabled={isLoading}
+            disabled={isLoading || !formData.email || !formData.password}
           >
             {isLoading ? <LoadingSpinner /> : "Sign in"}
           </button>
         </form>
+        <a
+          href={`/api/google${handleCreateState()}`}
+          className="mt-4 flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+        >
+          <Image
+            width={20}
+            height={20}
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className="h-5 w-5"
+          />
+          Sign in with Google as a {routeRole}
+        </a>
 
         {/* Reset Password Link */}
         <p className="text-center text-sm mt-2 text-gray-600">
