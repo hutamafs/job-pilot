@@ -21,12 +21,41 @@ const Companies = () => {
   const [user, setUser] = useState<{ id: string }>({
     id: "",
   });
+
+  const [countries, setCountries] = useState([]);
   const query: CompanySearchQuery = {
     search: searchParams.get("search") ?? "",
     location: searchParams.get("location") ?? "",
     page: searchParams.get("page") ? Number(searchParams.get("page")) : 1,
   };
   const params = stringifyQuery(query);
+
+  useEffect(() => {
+    const getCountries = async () => {
+      const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
+      const res = await fetch(url, {
+        headers: {
+          "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+          "X-RapidAPI-Host":
+            "country-state-city-search-rest-api.p.rapidapi.com",
+        },
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data;
+    };
+
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+
+    fetchAndProcessCountries();
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -58,10 +87,11 @@ const Companies = () => {
   });
 
   const data = queryResult?.data || [];
+  console.log(data?.companies?.[0]);
 
   return (
     <>
-      <SearchCompany query={query} />
+      <SearchCompany countries={countries} query={query} />
       <Container className="py-8">
         {isLoading ? (
           <div className="flex justify-center items-center p-12">

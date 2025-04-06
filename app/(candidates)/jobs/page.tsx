@@ -18,6 +18,7 @@ import { getClientSession } from "@/app/lib/";
 const Jobs = () => {
   const searchParams = useSearchParams();
   const [user, setUser] = useState("");
+  const [countries, setCountries] = useState([]);
   const query: JobSearchQuery = {
     search: searchParams.get("search") ?? "",
     location: searchParams.get("location") ?? "",
@@ -37,6 +38,33 @@ const Jobs = () => {
       }
     };
     fetchUser();
+  }, []);
+
+  useEffect(() => {
+    const getCountries = async () => {
+      const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
+      const res = await fetch(url, {
+        headers: {
+          "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+          "X-RapidAPI-Host":
+            "country-state-city-search-rest-api.p.rapidapi.com",
+        },
+      });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return data;
+    };
+
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+
+    fetchAndProcessCountries();
   }, []);
 
   const fetchJobs = async () => {
@@ -67,7 +95,7 @@ const Jobs = () => {
 
   return (
     <div className="relative">
-      <SearchFilterWrapper query={query} />
+      <SearchFilterWrapper countries={countries} query={query} />
       <Container className="py-8 relative">
         {/* Full loading state when no data */}
         {isLoading ? (

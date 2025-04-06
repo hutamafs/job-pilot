@@ -78,7 +78,7 @@ const JobCard: React.FC<JobCardProps> = (props) => {
                 {props.company?.name}
               </span>
               <span className="text-gray-600">
-                📍{props.city}, {props.country}
+                📍 {props.city && `${props.city},`} {props.country}
               </span>
             </div>
           </div>

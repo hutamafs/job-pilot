@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { HiArrowRight } from "react-icons/hi2";
 import { IoLocationOutline } from "react-icons/io5";
 import { MdAttachMoney } from "react-icons/md";
@@ -45,7 +46,10 @@ const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
   };
 
   return (
-    <div className="flex items-center justify-between bg-white shadow-sm rounded-lg px-4 md:px-6 py-4 mb-6 hover:cursor-pointer border border-gray-200 hover:shadow-md transition">
+    <Link
+      href={`/jobs/${job.id}`}
+      className="flex items-center justify-between bg-white shadow-sm rounded-lg px-4 md:px-6 py-4 mb-6 hover:cursor-pointer border border-gray-200 hover:shadow-md transition"
+    >
       {/* Left: Logo & Job Info */}
       <div className="flex items-center gap-4">
         {/* Logo */}
@@ -144,7 +148,7 @@ const FavoriteJobCard = ({ job }: FavoriteJobCardType) => {
         onClose={() => setIsModalOpen(false)}
         setIsApplied={setIsApplied}
       />
-    </div>
+    </Link>
   );
 };
 

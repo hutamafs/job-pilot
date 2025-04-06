@@ -25,6 +25,7 @@ interface SidebarProps {
   query: JobSearchQuery;
   setQuery: React.Dispatch<SetStateAction<JobSearchQuery>>;
   handleSubmitFilter: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  handleResetFilter: () => void;
 }
 
 const FilterSidebar = ({
@@ -33,6 +34,7 @@ const FilterSidebar = ({
   query,
   setQuery,
   handleSubmitFilter,
+  handleResetFilter,
 }: SidebarProps) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -210,6 +212,13 @@ const FilterSidebar = ({
           className="w-full bg-blue-600 text-white py-2 rounded-md mt-4 hover:bg-blue-700"
         >
           Apply Filters
+        </button>
+        {/* 🔹 Reset Button */}
+        <button
+          onClick={handleResetFilter}
+          className="w-full bg-gray-600 text-white py-2 rounded-md mt-2 hover:bg-gray-700"
+        >
+          Reset Filters
         </button>
       </motion.div>
     </>
