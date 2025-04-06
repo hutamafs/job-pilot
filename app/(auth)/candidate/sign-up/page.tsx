@@ -1,6 +1,6 @@
 "use client";
-import { useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRef, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
@@ -20,6 +20,10 @@ import Select from "react-select";
 import { useEffect } from "react";
 
 const CandidateSignUp = () => {
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email") || "";
+  const image = searchParams.get("image") || "";
+  const name = searchParams.get("name") || "";
   const formRef = useRef<HTMLFormElement>(null);
   const { setNotif } = useNotif();
   const router = useRouter();
@@ -28,8 +32,8 @@ const CandidateSignUp = () => {
   const [formData, setFormData] = useState<
     Partial<Candidate> & { confirmedPassword?: string }
   >({
-    email: "",
-    name: "",
+    email,
+    name,
     password: "",
     confirmedPassword: "",
     role: "",
@@ -45,7 +49,7 @@ const CandidateSignUp = () => {
     website: "",
     phone: "",
     resumeUrl: "",
-    profilePicture: "",
+    profilePicture: image,
     skills: [],
     location: "",
   });
@@ -124,7 +128,7 @@ const CandidateSignUp = () => {
       }
       setIsPageLoading(true);
 
-      const res = await fetch("/api/sign-up/", {
+      const res = await fetch("/api/sign-up/candidate", {
         method: "POST",
         body: JSON.stringify({
           ...formData,
@@ -149,13 +153,13 @@ const CandidateSignUp = () => {
     }
   };
 
-  const handleDisableButton = () => {
+  const handleDisableButton = useCallback(() => {
     const result = candidateSchema.safeParse(formData);
     if (!result.success) {
       return true;
     }
     return false;
-  };
+  }, [formData]);
 
   useEffect(() => {
     const debounce = setTimeout(() => {
@@ -163,7 +167,7 @@ const CandidateSignUp = () => {
     }, 300); // 300ms debounce time
 
     return () => clearTimeout(debounce);
-  }, [formData]);
+  }, [handleDisableButton]);
 
   return isPageLoading ? (
     <LoadingSpinner />
@@ -189,12 +193,13 @@ const CandidateSignUp = () => {
 
           {/* Email */}
           <input
+            disabled={!!email}
             type="email"
             name="email"
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="border h-10 p-2 rounded-md w-full"
+            className="border disabled:cursor-not-allowed disabeled:bg-gray-400 h-10 p-2 rounded-md w-full"
           />
           {errors.email && (
             <p className="text-red-500 text-sm mt-1">{errors.email}</p>

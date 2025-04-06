@@ -61,8 +61,6 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.redirect(signInUrl);
   }
 
-  // protected route for company
-
   // Define route access by user type
   const routeAccessMap = {
     COMPANY: ["/dashboard/company", "/candidates"],
@@ -114,5 +112,6 @@ export const config = {
     "/companies/:path*",
     "/jobs/:path*",
     "/sign-in",
+    "/candidates/:path*",
   ],
 };

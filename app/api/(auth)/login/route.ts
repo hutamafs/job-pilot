@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import bcrypt from "bcrypt";
-import { getIronSession } from "iron-session";
 import { prisma } from "@/app/utils/prisma";
-import { sessionOptions } from "@/app/lib/session";
-import { SessionData, Company, Candidate } from "@/app/types";
+import { Candidate, Company } from "@/app/types";
+import { createUserSession } from "@/app/lib";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -58,18 +56,10 @@ export async function POST(req: NextRequest) {
     }
     userData = {
       ...company,
-    } as Company;
+    } as unknown as Company;
   }
 
-  const session = await getIronSession<SessionData>(
-    await cookies(),
-    sessionOptions
-  );
-  session.user = {
-    ...userData,
-    type: user.role,
-  };
-  await session.save();
+  const session = await createUserSession(userData, user.role);
 
   return NextResponse.json({
     message: "Logged in successfully",

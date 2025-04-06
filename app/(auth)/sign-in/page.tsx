@@ -64,6 +64,13 @@ const SignInPage = () => {
     }
   };
 
+  const handleCreateState = () => {
+    if (callbackUrl) {
+      return `?role=${routeRole}&callbackUrl=${callbackUrl}`;
+    }
+    return `?role=${routeRole}`;
+  };
+
   return (
     <div className="flex items-center justify-center bg-gray-100 p-6 min-h-screen">
       <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
@@ -120,6 +127,17 @@ const SignInPage = () => {
             {isLoading ? <LoadingSpinner /> : "Sign in"}
           </button>
         </form>
+        <a
+          href={`/api/google${handleCreateState()}`}
+          className="mt-4 flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
+        >
+          <img
+            src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+            alt="Google"
+            className="h-5 w-5"
+          />
+          Sign in with Google as a {routeRole}
+        </a>
 
         {/* Reset Password Link */}
         <p className="text-center text-sm mt-2 text-gray-600">

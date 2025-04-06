@@ -115,13 +115,7 @@ export default function FoundingInfo({ data, setFormData }: StepProps) {
           placeholder="Founding Date"
           className="w-full border p-2 rounded-md"
           name="founded"
-          value={
-            data.founded
-              ? typeof data.founded === "string"
-                ? data.founded
-                : data.founded.toISOString().split("T")[0]
-              : ""
-          }
+          value={data.founded}
           onChange={handleChange}
         />
       </div>

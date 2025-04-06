@@ -32,7 +32,7 @@ export interface Company {
   name: string;
   logo?: string;
   banner?: string;
-  founded: Date;
+  founded: string;
   description: string;
   benefits: string[];
   industry: string;
@@ -165,6 +165,11 @@ export interface StepProps {
   setFormData: React.Dispatch<React.SetStateAction<Partial<Company>>>;
 }
 
+export interface SessionUserBase {
+  id?: string;
+  type: "CANDIDATE" | "COMPANY" | "ADMIN";
+}
+
 export interface SessionData {
-  user?: (Candidate | Company | null) & { id?: string };
+  user?: ((Candidate | Company) & SessionUserBase) | null;
 }

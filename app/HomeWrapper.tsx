@@ -34,7 +34,7 @@ const ParamsComponent = () => {
 
   useEffect(() => {
     if (error) {
-      setNotif("error", "you do not have access to that page");
+      setNotif("error", error);
     }
   }, [error, setNotif, role, router]);
 

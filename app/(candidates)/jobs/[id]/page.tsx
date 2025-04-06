@@ -28,7 +28,6 @@ const JobDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       }
     );
     const { data } = await response.json();
-    console.log(user, 26);
     if (!data) {
       return null;
     }

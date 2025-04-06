@@ -61,7 +61,6 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
       data = svData;
       break;
   }
-  console.log(data, 4664);
   const { jobs, totalJobs, totalPages } = data;
   if (!data) {
     return <div>Loading...</div>;

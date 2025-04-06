@@ -34,7 +34,7 @@ const Settings = () => {
     name: "",
     banner: "",
     logo: "",
-    founded: new Date(),
+    founded: new Date().toISOString().split("T")[0],
     description: "",
     benefits: [],
     industry: "",
