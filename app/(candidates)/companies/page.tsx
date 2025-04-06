@@ -35,7 +35,7 @@ const Companies = () => {
       const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
       const res = await fetch(url, {
         headers: {
-          "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+          "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
           "X-RapidAPI-Host":
             "country-state-city-search-rest-api.p.rapidapi.com",
         },
@@ -87,7 +87,6 @@ const Companies = () => {
   });
 
   const data = queryResult?.data || [];
-  console.log(data?.companies?.[0]);
 
   return (
     <>
@@ -99,7 +98,7 @@ const Companies = () => {
           </div>
         ) : (
           <>
-            {!data || data.companies.length === 0 ? (
+            {!data || data?.companies?.length === 0 ? (
               <EmptyState description="No companies found" />
             ) : (
               <>

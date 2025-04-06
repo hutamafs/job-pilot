@@ -284,7 +284,7 @@ const CandidateSignUp = () => {
 
           {/* Phone */}
           <input
-            type="number"
+            type="text"
             name="phone"
             placeholder="Phone Number"
             value={formData.phone}
@@ -481,7 +481,7 @@ const CandidateSignUp = () => {
 
           {/* Submit Button */}
           <button
-            disabled={isLoading || handleDisableButton()}
+            // disabled={isLoading || handleDisableButton()}
             type="submit"
             className="bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed text-white py-2 rounded-md hover:bg-blue-700"
           >

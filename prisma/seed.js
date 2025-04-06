@@ -5782,7 +5782,7 @@ async function getCitiesByState(countryCode) {
   const url = `https://country-state-city-search-rest-api.p.rapidapi.com/states-by-countrycode?countrycode=${countryCode}`;
   const res = await fetch(url, {
     headers: {
-      "X-RapidAPI-Key": process.env.RAPIDAPI_KEY,
+      "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
       "X-RapidAPI-Host": "country-state-city-search-rest-api.p.rapidapi.com",
     },
   });

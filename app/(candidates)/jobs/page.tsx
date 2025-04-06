@@ -45,7 +45,7 @@ const Jobs = () => {
       const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
       const res = await fetch(url, {
         headers: {
-          "X-RapidAPI-Key": process.env.RAPIDAPI_KEY!,
+          "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
           "X-RapidAPI-Host":
             "country-state-city-search-rest-api.p.rapidapi.com",
         },
@@ -80,11 +80,7 @@ const Jobs = () => {
     return { data, totalPages };
   };
 
-  const {
-    data: queryResult,
-    isFetching,
-    isLoading,
-  } = useQuery({
+  const { data: queryResult, isLoading } = useQuery({
     queryKey: ["jobs", params, user],
     queryFn: fetchJobs,
     enabled: !!user,
@@ -104,15 +100,11 @@ const Jobs = () => {
           </div>
         ) : (
           <>
-            {!data || data.length === 0 ? (
+            {!data || data?.length === 0 ? (
               <EmptyState description="No jobs found, please adjust your filter" />
             ) : (
               <>
-                <div
-                  className={`w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4 transition-opacity duration-300 ${
-                    isFetching ? "opacity-50" : "opacity-100"
-                  }`}
-                >
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
                   {data.map((d: JobType) => (
                     <JobCard key={d.id} {...d} />
                   ))}

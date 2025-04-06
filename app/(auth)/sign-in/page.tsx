@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { LoadingSpinner } from "@/app/components";
@@ -131,7 +132,9 @@ const SignInPage = () => {
           href={`/api/google${handleCreateState()}`}
           className="mt-4 flex items-center justify-center gap-3 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition"
         >
-          <img
+          <Image
+            width={20}
+            height={20}
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
             alt="Google"
             className="h-5 w-5"
