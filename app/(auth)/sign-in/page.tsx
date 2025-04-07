@@ -49,7 +49,7 @@ const SignInPage = () => {
           type: routeRole,
         }),
       });
-      const { message, user } = await res.json();
+      const { message, data: user } = await res.json();
       if (res.ok) {
         setRole(user.type);
         setUser(user);

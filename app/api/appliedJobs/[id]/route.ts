@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
+import { apiResponse } from "@/app/lib";
 
 const PAGE_SIZE = 10;
 
@@ -36,17 +37,25 @@ export async function GET(
       },
     });
 
-    return NextResponse.json({
-      data: {
-        jobs,
-        totalJobs,
-        totalPages: Math.ceil(totalJobs / PAGE_SIZE),
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching jobs for candidate:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs for candidate" },
+      apiResponse({
+        success: true,
+        message: "Applied Job fetched successfully",
+        data: {
+          jobs,
+          totalJobs,
+          totalPages: Math.ceil(totalJobs / PAGE_SIZE),
+        },
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch jobs for candidate",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

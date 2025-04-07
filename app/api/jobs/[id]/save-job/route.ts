@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getServerSession } from "@/app/lib";
+import { getServerSession, apiResponse } from "@/app/lib";
 
 async function getUserAndJob(jobId: string) {
   const session = await getServerSession();
@@ -35,7 +35,10 @@ export async function POST(
     });
 
     return NextResponse.json(
-      { message: `Job ${job?.title} has been saved successfully` },
+      apiResponse({
+        success: true,
+        message: `Job ${job?.title} has been saved successfully`,
+      }),
       { status: 201 }
     );
   }
@@ -63,9 +66,18 @@ export async function DELETE(
     });
 
     return NextResponse.json(
-      { message: `Job ${job?.title} has been unsaved` },
+      apiResponse({
+        success: true,
+        message: `Job ${job?.title} has been unsaved`,
+      }),
       { status: 200 }
     );
   }
-  return NextResponse.json({ message: "already unsaved" }, { status: 400 });
+  return NextResponse.json(
+    apiResponse({
+      success: true,
+      message: "already unsaved",
+    }),
+    { status: 400 }
+  );
 }

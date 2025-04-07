@@ -51,7 +51,7 @@ const ApplicationsBoard = () => {
       try {
         setIsLoading(true);
         const { data } = await getAllJobApplications();
-        const jobApplications = data?.jobApplications || [];
+        const jobApplications = data || [];
 
         const grouped = jobApplications.reduce(
           (acc: Record<string, JobApplication[]>, app: JobApplication) => {

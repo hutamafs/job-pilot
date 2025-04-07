@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getIronSession } from "iron-session";
 import { sessionOptions } from "@/app/lib/session";
 import { SessionData } from "@/app/types";
+import { apiResponse } from "@/app/lib";
 
 export async function GET(req: NextRequest) {
   const res = NextResponse.next();
@@ -12,7 +13,12 @@ export async function GET(req: NextRequest) {
   }
 
   return NextResponse.json(
-    { user: session.user, role: session.user.type },
+    apiResponse({
+      success: true,
+      message: "User detail fetched successfully",
+      data: { user: session.user, role: session.user.type },
+    }),
+
     { status: 200 }
   );
 }

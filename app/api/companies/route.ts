@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
+import { apiResponse } from "@/app/lib";
 
 const PAGE_SIZE = 21;
 
@@ -43,17 +44,25 @@ export async function GET(req: Request) {
       },
     });
 
-    return NextResponse.json({
-      data: {
-        companies,
-        totalCompanies,
-        totalPages: Math.ceil(totalCompanies / PAGE_SIZE),
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching companies:", error);
     return NextResponse.json(
-      { error: "Failed to fetch companies" },
+      apiResponse({
+        success: true,
+        message: "Companies fetched successfully",
+        data: {
+          companies,
+          totalCompanies,
+          totalPages: Math.ceil(totalCompanies / PAGE_SIZE),
+        },
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch companies",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

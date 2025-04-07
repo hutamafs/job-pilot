@@ -32,15 +32,11 @@ const Candidates = () => {
 
   const fetchCandidates = async () => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/candidates?${params}`,
-      {
-        headers: {
-          Authorization: user || "",
-        },
-      }
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/candidates?${params}`
     );
-    const { data, totalPages } = await response.json();
-    return { data, totalPages };
+    const { data } = await response.json();
+    const { candidates, totalCandidates, totalPages } = data;
+    return { candidates, totalCandidates, totalPages };
   };
 
   const {
@@ -52,7 +48,7 @@ const Candidates = () => {
     queryFn: fetchCandidates,
     enabled: !!user,
   });
-  const data = queryResult?.data || [];
+  const data = queryResult?.candidates || [];
   const totalPages = queryResult?.totalPages || 0;
 
   const savedCandidateIds = new Set(
@@ -68,7 +64,7 @@ const Candidates = () => {
   }
   try {
     return (
-      <Container width="w-full md:w-1/2">
+      <Container width="w-full lg:w-1/2">
         {isLoading ? (
           <div className="flex justify-center items-center p-12">
             <LoadingSpinner />
@@ -99,8 +95,7 @@ const Candidates = () => {
         )}
       </Container>
     );
-  } catch (error) {
-    console.error("Error fetching candidates:", error);
+  } catch {
     return <div>Error loading candidates</div>;
   }
 };

@@ -26,45 +26,27 @@ const CandidatePage = async ({ params, searchParams }: CandidatePageProps) => {
   switch (page) {
     case "overview":
       const ovRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?limit=3`,
-        {
-          headers: {
-            Authorization: `${user?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?limit=3`
       );
       const { data: ovData } = await ovRes.json();
       data = ovData;
       break;
     case "applied-jobs":
       const apRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `${user?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/appliedJobs/${candidateData?.id}?page=${currentPage}`
       );
       const { data: apData } = await apRes.json();
       data = apData;
       break;
     default:
       const svRes = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/savedJobs/${candidateData?.id}?page=${currentPage}`,
-        {
-          headers: {
-            Authorization: `${candidateData?.id}`,
-          },
-        }
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/savedJobs/${candidateData?.id}?page=${currentPage}`
       );
       const { data: svData } = await svRes.json();
       data = svData;
       break;
   }
   const { jobs, totalJobs, totalPages } = data;
-  if (!data) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="md:px-4 w-full">

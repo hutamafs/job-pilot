@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
+import { apiResponse } from "@/app/lib";
 
 export async function GET(
   req: NextRequest,
@@ -11,7 +12,11 @@ export async function GET(
 
     if (!id) {
       return NextResponse.json(
-        { error: "Job ID is required" },
+        apiResponse({
+          success: false,
+          message: "Job ID is required",
+          error: "Job ID is required",
+        }),
         { status: 400 }
       );
     }
@@ -33,12 +38,32 @@ export async function GET(
       },
     });
     if (!data) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+      return NextResponse.json(
+        apiResponse({
+          success: false,
+          message: "Job not found",
+          error: "Job not found",
+        }),
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ data });
+    return NextResponse.json(
+      apiResponse({
+        success: true,
+        message: "Company fetched successfully",
+        data,
+      }),
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Error fetching job:", error);
-    return NextResponse.json({ error: "Failed to fetch job" }, { status: 500 });
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch job",
+        error: (error as Error).message,
+      }),
+      { status: 500 }
+    );
   }
 }

@@ -23,7 +23,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const fetchSession = async () => {
       const res = await fetch("/api/me");
       if (res.ok) {
-        const { user, role } = await res.json();
+        const {
+          data: { user, role },
+        } = await res.json();
         setUser(user);
         setRole(role);
       } else if (res.status === 401) {

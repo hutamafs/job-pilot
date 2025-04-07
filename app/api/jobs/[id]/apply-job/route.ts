@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
-import { getServerSession } from "@/app/lib";
+import { getServerSession, apiResponse } from "@/app/lib";
 
 async function getCandidate() {
   const session = await getServerSession();
@@ -19,7 +19,11 @@ export async function POST(
 
   if (!candidate?.id) {
     return NextResponse.json(
-      { message: "Candidate not found" },
+      apiResponse({
+        success: false,
+        message: "Candidate not found",
+        error: "Candidate not found",
+      }),
       { status: 404 }
     );
   }
@@ -43,9 +47,20 @@ export async function POST(
     });
 
     return NextResponse.json(
-      { message: `Job ${job.job.title} applied successfully` },
+      apiResponse({
+        success: true,
+        message: `Job ${job.job.title} applied successfully`,
+        data: job,
+      }),
       { status: 201 }
     );
   }
-  return NextResponse.json({ message: "already applied" }, { status: 400 });
+  return NextResponse.json(
+    apiResponse({
+      success: true,
+      message: "Job already applied",
+      error: "Job already applied",
+    }),
+    { status: 400 }
+  );
 }

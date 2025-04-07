@@ -71,14 +71,11 @@ export default function SignupForm() {
         method: "POST",
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (!res.ok) {
+      const { success, data, message } = await res.json();
+      if (!success) {
         throw new Error(data.error);
       }
-      setNotif(
-        "success",
-        "Company created successfully, please check your email inbox to confirm"
-      );
+      setNotif("success", message);
       router.push("/sign-in?role=COMPANY");
     } catch (error) {
       setNotif("error", (error as Error).message);

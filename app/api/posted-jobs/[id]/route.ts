@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
+import { apiResponse } from "@/app/lib";
 
 const PAGE_SIZE = 10;
 
@@ -37,18 +38,26 @@ export async function GET(
       },
     });
 
-    return NextResponse.json({
-      data: {
-        jobs,
-        totalSavedCandidates,
-        totalJobs: totalPostedJobs,
-        totalPages: Math.ceil(totalPostedJobs / PAGE_SIZE),
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching jobs for company:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs for company" },
+      apiResponse({
+        success: true,
+        message: "Saved candidates fetched successfully",
+        data: {
+          jobs,
+          totalSavedCandidates,
+          totalJobs: totalPostedJobs,
+          totalPages: Math.ceil(totalPostedJobs / PAGE_SIZE),
+        },
+      }),
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      apiResponse({
+        success: false,
+        message: "Failed to fetch jobs for company",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }
@@ -101,16 +110,20 @@ export async function POST(
     });
 
     return NextResponse.json(
-      {
+      apiResponse({
+        success: true,
         message: "Job posted successfully",
         data: job,
-      },
+      }),
       { status: 201 }
     );
   } catch (error) {
-    console.log("Error posting job:", (error as Error).message);
     return NextResponse.json(
-      { error: "Failed to create the job" },
+      apiResponse({
+        success: false,
+        message: "Failed to create the job",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }
@@ -165,16 +178,20 @@ export async function PUT(
     });
 
     return NextResponse.json(
-      {
+      apiResponse({
+        success: true,
         message: "Job updated successfully",
         data: job,
-      },
+      }),
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error updated job:", (error as Error).message);
     return NextResponse.json(
-      { error: "Failed to update the job" },
+      apiResponse({
+        success: false,
+        message: "Failed to update the job",
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

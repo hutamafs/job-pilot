@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/utils/prisma";
 import bcrypt from "bcrypt";
+import { apiResponse } from "@/app/lib";
 
 export async function POST(req: NextRequest) {
   try {
@@ -72,20 +73,25 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json(
-      {
-        user: {
+      apiResponse({
+        success: true,
+        message: "Candidate signed up successfully",
+        data: {
           id: user.id,
           email: user.email,
           role: user.role,
           candidateId: candidate.id,
         },
-      },
+      }),
       { status: 201 }
     );
   } catch (error) {
-    console.error("Register error:", error);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      apiResponse({
+        success: false,
+        message: `Failed to sign up candidate`,
+        error: (error as Error).message,
+      }),
       { status: 500 }
     );
   }

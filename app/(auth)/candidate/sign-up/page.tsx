@@ -135,19 +135,16 @@ const CandidateSignUp = () => {
           role: "CANDIDATE",
         }),
       });
-      const data = await res.json();
+      const { success, data, message } = await res.json();
 
-      if (!res.ok) {
+      if (!success) {
         setNotif("error", data.error);
+      } else {
+        setNotif("success", message);
+        router.push("/sign-in");
       }
-      setNotif(
-        "success",
-        "Sign up successful. Please check and verify your email first"
-      );
-      router.push("/sign-in");
     } catch (error) {
       setNotif("error", (error as Error).message);
-      console.error(error);
     } finally {
       setIsPageLoading(false);
     }

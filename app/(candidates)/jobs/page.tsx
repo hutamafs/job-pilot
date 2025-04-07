@@ -62,8 +62,8 @@ const Jobs = () => {
         },
       }
     );
-    const { data, totalPages } = await response.json();
-    return { data, totalPages };
+    const { data } = await response.json();
+    return { data };
   };
 
   const { data: queryResult, isLoading } = useQuery({
@@ -72,8 +72,8 @@ const Jobs = () => {
     enabled: !!user,
   });
 
-  const data = queryResult?.data || [];
-  const totalPages = queryResult?.totalPages || 0;
+  const data = queryResult?.data?.jobs || [];
+  const totalPages = queryResult?.data.totalPages || 0;
 
   return (
     <div className="relative">

@@ -6,7 +6,6 @@ import {
 } from "./validation";
 import fileUpload from "./fileUpload";
 import stringifyQuery from "./stringifyQuery";
-import { getUserRole } from "./getUserRole";
 
 export {
   candidateSchema,
@@ -15,5 +14,4 @@ export {
   companyInfoSchema,
   companyFoundingSchema,
   companyContactSchema,
-  getUserRole,
 };
