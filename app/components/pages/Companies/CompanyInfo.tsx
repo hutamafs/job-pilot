@@ -1,14 +1,28 @@
 "use client";
 import { usePathname } from "next/navigation";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StepProps } from "@/app/types";
 import uploadFile from "@/app/utils/fileUpload";
 import { UploadContainer } from "@/app/components";
-import { countryOptions } from "@/app/options";
+import { getCountries } from "@/app/lib";
 
 export default function CompanyInfo({ data, setFormData }: StepProps) {
   const pathname = usePathname();
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+    fetchAndProcessCountries();
+  }, []);
+
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     name: string
@@ -36,9 +50,10 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
       | React.ChangeEvent<HTMLTextAreaElement>
       | React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "phone" ? value.replace(/\D/g, "") : value,
     }));
   };
   return (
@@ -157,9 +172,9 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
           <option disabled value="">
             Select Country
           </option>
-          {countryOptions.map((country) => (
-            <option key={country.value} value={country.value}>
-              {country.label}
+          {countries.map(({ label, value }) => (
+            <option key={value} value={value}>
+              {label}
             </option>
           ))}
         </select>
@@ -171,6 +186,7 @@ export default function CompanyInfo({ data, setFormData }: StepProps) {
         <input
           type="tel"
           placeholder="Phone Number"
+          inputMode="numeric"
           className="w-full border p-2 rounded-md"
           name="phone"
           value={data.phone}

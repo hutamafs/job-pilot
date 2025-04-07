@@ -26,7 +26,9 @@ export default async function DashboardLayout({
           </div>
           <div className="w-[1px] bg-gray-300" />
 
-          <main className="flex-1 py-3 md:p-6">{children}</main>
+          <main className="md:min-h-[calc(100vh-150px)] flex-1 py-3 md:p-6">
+            {children}
+          </main>
         </div>
       </Container>
     </UserProvider>

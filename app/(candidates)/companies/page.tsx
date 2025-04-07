@@ -14,7 +14,7 @@ import { Pagination } from "@/app/components";
 import { Company as CompanyType } from "@/app/types";
 import { stringifyQuery } from "@/app/utils";
 import { CompanySearchQuery } from "@/app/types";
-import { getClientSession } from "@/app/lib";
+import { getClientSession, getCountries } from "@/app/lib";
 
 const Companies = () => {
   const searchParams = useSearchParams();
@@ -31,20 +31,6 @@ const Companies = () => {
   const params = stringifyQuery(query);
 
   useEffect(() => {
-    const getCountries = async () => {
-      const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
-      const res = await fetch(url, {
-        headers: {
-          "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
-          "X-RapidAPI-Host":
-            "country-state-city-search-rest-api.p.rapidapi.com",
-        },
-      });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data;
-    };
-
     const fetchAndProcessCountries = async () => {
       const countryList = await getCountries();
       const countries = countryList.map((country: { name: string }) => ({
@@ -91,7 +77,7 @@ const Companies = () => {
   return (
     <>
       <SearchCompany countries={countries} query={query} />
-      <Container className="py-8">
+      <Container className="md:min-h-[calc(100vh-200px)] py-8">
         {isLoading ? (
           <div className="flex justify-center items-center p-12">
             <LoadingSpinner />
@@ -103,7 +89,7 @@ const Companies = () => {
             ) : (
               <>
                 <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mx-auto mt-4">
-                  {data.companies.map((d: CompanyType) => (
+                  {data.companies?.map((d: CompanyType) => (
                     <CompanyCard key={d.id} {...d} />
                   ))}
                 </div>

@@ -13,7 +13,7 @@ import { Job as JobType, JobSearchQuery } from "@/app/types";
 import { Pagination } from "@/app/components";
 import { SearchFilterWrapper } from "@/app/components/pages/Jobs";
 import { stringifyQuery } from "@/app/utils";
-import { getClientSession } from "@/app/lib/";
+import { getClientSession, getCountries } from "@/app/lib";
 
 const Jobs = () => {
   const searchParams = useSearchParams();
@@ -41,20 +41,6 @@ const Jobs = () => {
   }, []);
 
   useEffect(() => {
-    const getCountries = async () => {
-      const url = `https://country-state-city-search-rest-api.p.rapidapi.com/allcountries`;
-      const res = await fetch(url, {
-        headers: {
-          "X-RapidAPI-Key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
-          "X-RapidAPI-Host":
-            "country-state-city-search-rest-api.p.rapidapi.com",
-        },
-      });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return data;
-    };
-
     const fetchAndProcessCountries = async () => {
       const countryList = await getCountries();
       const countries = countryList.map((country: { name: string }) => ({
@@ -92,7 +78,7 @@ const Jobs = () => {
   return (
     <div className="relative">
       <SearchFilterWrapper countries={countries} query={query} />
-      <Container className="py-8 relative">
+      <Container className="md:min-h-[calc(100vh-200px)] py-8 relative">
         {/* Full loading state when no data */}
         {isLoading ? (
           <div className="flex justify-center items-center p-12">

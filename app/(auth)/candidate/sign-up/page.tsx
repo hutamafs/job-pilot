@@ -1,5 +1,6 @@
 "use client";
-import { useRef, useCallback } from "react";
+import { useRef, useCallback, useEffect } from "react";
+import Select from "react-select";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -8,7 +9,6 @@ import { fileUpload, candidateSchema } from "@/app/utils";
 import {
   experienceOptions,
   educationOptions,
-  countryOptions,
   skillOptions,
 } from "@/app/options";
 import { LoadingSpinner } from "@/app/components";
@@ -16,10 +16,10 @@ import ResumeUpload from "@/app/components/common/ResumeUpload";
 import ProfileUpload from "@/app/components/common/ProfilePictureUploadComponent";
 import { Candidate } from "@/app/types";
 import { useNotif } from "@/app/context/NotificationProvider";
-import Select from "react-select";
-import { useEffect } from "react";
+import { getCountries } from "@/app/lib";
 
 const CandidateSignUp = () => {
+  const [countries, setCountries] = useState([]);
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const image = searchParams.get("image") || "";
@@ -92,7 +92,7 @@ const CandidateSignUp = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "phone" ? value.replace(/\D/g, "") : value,
     }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
   };
@@ -168,6 +168,18 @@ const CandidateSignUp = () => {
 
     return () => clearTimeout(debounce);
   }, [handleDisableButton]);
+
+  useEffect(() => {
+    const fetchAndProcessCountries = async () => {
+      const countryList = await getCountries();
+      const countries = countryList.map((country: { name: string }) => ({
+        label: country.name,
+        value: country.name,
+      }));
+      setCountries(countries);
+    };
+    fetchAndProcessCountries();
+  }, []);
 
   return isPageLoading ? (
     <LoadingSpinner />
@@ -261,7 +273,6 @@ const CandidateSignUp = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            required
             className="border p-2 rounded-md w-full"
           />
           {errors.name && (
@@ -275,7 +286,6 @@ const CandidateSignUp = () => {
             placeholder="Job Title"
             value={formData.role}
             onChange={handleChange}
-            required
             className="border p-2 rounded-md w-full"
           />
           {errors.role && (
@@ -284,9 +294,10 @@ const CandidateSignUp = () => {
 
           {/* Phone */}
           <input
-            type="text"
+            type="tel"
             name="phone"
-            placeholder="Phone Number"
+            inputMode="numeric"
+            placeholder="e.g. 04167890123"
             value={formData.phone}
             onChange={handleChange}
             className="border p-2 rounded-md w-full"
@@ -398,7 +409,7 @@ const CandidateSignUp = () => {
             <option value="" disabled>
               Choose your nationality
             </option>
-            {countryOptions.map(({ label, value }) => (
+            {countries.map(({ label, value }) => (
               <option key={value} value={value}>
                 {label}
               </option>
@@ -417,7 +428,7 @@ const CandidateSignUp = () => {
             <option value="" disabled>
               Choose your location
             </option>
-            {countryOptions.map(({ label, value }) => (
+            {countries.map(({ label, value }) => (
               <option key={value} value={value}>
                 {label}
               </option>
